@@ -206,6 +206,15 @@ for (const { id, factory } of effects) {
         `${folder}: $${used} is not a parameter, texture, option constant or $function`,
       );
   }
+  // X16.2: anything that reads time declares what it does when motion is off.
+  if (
+    /\bxt_time\b|\$time\b/.test(sources) &&
+    (definition.motion ?? 'static') === 'static' &&
+    !transition
+  )
+    problems.push(
+      `${folder}: reads time but declares no motion behavior (freeze or settle)`,
+    );
   if (/^\s*(?!return\b)\w+\s+xt_\w+\s*\(/m.test(sources)) {
     problems.push(
       `${folder}: helper functions in effects must use $names so merged copies don't clash`,

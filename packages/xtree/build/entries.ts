@@ -11,6 +11,7 @@ const fixed = {
   'shaders/depth/index': 'src/shaders/depth/index.ts',
   'effect/index': 'src/effect/index.ts',
   'core/index': 'src/core/index.ts',
+  'motion/index': 'src/motion/index.ts',
 } as const;
 
 /** Every folder in src/effects is an entry, `@mk7s/xtree/effects/<id>`. */

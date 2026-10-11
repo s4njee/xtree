@@ -9,6 +9,7 @@ import {
   RGBAFormat,
   UnsignedByteType,
 } from 'three';
+import { bakeCurve, bakeGradient } from '../effect/bake.js';
 import type { SampleTexture } from '../effect/params.js';
 
 /**
@@ -17,8 +18,15 @@ import type { SampleTexture } from '../effect/params.js';
  * texture.
  */
 export function createSampleTexture(
-  sample: SampleTexture,
+  input: SampleTexture,
 ): DataTexture | Data3DTexture {
+  // Gradients and curves arrive as values; bake them here so effect bundles don't carry the baker.
+  const sample =
+    input.kind === 'gradient'
+      ? bakeGradient(input.stops)
+      : input.kind === 'curve'
+        ? bakeCurve(input.points)
+        : input;
   if (sample.kind === 'data3d') {
     const texture = new Data3DTexture(
       sample.data,

@@ -19,3 +19,11 @@ declare module '@holocss/three' {
     },
   ): Promise<{ status: string }>;
 }
+
+declare module '@holocss/runtime' {
+  export function motionAllowed(element: Element): boolean;
+  export function watchMotion(
+    element: Element,
+    callback: (allowed: boolean) => void,
+  ): () => void;
+}

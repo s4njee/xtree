@@ -21,6 +21,8 @@ import { displacementMap } from '@mk7s/xtree/effects/displacement-map';
 const composer = new EffectComposer(renderer);
 composer.setScene(scene, camera);
 composer.add(displacementMap({ preset: 'heatHaze' }));
+// Animated effects hold still until play() (or { autoplay: true }).
+composer.play();
 renderer.setAnimationLoop(() => composer.render());
 ```
 

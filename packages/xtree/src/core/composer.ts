@@ -22,6 +22,7 @@ import type {
 import type { Effect } from '../effect/define.js';
 import type { EffectMask, SelectionMask } from '../effect/mask.js';
 import { NormalPrepass, SelectionPrepass } from './buffers.js';
+import { GpuTimer } from './timing.js';
 import type { OutputStage, ToneMapping } from './compile.js';
 import { describePassError, EffectPass } from './pass.js';
 import {
@@ -44,8 +45,16 @@ export interface EffectComposerOptions {
   readonly merge?: boolean;
   /** Dither the final output to hide banding. Defaults to false. */
   readonly dithering?: boolean;
+  /** Measure GPU time per pass (see `timings`) where the GPU supports timer queries. */
+  readonly timing?: boolean;
   /** Whether effects animate. Defaults to true. */
   readonly motion?: boolean;
+  /**
+   * Start advancing time on the first render. Defaults to false: animated
+   * effects hold still until `play()` (WCAG 2.2.2: no motion the user didn't
+   * start or can't pause).
+   */
+  readonly autoplay?: boolean;
 }
 
 export interface ComposerStats {
@@ -97,7 +106,10 @@ export class EffectComposer {
     depth: false,
   };
   readonly #options: Required<
-    Omit<EffectComposerOptions, 'merge' | 'motion' | 'dithering'>
+    Omit<
+      EffectComposerOptions,
+      'merge' | 'motion' | 'dithering' | 'autoplay' | 'timing'
+    >
   >;
   #items: StackItem[] = [];
   #merge: boolean;
@@ -117,6 +129,29 @@ export class EffectComposer {
   /** The time effects see while motion is off. */
   #frozenTime = 0;
   #lost = false;
+  #playing = false;
+  #timing = false;
+  #timer: GpuTimer | null = null;
+  #unsubscribe: (() => void) | null = null;
+  /**
+   * Values every effect can read as uniforms: `xt_progress`, `xt_pointer`
+   * (UV, origin bottom left), `xt_pointerVelocity` (UV per second),
+   * `xt_scroll` and `xt_audio` (bass, mid, treble, level). Set them directly
+   * or with `drive()`, `trackPointer()`, `trackScroll()` and `trackAudio()`.
+   */
+  readonly inputs: {
+    progress: number;
+    pointer: [number, number];
+    pointerVelocity: [number, number];
+    scroll: number;
+    audio: [number, number, number, number];
+  } = {
+    progress: 0,
+    pointer: [0.5, 0.5],
+    pointerVelocity: [0, 0],
+    scroll: 0,
+    audio: [0, 0, 0, 0],
+  };
   #disposed = false;
   readonly #size = new Vector2();
   readonly #onLost = () => {
@@ -138,7 +173,9 @@ export class EffectComposer {
     };
     this.#merge = options.merge ?? true;
     this.#motion = options.motion ?? true;
+    this.#playing = options.autoplay ?? false;
     this.#dithering = options.dithering ?? false;
+    this.#timing = options.timing ?? false;
     const canvas = renderer.domElement as HTMLCanvasElement | undefined;
     canvas?.addEventListener?.('webglcontextlost', this.#onLost);
     canvas?.addEventListener?.('webglcontextrestored', this.#onRestored);
@@ -231,6 +268,56 @@ export class EffectComposer {
     this.#dithering = value;
   }
 
+  /** Whether time advances on render (it also needs motion to be allowed). */
+  get playing(): boolean {
+    return this.#playing;
+  }
+
+  /** Starts advancing time. */
+  play(): this {
+    this.#playing = true;
+    return this;
+  }
+
+  /** Stops advancing time; effects hold their current frame. */
+  pause(): this {
+    this.#playing = false;
+    return this;
+  }
+
+  /** The `xt_progress` value, 0–1. */
+  get progress(): number {
+    return this.inputs.progress;
+  }
+  set progress(value: number) {
+    this.inputs.progress = Math.min(
+      1,
+      Math.max(0, Number.isFinite(value) ? value : 0),
+    );
+  }
+
+  /**
+   * Follows an external progress source, such as HoloCSS's
+   * `scrollProgress()` or anything with `subscribe(callback)`. Replaces any
+   * previous source; returns a function that stops following it.
+   */
+  drive(source: {
+    readonly value?: number;
+    subscribe(callback: (progress: number) => void): () => void;
+  }): () => void {
+    this.#unsubscribe?.();
+    this.#timer?.dispose();
+    if (source.value !== undefined) this.progress = source.value;
+    const stop = source.subscribe((value) => {
+      this.progress = value;
+    });
+    this.#unsubscribe = () => {
+      stop();
+      this.#unsubscribe = null;
+    };
+    return this.#unsubscribe;
+  }
+
   /** Effect time in seconds. Set it to scrub or to render a fixed frame; while motion is off, effects keep the frozen time. */
   get time(): number {
     return this.#time;
@@ -240,6 +327,60 @@ export class EffectComposer {
   }
 
   /** The passes the last render used, in order (for inspection and tests). */
+  /** Whether GPU timing is on; turning it on takes effect from the next render. */
+  get timing(): boolean {
+    return this.#timing;
+  }
+  set timing(value: boolean) {
+    this.#timing = value;
+    if (!value) {
+      this.#timer?.dispose();
+      this.#timer = null;
+    }
+  }
+
+  /**
+   * GPU milliseconds from the latest measured frame, by span: `scene`,
+   * `prepasses` and `pass 0`, `pass 1`… Null when timing is off or the GPU
+   * has no timer queries. Results lag a frame or two behind.
+   */
+  get timings(): Readonly<Record<string, number>> | null {
+    return this.#timer?.supported ? this.#timer.latest : null;
+  }
+
+  /** A summary of the last render's passes, for inspectors and overlays. */
+  describe(): {
+    readonly label: string;
+    readonly effects: readonly string[];
+    readonly compiles: number;
+    readonly buffers: readonly string[];
+    readonly gpuMs: number | null;
+    readonly source: string;
+  }[] {
+    const timings = this.timings;
+    return this.#plan.map((step, index) => {
+      const label = `pass ${index}`;
+      const gpuMs = timings?.[label] ?? null;
+      if (step.kind === 'foreign')
+        return {
+          label,
+          effects: [step.pass.constructor?.name ?? 'pass'],
+          compiles: 0,
+          buffers: [],
+          gpuMs,
+          source: '',
+        };
+      return {
+        label,
+        effects: step.pass.effects.map((e) => e.name),
+        compiles: step.pass.compiles,
+        buffers: [...step.pass.buffers],
+        gpuMs,
+        source: step.pass.source,
+      };
+    });
+  }
+
   get passes(): readonly (EffectPass | ForeignPass)[] {
     return this.#plan.map((p) => p.pass);
   }
@@ -262,10 +403,11 @@ export class EffectComposer {
         'EffectComposer: call setScene(scene, camera) before render',
       );
     const now = performance.now();
-    const seconds =
+    const measured =
       delta ??
       (this.#lastTime === undefined ? 0 : (now - this.#lastTime) / 1000);
     this.#lastTime = now;
+    const seconds = this.#playing ? measured : 0;
     if (this.#motion) this.#time += seconds;
 
     const renderer = this.renderer;
@@ -285,8 +427,13 @@ export class EffectComposer {
     const previousTarget = renderer.getRenderTarget();
     const sceneTarget = this.#sceneTarget!;
     renderer.setRenderTarget(sceneTarget);
-    renderer.render(this.scene, this.camera);
-    this.#renderPrepasses(active, buffers.has('normal'));
+    const timer = this.#ensureTimer();
+    const measure = (label: string, run: () => void) =>
+      timer ? timer.measure(label, run) : run();
+    measure('scene', () => renderer.render(this.scene!, this.camera!));
+    measure('prepasses', () =>
+      this.#renderPrepasses(active, buffers.has('normal')),
+    );
     const geometry = {
       depth: sceneTarget.depthTexture,
       normal: this.#normal?.target.texture ?? null,
@@ -306,10 +453,15 @@ export class EffectComposer {
         // The pass adds `seconds` while motion is on, landing on the composer's time.
         pass.time = this.#motion ? this.#time - seconds : this.#frozenTime;
         pass.setGeometry(geometry);
-        pass.render(renderer, last ? target : write, read, seconds);
+        pass.setInputs(this.inputs);
+        measure(`pass ${index}`, () =>
+          pass.render(renderer, last ? target : write, read, seconds),
+        );
       } else {
         step.pass.renderToScreen = false;
-        step.pass.render(renderer, write, read, seconds, false);
+        measure(`pass ${index}`, () =>
+          step.pass.render(renderer, write, read, seconds, false),
+        );
         if (step.pass.needsSwap === false) return;
       }
       if (!last) {
@@ -318,6 +470,7 @@ export class EffectComposer {
       }
     });
     renderer.setRenderTarget(previousTarget);
+    timer?.endFrame();
     this.stats.compiles = this.#countCompiles();
   }
 
@@ -325,6 +478,7 @@ export class EffectComposer {
   dispose(): void {
     if (this.#disposed) return;
     this.#disposed = true;
+    this.#unsubscribe?.();
     for (const step of this.#plan) step.pass.dispose?.();
     this.#outputPass?.dispose();
     for (const item of this.#items) item.dispose?.();
@@ -387,6 +541,14 @@ export class EffectComposer {
     for (const prepass of this.#selections.values())
       prepass.setSize(width, height);
     this.stats.allocations++;
+  }
+
+  #ensureTimer(): GpuTimer | null {
+    if (!this.#timing) return null;
+    this.#timer ??= new GpuTimer(
+      this.renderer.getContext() as WebGL2RenderingContext,
+    );
+    return this.#timer.supported ? this.#timer : null;
   }
 
   /** Gives the scene target a depth texture only while an effect reads depth. */

@@ -21,6 +21,8 @@ import { scanlines } from '@mk7s/xtree/effects/scanlines';
 const composer = new EffectComposer(renderer);
 composer.setScene(scene, camera);
 composer.add(scanlines({ preset: 'subtle' }));
+// Animated effects hold still until play() (or { autoplay: true }).
+composer.play();
 renderer.setAnimationLoop(() => composer.render());
 ```
 

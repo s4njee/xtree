@@ -190,6 +190,10 @@
       "types": "./dist/glsl/index.d.ts",
       "import": "./dist/glsl/index.js"
     },
+    "./motion": {
+      "types": "./dist/motion/index.d.ts",
+      "import": "./dist/motion/index.js"
+    },
     "./shaders/blend": {
       "types": "./dist/shaders/blend/index.d.ts",
       "import": "./dist/shaders/blend/index.js"

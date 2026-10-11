@@ -42,6 +42,15 @@ export function describePassError(
 
 let nextPassId = 1;
 
+/** Values every effect can read: see `EffectComposer.inputs`. */
+export interface PassInputs {
+  readonly progress: number;
+  readonly pointer: readonly [number, number];
+  readonly pointerVelocity: readonly [number, number];
+  readonly scroll: number;
+  readonly audio: readonly [number, number, number, number];
+}
+
 /** Geometry buffers and the camera they were rendered with. */
 export interface PassGeometry {
   /** The scene's depth texture. */
@@ -89,6 +98,11 @@ export class EffectPass {
     xt_delta: { value: 0 },
     xt_frame: { value: 0 },
     xt_exposure: { value: 1 },
+    xt_progress: { value: 0 },
+    xt_pointer: { value: new Vector2(0.5, 0.5) },
+    xt_pointerVelocity: { value: new Vector2() },
+    xt_scroll: { value: 0 },
+    xt_audio: { value: [0, 0, 0, 0] as number[] },
     xt_depthBuffer: { value: null as Texture | null },
     xt_normalBuffer: { value: null as Texture | null },
     xt_cameraNear: { value: 0.1 },
@@ -99,6 +113,7 @@ export class EffectPass {
     xt_cameraWorld: { value: new Matrix4() },
   };
   #material: RawShaderMaterial | null = null;
+  #source = '';
   #signature = '';
   #width = 1;
   #height = 1;
@@ -124,6 +139,24 @@ export class EffectPass {
   /** Tone-mapping exposure used by the output stage. */
   set exposure(value: number) {
     this.#globals.xt_exposure.value = value;
+  }
+
+  /** Shared inputs (progress, pointer, scroll, audio); the xtree composer sets them every frame. */
+  setInputs(inputs: PassInputs): void {
+    const g = this.#globals;
+    g.xt_progress.value = inputs.progress;
+    g.xt_pointer.value.set(inputs.pointer[0], inputs.pointer[1]);
+    g.xt_pointerVelocity.value.set(
+      inputs.pointerVelocity[0],
+      inputs.pointerVelocity[1],
+    );
+    g.xt_scroll.value = inputs.scroll;
+    g.xt_audio.value = [...inputs.audio];
+  }
+
+  /** The fragment shader as last compiled (empty before the first render), for debugging. */
+  get source(): string {
+    return this.#source;
   }
 
   /** Geometry buffers the effects in this pass read (see `EffectDefinition.buffers`). */
@@ -215,6 +248,7 @@ export class EffectPass {
     this.#material?.dispose();
     const compiled = compilePass(this.effects, this.output, this.id);
     passFiles.set(this.id, compiled.files);
+    this.#source = compiled.fragment;
     this.#material = new RawShaderMaterial({
       name: `xtree:${this.effects.map((e) => e.name).join('+') || 'output'}`,
       glslVersion: GLSL3,

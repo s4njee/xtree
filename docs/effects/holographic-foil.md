@@ -21,6 +21,8 @@ import { holographicFoil } from '@mk7s/xtree/effects/holographic-foil';
 const composer = new EffectComposer(renderer);
 composer.setScene(scene, camera);
 composer.add(holographicFoil({ preset: 'card' }));
+// Animated effects hold still until play() (or { autoplay: true }).
+composer.play();
 renderer.setAnimationLoop(() => composer.render());
 ```
 

@@ -11,6 +11,8 @@ import {
 } from './mask.js';
 import {
   toUniformValue,
+  type CurvePoints,
+  type GradientStops,
   validateParam,
   type Param,
   type ParamSchema,
@@ -250,6 +252,11 @@ export class Effect<S extends ParamSchema = ParamSchema> {
   #disposed = false;
   #disposers: (() => void)[] = [];
   #samples = new Map<string, TextureLike & { dispose(): void }>();
+  /** Gradient and curve textures, rebuilt when their value changes. */
+  #baked = new Map<
+    string,
+    { key: string; texture: TextureLike & { dispose(): void } }
+  >();
   #mask: EffectMask | null = null;
   readonly #listeners = new Set<() => void>();
 
@@ -417,6 +424,22 @@ export class Effect<S extends ParamSchema = ParamSchema> {
       string,
       Param,
     ][]) {
+      if (param.kind === 'gradient' || param.kind === 'curve') {
+        const value = this.#values[name];
+        const key = `${name}:${JSON.stringify(value)}`;
+        const current = this.#baked.get(name);
+        if (current?.key !== key) {
+          current?.texture.dispose();
+          const texture = create(
+            param.kind === 'gradient'
+              ? { kind: 'gradient', stops: value as GradientStops }
+              : { kind: 'curve', points: value as CurvePoints },
+          );
+          this.#baked.set(name, { key, texture });
+        }
+        this.uniforms[name]!.value = this.#baked.get(name)!.texture;
+        continue;
+      }
       if (param.kind !== 'texture') continue;
       const value = this.#values[name];
       if (typeof value !== 'string') continue;
@@ -545,6 +568,8 @@ export class Effect<S extends ParamSchema = ParamSchema> {
     this.resources = null;
     for (const texture of this.#samples.values()) texture.dispose();
     this.#samples.clear();
+    for (const { texture } of this.#baked.values()) texture.dispose();
+    this.#baked.clear();
     for (const dispose of this.#disposers.splice(0)) dispose();
     this.#listeners.clear();
   }
@@ -562,7 +587,7 @@ export class Effect<S extends ParamSchema = ParamSchema> {
 
 function sameValue(a: unknown, b: unknown): boolean {
   if (Array.isArray(a) && Array.isArray(b))
-    return a.length === b.length && a.every((v, i) => v === b[i]);
+    return a.length === b.length && a.every((v, i) => sameValue(v, b[i]));
   return a === b;
 }
 

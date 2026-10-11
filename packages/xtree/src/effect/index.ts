@@ -21,6 +21,12 @@ export {
 } from './define.js';
 export {
   bool,
+  curve,
+  gradient,
+  type CurveParam,
+  type CurvePoints,
+  type GradientParam,
+  type GradientStops,
   color,
   float,
   glslTypes,
@@ -78,3 +84,14 @@ export {
   type TransitionFactory,
   type TransitionInstance,
 } from './transition.js';
+export {
+  decodeStack,
+  EffectStack,
+  encodeStack,
+  stackFromJSON,
+  stackToJSON,
+  type EffectRegistry,
+  type FromJSONOptions,
+  type StackJSON,
+} from './stack.js';
+export { bakeCurve, bakeGradient } from './bake.js';

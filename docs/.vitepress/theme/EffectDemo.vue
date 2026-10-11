@@ -21,7 +21,7 @@ import { effectLoaders } from './effect-registry';
 const props = defineProps<{ effect: string }>();
 
 type Definition = EffectFactory<ParamSchema>['definition'];
-type Value = number | boolean | string | null | readonly number[];
+type Value = number | boolean | string | null | readonly unknown[];
 
 const root = ref<HTMLElement>();
 const stage = ref<HTMLElement>();
@@ -93,7 +93,7 @@ const fieldId = (name: string, suffix = '') =>
 
 function sameValue(a: unknown, b: unknown): boolean {
   if (Array.isArray(a) && Array.isArray(b))
-    return a.length === b.length && a.every((v, i) => v === b[i]);
+    return a.length === b.length && a.every((v, i) => sameValue(v, b[i]));
   return a === b;
 }
 
@@ -102,7 +102,15 @@ function literal(value: Value): string {
   if (typeof value === 'number') return String(Number(value.toFixed(4)));
   if (typeof value === 'string') return `'${value}'`;
   if (Array.isArray(value))
-    return `[${value.map((v) => Number((v as number).toFixed(3))).join(', ')}]`;
+    return `[${value
+      .map((v) =>
+        Array.isArray(v)
+          ? literal(v as Value)
+          : typeof v === 'number'
+            ? Number(v.toFixed(3))
+            : `'${String(v)}'`,
+      )
+      .join(', ')}]`;
   return String(value);
 }
 
@@ -168,6 +176,7 @@ const code = computed(() => {
         ]
       : []),
     `composer.add(${factoryName.value}(${options}));`,
+    ...(def.motion && def.motion !== 'static' ? ['composer.play();'] : []),
     'renderer.setAnimationLoop(() => composer.render());',
   ].join('\n');
 });
@@ -291,6 +300,8 @@ onMounted(async () => {
 
   const studio = scenes.createStudio(16 / 9);
   const composer = new core.EffectComposer(renderer, { multisampling: 4 });
+  // The demo's own Pause button and motion policy decide when time moves.
+  composer.play();
   composer.setScene(studio.scene, studio.camera);
   findObject = (name) => studio.scene.getObjectByName(name);
   effect = factory();
@@ -720,6 +731,74 @@ onBeforeUnmount(() => teardown?.());
           </select>
           <p class="hcss-description">{{ param.description }}</p>
         </div>
+
+        <fieldset
+          v-else-if="param.kind === 'gradient'"
+          class="hcss-field xt-demo-vector"
+        >
+          <legend class="hcss-label">{{ labelFor(name, param) }}</legend>
+          <label
+            v-for="(stop, index) in values[name] as [number, string][]"
+            :key="index"
+            class="xt-demo-stop"
+          >
+            <span>{{ Math.round(stop[0] * 100) }}%</span>
+            <input
+              type="color"
+              class="hcss-color"
+              :value="stop[1]"
+              :aria-label="`${labelFor(name, param)} stop at ${Math.round(stop[0] * 100)}%`"
+              @input="
+                setParam(
+                  name,
+                  (values[name] as [number, string][]).map((s, i) =>
+                    i === index
+                      ? [s[0], ($event.target as HTMLInputElement).value]
+                      : s,
+                  ),
+                )
+              "
+            />
+          </label>
+          <p class="hcss-description">{{ param.description }}</p>
+        </fieldset>
+
+        <fieldset
+          v-else-if="param.kind === 'curve'"
+          class="hcss-field xt-demo-vector"
+        >
+          <legend class="hcss-label">{{ labelFor(name, param) }}</legend>
+          <label
+            v-for="(point, index) in values[name] as [number, number][]"
+            :key="index"
+            class="xt-demo-stop"
+          >
+            <span>x {{ point[0] }}</span>
+            <input
+              type="range"
+              class="hcss-slider"
+              :min="param.min ?? 0"
+              :max="param.max ?? 1"
+              step="0.01"
+              :value="point[1]"
+              :aria-label="`${labelFor(name, param)} at x ${point[0]}`"
+              @input="
+                setParam(
+                  name,
+                  (values[name] as [number, number][]).map((p, i) =>
+                    i === index
+                      ? [
+                          p[0],
+                          Number(($event.target as HTMLInputElement).value),
+                        ]
+                      : p,
+                  ),
+                )
+              "
+            />
+          </label>
+          <p class="hcss-description">{{ param.description }}</p>
+        </fieldset>
 
         <div v-else-if="param.kind === 'color'" class="hcss-field">
           <label class="hcss-label" :for="fieldId(name)">{{

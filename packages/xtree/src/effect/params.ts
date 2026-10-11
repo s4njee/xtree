@@ -62,6 +62,8 @@ export type SampleTexture =
       readonly filter?: 'linear' | 'nearest';
       readonly wrap?: 'repeat' | 'clamp';
     }
+  | { readonly kind: 'gradient'; readonly stops: GradientStops }
+  | { readonly kind: 'curve'; readonly points: CurvePoints }
   | {
       readonly kind: 'data3d';
       /** Edge length: the texture is size³ texels, RGBA, red varying fastest. */
@@ -85,6 +87,23 @@ export interface TextureParam extends BaseParam<'texture', string | null> {
   readonly samples?: Readonly<Record<string, () => SampleTexture>>;
 }
 
+/** Gradient stops: `[position 0–1, CSS hex color]`, in increasing position. */
+export type GradientStops = readonly (readonly [number, string])[];
+/** A color gradient, baked to a 256×1 texture the shader samples with `texture($name, vec2(t, 0.5))`. */
+export type GradientParam = BaseParam<'gradient', GradientStops>;
+
+/** Curve control points: `[x 0–1, y]`, in increasing x. */
+export type CurvePoints = readonly (readonly [number, number])[];
+/**
+ * A curve through control points (monotone cubic, so it never overshoots),
+ * baked to a 256×1 texture: `texture($name, vec2(x, 0.5)).r`.
+ */
+export interface CurveParam extends BaseParam<'curve', CurvePoints> {
+  /** Range of y values. Defaults to 0–1. */
+  readonly min?: number;
+  readonly max?: number;
+}
+
 export type Param =
   | FloatParam
   | IntParam
@@ -93,7 +112,9 @@ export type Param =
   | Vec2Param
   | Vec3Param
   | SelectParam
-  | TextureParam;
+  | TextureParam
+  | GradientParam
+  | CurveParam;
 export type ParamSchema = Readonly<Record<string, Param>>;
 export type ParamKind = Param['kind'];
 
@@ -103,15 +124,19 @@ export type ParamValue<P extends Param> =
     ? O
     : P extends TextureParam
       ? TextureLike | string | null
-      : P extends BoolParam
-        ? boolean
-        : P extends ColorParam
-          ? string
-          : P extends Vec2Param
-            ? readonly [number, number]
-            : P extends Vec3Param
-              ? readonly [number, number, number]
-              : number;
+      : P extends GradientParam
+        ? GradientStops
+        : P extends CurveParam
+          ? CurvePoints
+          : P extends BoolParam
+            ? boolean
+            : P extends ColorParam
+              ? string
+              : P extends Vec2Param
+                ? readonly [number, number]
+                : P extends Vec3Param
+                  ? readonly [number, number, number]
+                  : number;
 
 /** Values for a whole schema. */
 export type ParamValues<S extends ParamSchema> = {
@@ -153,6 +178,14 @@ export const texture = (
   ...options,
   default: options.default ?? null,
 });
+export const gradient = (options: Options<GradientParam>): GradientParam => ({
+  kind: 'gradient',
+  ...options,
+});
+export const curve = (options: Options<CurveParam>): CurveParam => ({
+  kind: 'curve',
+  ...options,
+});
 export const select = <const O extends string>(
   options: Omit<SelectParam<O>, 'kind' | 'default'> & {
     readonly default: NoInfer<O>;
@@ -169,6 +202,8 @@ export const glslTypes: Readonly<Record<ParamKind, string>> = {
   vec3: 'vec3',
   select: 'int',
   texture: 'sampler2D',
+  gradient: 'sampler2D',
+  curve: 'sampler2D',
 };
 
 /** GLSL sampler type of a texture parameter. */
@@ -246,6 +281,39 @@ export function validateParam(
           `expected one of ${param.options.join(', ')}, got ${String(value)}`,
         );
       return;
+    case 'gradient':
+    case 'curve': {
+      const list = value as unknown[];
+      if (!Array.isArray(list) || list.length < 2)
+        fail(
+          `expected at least two ${param.kind === 'gradient' ? 'stops' : 'points'}`,
+        );
+      let previous = -Infinity;
+      for (const entry of list) {
+        if (!Array.isArray(entry) || entry.length !== 2)
+          fail(
+            `expected [${param.kind === 'gradient' ? 'position, color' : 'x, y'}] pairs`,
+          );
+        const [x, y] = entry as [unknown, unknown];
+        if (typeof x !== 'number' || !(x >= 0 && x <= 1))
+          throw new RangeError(`${where}: positions must be numbers in [0, 1]`);
+        if (param.kind === 'gradient' ? x < previous : x <= previous)
+          throw new RangeError(`${where}: positions must increase`);
+        previous = x;
+        if (param.kind === 'gradient') {
+          if (typeof y !== 'string' || !hexPattern.test(y))
+            fail(`expected hex colors such as "#ff8800", got ${String(y)}`);
+        } else {
+          const min = param.min ?? 0;
+          const max = param.max ?? 1;
+          if (typeof y !== 'number' || !(y >= min && y <= max))
+            throw new RangeError(
+              `${where}: y values must be numbers in [${min}, ${max}]`,
+            );
+        }
+      }
+      return;
+    }
     case 'texture':
       if (value === null) return;
       if (typeof value === 'string') {
@@ -275,6 +343,10 @@ export function toUniformValue(
     case 'texture':
       // Sample names resolve later, in the composer.
       return typeof value === 'object' ? (value as TextureLike | null) : null;
+    case 'gradient':
+    case 'curve':
+      // Baked into a texture when the composer resolves samples.
+      return null;
     case 'color':
       return hexToLinear(value as string);
     case 'vec2':

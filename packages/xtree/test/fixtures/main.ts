@@ -2,6 +2,7 @@
 // GPU fixture page. Tests call window.xt to render effect stacks into a fixed
 // 320x180 canvas and read the pixels back.
 import { createStudio } from '@xtree/scenes';
+import { blendModes } from '../../src/shaders/blend/constants.js';
 import {
   ACESFilmicToneMapping,
   AgXToneMapping,
@@ -535,6 +536,159 @@ const xt = {
     return result;
   },
   /** Renders a stack at two times and reports whether the frames differ. */
+  /** Renders `frames` frames 0.5 s apart while playing with motion off; reports whether any frame changed. */
+  motionOff(spec: RenderSpec, frames = 4) {
+    return withComposer({ ...spec, motion: false }, (composer, effects) => {
+      composer.play();
+      composer.render(0);
+      const first = readPixels();
+      let changed = 0;
+      for (let i = 0; i < frames; i++) {
+        for (const effect of effects)
+          if (effect instanceof MaterialEffect) effect.tick(0.5);
+        composer.render(0.5);
+        const pixels = readPixels();
+        if (pixels.some((v, j) => v !== first[j])) changed++;
+      }
+      return { changed, time: composer.time };
+    });
+  },
+  /** The composer clock: time while paused, after play, and with autoplay. */
+  clock() {
+    configure({});
+    const run = (options: { autoplay?: boolean }, play: boolean) => {
+      const composer = new EffectComposer(renderer, options);
+      composer.setScene(studio.scene, studio.camera);
+      if (play) composer.play();
+      composer.render(0.25);
+      composer.render(0.25);
+      const time = composer.time;
+      composer.dispose();
+      return time;
+    };
+    return {
+      paused: run({}, false),
+      played: run({}, true),
+      autoplay: run({ autoplay: true }, false),
+    };
+  },
+  /** Renders a probe effect that writes xt_progress, xt_pointer and xt_scroll, and reads the middle pixel. */
+  inputs(values: {
+    progress?: number;
+    pointer?: [number, number];
+    scroll?: number;
+    drive?: number;
+  }) {
+    configure({ toneMapping: 'none', colorSpace: 'linear' });
+    const probe = defineEffect({
+      name: 'inputs-probe',
+      meta: {
+        title: 'Inputs',
+        family: 'utility',
+        story: 'X1.10',
+        description: 'Probe.',
+      },
+      params: {},
+      fragment:
+        'vec4 $main(vec4 color, vec2 uv) { return vec4(xt_progress, xt_pointer.x, xt_pointer.y, 1.0) * (1.0 - xt_scroll * 0.5); }',
+    });
+    const composer = new EffectComposer(renderer);
+    composer.setScene(studio.scene, studio.camera);
+    composer.add(probe());
+    if (values.progress !== undefined) composer.progress = values.progress;
+    if (values.pointer) composer.inputs.pointer = values.pointer;
+    if (values.scroll !== undefined) composer.inputs.scroll = values.scroll;
+    let stop = () => {};
+    if (values.drive !== undefined) {
+      let listener: (v: number) => void = () => {};
+      stop = composer.drive({
+        value: 0,
+        subscribe(cb) {
+          listener = cb;
+          return () => {
+            listener = () => {};
+          };
+        },
+      });
+      listener(values.drive);
+    }
+    composer.render(0);
+    const pixels = readPixels();
+    stop();
+    composer.dispose();
+    const i = (Math.floor(height / 2) * width + Math.floor(width / 2)) * 4;
+    return pixels.slice(i, i + 4);
+  },
+  /** Pass descriptions and timings after a few frames with timing on. */
+  inspect() {
+    return withComposer(
+      { effects: [{ id: 'bloom' }, { id: 'vignette' }, { id: 'outline' }] },
+      (composer) => {
+        composer.timing = true;
+        for (let i = 0; i < 6; i++) composer.render(0);
+        return {
+          passes: composer.describe().map(({ source, ...rest }) => ({
+            ...rest,
+            sourceLength: source.length,
+          })),
+          timings: composer.timings,
+        };
+      },
+    );
+  },
+  /** Every blend mode applied to a gradient map over the studio, tiled into one image (X1.8). */
+  blendGrid() {
+    const modes = Object.keys(blendModes);
+    const columns = 6;
+    const tileW = 160;
+    const tileH = 90;
+    const grid = document.createElement('canvas');
+    grid.width = columns * tileW;
+    grid.height = Math.ceil(modes.length / columns) * tileH;
+    const g = grid.getContext('2d')!;
+    modes.forEach((mode, i) => {
+      withComposer(
+        {
+          effects: [{ id: 'gradient-map', blend: mode, opacity: 0.8 }],
+        },
+        (composer) => {
+          composer.render(0);
+          g.drawImage(
+            canvas,
+            (i % columns) * tileW,
+            Math.floor(i / columns) * tileH,
+            tileW,
+            tileH,
+          );
+        },
+      );
+    });
+    return { png: grid.toDataURL('image/png'), modes: modes.length };
+  },
+  /** The xtree and HoloCSS motion policies for a set of DOM cases, under the page's emulated media. */
+  async motionPolicies() {
+    const ours = await import('../../src/motion/index.js');
+    const theirs = await import('@holocss/runtime');
+    const host = document.createElement('div');
+    document.body.append(host);
+    host.innerHTML = `
+      <div data-case="plain"><span></span></div>
+      <div data-hcss-motion="none" data-case="motion-none"><span></span></div>
+      <div data-hcss-motion="full" data-case="motion-full"><span></span></div>
+      <div data-hcss-theme="high-contrast" data-case="high-contrast"><span></span></div>
+      <div data-hcss-theme="auto" data-case="auto"><span></span></div>
+      <div data-hcss-theme="dark" data-case="dark"><span></span></div>
+      <div data-hcss-theme="auto"><div data-hcss-motion="none" data-case="auto-none"><span></span></div></div>`;
+    const rows = [
+      ...host.querySelectorAll<HTMLElement>('[data-case] > span'),
+    ].map((el) => ({
+      case: el.parentElement!.dataset.case!,
+      xtree: ours.motionAllowed(el),
+      holocss: theirs.motionAllowed(el),
+    }));
+    host.remove();
+    return rows;
+  },
   motionPair(spec: RenderSpec & { times: [number, number] }) {
     return withComposer(spec, (composer) => {
       composer.time = spec.times[0];

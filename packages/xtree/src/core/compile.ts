@@ -122,7 +122,10 @@ export function declareParams(
         lines.push(`#define ${prefix}${name}_${identifier(option)} ${i}`),
       );
     }
-    if (param.kind === 'texture') {
+    if (param.kind === 'gradient' || param.kind === 'curve') {
+      lines.push(`uniform sampler2D ${prefix}${name};`);
+      uniforms[prefix + name] = effect.uniforms[name]!;
+    } else if (param.kind === 'texture') {
       lines.push(
         `uniform ${samplerType(param)} ${prefix}${name};`,
         `#define ${prefix}has_${name} ${structural[`has_${name}`] ? 1 : 0}`,
@@ -244,6 +247,15 @@ export function compilePass(
     'uniform float xt_time;',
     'uniform float xt_delta;',
     'uniform int xt_frame;',
+    '/// 0–1 from the composer progress driver (scroll, a timeline or a tween).',
+    'uniform float xt_progress;',
+    '/// Pointer position in UV (0–1, origin bottom left) and its velocity in UV per second.',
+    'uniform vec2 xt_pointer;',
+    'uniform vec2 xt_pointerVelocity;',
+    '/// Page scroll progress, 0–1.',
+    'uniform float xt_scroll;',
+    '/// Audio bands (bass, mid, treble) and overall level, 0–1, when audio is attached.',
+    'uniform vec4 xt_audio;',
     'in vec2 vUv;',
     'out vec4 xt_fragColor;',
     ...(buffers.has('depth') ? depthHeader : []),

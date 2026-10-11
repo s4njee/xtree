@@ -21,6 +21,8 @@ import { digitalNoise } from '@mk7s/xtree/effects/digital-noise';
 const composer = new EffectComposer(renderer);
 composer.setScene(scene, camera);
 composer.add(digitalNoise({ preset: 'light' }));
+// Animated effects hold still until play() (or { autoplay: true }).
+composer.play();
 renderer.setAnimationLoop(() => composer.render());
 ```
 

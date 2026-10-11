@@ -15,6 +15,10 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        find: /^@holocss\/runtime$/,
+        replacement: resolve(holocss, 'src/runtime/index.ts'),
+      },
+      {
         find: /^@holocss\/three$/,
         replacement: resolve(holocss, 'src/three/index.ts'),
       },

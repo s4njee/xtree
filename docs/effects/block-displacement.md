@@ -21,6 +21,8 @@ import { blockDisplacement } from '@mk7s/xtree/effects/block-displacement';
 const composer = new EffectComposer(renderer);
 composer.setScene(scene, camera);
 composer.add(blockDisplacement({ preset: 'subtle' }));
+// Animated effects hold still until play() (or { autoplay: true }).
+composer.play();
 renderer.setAnimationLoop(() => composer.render());
 ```
 

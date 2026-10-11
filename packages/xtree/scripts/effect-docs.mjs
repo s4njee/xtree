@@ -29,6 +29,10 @@ const escape = (text) => String(text).replace(/\|/g, '\\|');
 
 function formatValue(param, value) {
   switch (param.kind) {
+    case 'gradient':
+      return `[${value.map(([p, c]) => `[${p}, '${c}']`).join(', ')}]`;
+    case 'curve':
+      return `[${value.map(([x, y]) => `[${x}, ${y}]`).join(', ')}]`;
     case 'texture':
       return value === null ? 'null' : `'${value}'`;
     case 'vec2':
@@ -44,6 +48,10 @@ function formatValue(param, value) {
 
 function typeOf(param) {
   switch (param.kind) {
+    case 'gradient':
+      return '[position, hex color][]';
+    case 'curve':
+      return '[x, y][]';
     case 'select':
       return param.options.map((o) => `'${o}'`).join(' \\| ');
     case 'color':
@@ -155,6 +163,12 @@ function page(factory) {
               : exampleParams
                 ? `composer.add(${factoryName}({ preset: '${exampleParams[0]}' }));`
                 : `composer.add(${factoryName}());`,
+            ...(motion === 'static'
+              ? []
+              : [
+                  '// Animated effects hold still until play() (or { autoplay: true }).',
+                  'composer.play();',
+                ]),
             'renderer.setAnimationLoop(() => composer.render());',
           ]),
     '```',

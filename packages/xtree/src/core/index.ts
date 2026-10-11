@@ -39,3 +39,7 @@ export {
   compileTransition,
   type CompiledTransition,
 } from './transition-compile.js';
+export { trackAudio, trackPointer, trackScroll } from './interaction.js';
+export type { PassGeometry, PassInputs } from './pass.js';
+export { createDebugOverlay, type DebugOverlay } from './debug.js';
+export { GpuTimer } from './timing.js';

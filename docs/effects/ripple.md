@@ -21,6 +21,8 @@ import { ripple } from '@mk7s/xtree/effects/ripple';
 const composer = new EffectComposer(renderer);
 composer.setScene(scene, camera);
 composer.add(ripple({ preset: 'pond' }));
+// Animated effects hold still until play() (or { autoplay: true }).
+composer.play();
 renderer.setAnimationLoop(() => composer.render());
 ```
 
