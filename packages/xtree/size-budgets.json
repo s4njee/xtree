@@ -18,5 +18,20 @@
   "./effects/hue-saturation": 5632,
   "./effects/invert-threshold": 5568,
   "./effects/lut": 7040,
-  "./effects/monochrome": 5504
+  "./effects/monochrome": 5504,
+  "./effects/ascii": 6912,
+  "./effects/block-displacement": 4992,
+  "./effects/blur": 5184,
+  "./effects/crt": 5376,
+  "./effects/digital-noise": 6144,
+  "./effects/displacement-map": 6848,
+  "./effects/dither": 7168,
+  "./effects/film-grain": 6208,
+  "./effects/halftone": 6400,
+  "./effects/lens-distortion": 4224,
+  "./effects/pixelate": 4096,
+  "./effects/ripple": 4608,
+  "./effects/scanline-tear": 4736,
+  "./effects/scanlines": 4096,
+  "./effects/tilt-shift": 4288
 }

@@ -42,6 +42,18 @@
       {
         "text": "Chromatic aberration",
         "link": "/effects/chromatic-aberration"
+      },
+      {
+        "text": "Film grain",
+        "link": "/effects/film-grain"
+      },
+      {
+        "text": "Lens distortion",
+        "link": "/effects/lens-distortion"
+      },
+      {
+        "text": "Tilt-shift",
+        "link": "/effects/tilt-shift"
       }
     ]
   },
@@ -51,6 +63,10 @@
       {
         "text": "Bloom",
         "link": "/effects/bloom"
+      },
+      {
+        "text": "Blur",
+        "link": "/effects/blur"
       }
     ]
   },
@@ -58,8 +74,62 @@
     "text": "Glitch & signal",
     "items": [
       {
+        "text": "Block displacement",
+        "link": "/effects/block-displacement"
+      },
+      {
+        "text": "Digital noise",
+        "link": "/effects/digital-noise"
+      },
+      {
         "text": "RGB split glitch",
         "link": "/effects/rgb-split-glitch"
+      },
+      {
+        "text": "Scanline tear",
+        "link": "/effects/scanline-tear"
+      }
+    ]
+  },
+  {
+    "text": "Retro & display",
+    "items": [
+      {
+        "text": "ASCII",
+        "link": "/effects/ascii"
+      },
+      {
+        "text": "CRT",
+        "link": "/effects/crt"
+      },
+      {
+        "text": "Dither",
+        "link": "/effects/dither"
+      },
+      {
+        "text": "Halftone",
+        "link": "/effects/halftone"
+      },
+      {
+        "text": "Pixelate",
+        "link": "/effects/pixelate"
+      },
+      {
+        "text": "Scanlines",
+        "link": "/effects/scanlines"
+      }
+    ]
+  },
+  {
+    "text": "Distortion & warp",
+    "items": [
+      {
+        "text": "Displacement map",
+        "link": "/effects/displacement-map"
+      },
+      {
+        "text": "Ripple",
+        "link": "/effects/ripple"
       }
     ]
   },

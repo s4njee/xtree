@@ -30,9 +30,21 @@
       "types": "./dist/effect/index.d.ts",
       "import": "./dist/effect/index.js"
     },
+    "./effects/ascii": {
+      "types": "./dist/effects/ascii/index.d.ts",
+      "import": "./dist/effects/ascii/index.js"
+    },
+    "./effects/block-displacement": {
+      "types": "./dist/effects/block-displacement/index.d.ts",
+      "import": "./dist/effects/block-displacement/index.js"
+    },
     "./effects/bloom": {
       "types": "./dist/effects/bloom/index.d.ts",
       "import": "./dist/effects/bloom/index.js"
+    },
+    "./effects/blur": {
+      "types": "./dist/effects/blur/index.d.ts",
+      "import": "./dist/effects/blur/index.js"
     },
     "./effects/brightness-contrast": {
       "types": "./dist/effects/brightness-contrast/index.d.ts",
@@ -42,13 +54,37 @@
       "types": "./dist/effects/chromatic-aberration/index.d.ts",
       "import": "./dist/effects/chromatic-aberration/index.js"
     },
+    "./effects/crt": {
+      "types": "./dist/effects/crt/index.d.ts",
+      "import": "./dist/effects/crt/index.js"
+    },
+    "./effects/digital-noise": {
+      "types": "./dist/effects/digital-noise/index.d.ts",
+      "import": "./dist/effects/digital-noise/index.js"
+    },
+    "./effects/displacement-map": {
+      "types": "./dist/effects/displacement-map/index.d.ts",
+      "import": "./dist/effects/displacement-map/index.js"
+    },
+    "./effects/dither": {
+      "types": "./dist/effects/dither/index.d.ts",
+      "import": "./dist/effects/dither/index.js"
+    },
     "./effects/exposure-gamma": {
       "types": "./dist/effects/exposure-gamma/index.d.ts",
       "import": "./dist/effects/exposure-gamma/index.js"
     },
+    "./effects/film-grain": {
+      "types": "./dist/effects/film-grain/index.d.ts",
+      "import": "./dist/effects/film-grain/index.js"
+    },
     "./effects/gradient-map": {
       "types": "./dist/effects/gradient-map/index.d.ts",
       "import": "./dist/effects/gradient-map/index.js"
+    },
+    "./effects/halftone": {
+      "types": "./dist/effects/halftone/index.d.ts",
+      "import": "./dist/effects/halftone/index.js"
     },
     "./effects/holographic-foil": {
       "types": "./dist/effects/holographic-foil/index.d.ts",
@@ -62,6 +98,10 @@
       "types": "./dist/effects/invert-threshold/index.d.ts",
       "import": "./dist/effects/invert-threshold/index.js"
     },
+    "./effects/lens-distortion": {
+      "types": "./dist/effects/lens-distortion/index.d.ts",
+      "import": "./dist/effects/lens-distortion/index.js"
+    },
     "./effects/lut": {
       "types": "./dist/effects/lut/index.d.ts",
       "import": "./dist/effects/lut/index.js"
@@ -70,9 +110,29 @@
       "types": "./dist/effects/monochrome/index.d.ts",
       "import": "./dist/effects/monochrome/index.js"
     },
+    "./effects/pixelate": {
+      "types": "./dist/effects/pixelate/index.d.ts",
+      "import": "./dist/effects/pixelate/index.js"
+    },
     "./effects/rgb-split-glitch": {
       "types": "./dist/effects/rgb-split-glitch/index.d.ts",
       "import": "./dist/effects/rgb-split-glitch/index.js"
+    },
+    "./effects/ripple": {
+      "types": "./dist/effects/ripple/index.d.ts",
+      "import": "./dist/effects/ripple/index.js"
+    },
+    "./effects/scanline-tear": {
+      "types": "./dist/effects/scanline-tear/index.d.ts",
+      "import": "./dist/effects/scanline-tear/index.js"
+    },
+    "./effects/scanlines": {
+      "types": "./dist/effects/scanlines/index.d.ts",
+      "import": "./dist/effects/scanlines/index.js"
+    },
+    "./effects/tilt-shift": {
+      "types": "./dist/effects/tilt-shift/index.d.ts",
+      "import": "./dist/effects/tilt-shift/index.js"
     },
     "./effects/vignette": {
       "types": "./dist/effects/vignette/index.d.ts",

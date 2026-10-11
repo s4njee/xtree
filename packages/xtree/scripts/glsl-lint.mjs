@@ -141,7 +141,7 @@ for (const { id, factory } of effects) {
         `${folder}: $${used} is not a parameter, texture, option constant or $function`,
       );
   }
-  if (/^\s*\w+\s+xt_\w+\s*\(/m.test(definition.fragment)) {
+  if (/^\s*(?!return\b)\w+\s+xt_\w+\s*\(/m.test(definition.fragment)) {
     problems.push(
       `${folder}: helper functions in effects must use $names so merged copies don't clash`,
     );

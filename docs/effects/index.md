@@ -6,7 +6,7 @@ title: Effects
 
 # Effects
 
-12 effects so far, out of the 141 planned. Each page has a live demo you can adjust, compare and copy.
+27 effects so far, out of the 141 planned. Each page has a live demo you can adjust, compare and copy.
 
 ## Color & tone
 
@@ -25,18 +25,43 @@ title: Effects
 
 <div class="xt-effect-grid">
 <a class="hcss-card xt-effect-card" href="./chromatic-aberration"><strong>Chromatic aberration</strong><span>Shifts red and blue (or a whole spectrum) apart, like a lens that focuses each wavelength at a slightly different place.</span></a>
+<a class="hcss-card xt-effect-card" href="./film-grain"><strong>Film grain</strong><span>Photographic grain: fine noise that sits mostly in shadows and midtones and changes at a film frame rate.</span></a>
+<a class="hcss-card xt-effect-card" href="./lens-distortion"><strong>Lens distortion</strong><span>Barrel, pincushion or mustache distortion from the Brown–Conrady radial lens model, with a choice of what fills the edges.</span></a>
+<a class="hcss-card xt-effect-card" href="./tilt-shift"><strong>Tilt-shift</strong><span>The miniature-model look of a tilted lens: a sharp band of focus, with blur growing smoothly on either side.</span></a>
 </div>
 
 ## Blur & glow
 
 <div class="xt-effect-grid">
 <a class="hcss-card xt-effect-card" href="./bloom"><strong>Bloom</strong><span>Light bleeding around bright areas.</span></a>
+<a class="hcss-card xt-effect-card" href="./blur"><strong>Blur</strong><span>Blurs the whole frame with a separable Gaussian, a box filter, or iterated Kawase passes, optionally at reduced resolution for wide, cheap blurs.</span></a>
 </div>
 
 ## Glitch & signal
 
 <div class="xt-effect-grid">
+<a class="hcss-card xt-effect-card" href="./block-displacement"><strong>Block displacement</strong><span>Corrupted-video blocks: random rectangles of the image jump sideways, with a little channel separation.</span></a>
+<a class="hcss-card xt-effect-card" href="./digital-noise"><strong>Digital noise</strong><span>Video static: mono or color noise that changes every frame, with occasional stronger horizontal bands.</span></a>
 <a class="hcss-card xt-effect-card" href="./rgb-split-glitch"><strong>RGB split glitch</strong><span>Red and blue jump apart in quick, seeded steps, like a misaligned digital signal.</span></a>
+<a class="hcss-card xt-effect-card" href="./scanline-tear"><strong>Scanline tear</strong><span>Bands of scanlines slip sideways and wrap around, with an optional sinusoidal wobble, like a TV losing horizontal sync.</span></a>
+</div>
+
+## Retro & display
+
+<div class="xt-effect-grid">
+<a class="hcss-card xt-effect-card" href="./ascii"><strong>ASCII</strong><span>Redraws the image as text: each cell becomes the character whose ink matches its brightness, in the original colors or in two theme colors.</span></a>
+<a class="hcss-card xt-effect-card" href="./crt"><strong>CRT</strong><span>A cathode-ray tube: curved glass, an aperture-grille, slot or shadow mask, scanlines, phosphor glow, a vignette and a slight flicker.</span></a>
+<a class="hcss-card xt-effect-card" href="./dither"><strong>Dither</strong><span>Reduces each channel to a few levels and hides the banding with a dither pattern: ordered Bayer matrices, void-and-cluster blue noise, or interleaved gradient noise.</span></a>
+<a class="hcss-card xt-effect-card" href="./halftone"><strong>Halftone</strong><span>Print-style halftone screens: four rotated CMYK screens, a single ink, or additive RGB, drawn as dots, lines or squares sized by the tone under each cell.</span></a>
+<a class="hcss-card xt-effect-card" href="./pixelate"><strong>Pixelate</strong><span>Big square, hexagonal or round pixels, each the color at its center.</span></a>
+<a class="hcss-card xt-effect-card" href="./scanlines"><strong>Scanlines</strong><span>Darkened horizontal or vertical lines across the frame, hard or soft, optionally scrolling slowly.</span></a>
+</div>
+
+## Distortion & warp
+
+<div class="xt-effect-grid">
+<a class="hcss-card xt-effect-card" href="./displacement-map"><strong>Displacement map</strong><span>Offsets the image by the values of a texture, scaled and scrolling: red and green move pixels sideways and up, or brightness moves them along an angle.</span></a>
+<a class="hcss-card xt-effect-card" href="./ripple"><strong>Ripple</strong><span>Concentric water ripples, or a shockwave ring that expands and fades, spreading from a point.</span></a>
 </div>
 
 ## Holographic & iridescent

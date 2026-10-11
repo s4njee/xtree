@@ -32,6 +32,7 @@ const motion = ref(true);
 const compare = ref(false);
 const divider = ref(50);
 const followPointer = ref(true);
+const pointerParams = ['tilt', 'center'];
 const passes = ref(0);
 const copied = ref(false);
 
@@ -270,22 +271,21 @@ onMounted(async () => {
   });
   visibility.observe(host);
 
-  const tiltParam = factory.definition.params.tilt;
+  // `tilt` and `center` follow the pointer, mapped across their range.
+  const pointerName = pointerParams.find(
+    (name) => factory.definition.params[name]?.kind === 'vec2',
+  );
   const onPointer = (event: PointerEvent) => {
-    if (
-      !tiltParam ||
-      tiltParam.kind !== 'vec2' ||
-      !followPointer.value ||
-      event.pointerType === 'touch'
-    )
+    if (!pointerName || !followPointer.value || event.pointerType === 'touch')
       return;
+    const param = factory.definition.params[pointerName];
+    if (param?.kind !== 'vec2') return;
     const rect = canvas.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    const y = 1 - ((event.clientY - rect.top) / rect.height) * 2;
-    setParam('tilt', [
-      Math.max(-1, Math.min(1, x)),
-      Math.max(-1, Math.min(1, y)),
-    ]);
+    const u = (event.clientX - rect.left) / rect.width;
+    const v = 1 - (event.clientY - rect.top) / rect.height;
+    const map = (t: number) =>
+      param.min + Math.max(0, Math.min(1, t)) * (param.max - param.min);
+    setParam(pointerName, [map(u), map(v)]);
   };
   canvas.addEventListener('pointermove', onPointer);
 
@@ -581,7 +581,7 @@ onBeforeUnmount(() => teardown?.());
               format(param, (values[name] as number[])[index]!)
             }}</output>
           </div>
-          <label v-if="name === 'tilt'" class="hcss-choice">
+          <label v-if="pointerParams.includes(name)" class="hcss-choice">
             <input
               v-model="followPointer"
               class="hcss-switch"

@@ -130,15 +130,22 @@ test('the demo responds to its controls', async ({ page }) => {
   expect(problems).toEqual([]);
 });
 
-test('client-side navigation through every effect keeps one WebGL context', async ({
+test('client-side navigation between effects keeps one WebGL context', async ({
   page,
 }) => {
-  // Fifteen navigations, each starting a demo in a software renderer.
+  // Sixteen navigations over eight effects spread through the catalogue, each
+  // starting a demo in a software renderer. Every page is also loaded on its
+  // own by the console-error test.
   test.setTimeout(180_000);
+  const count = Math.min(8, effectLinks.length);
+  const links = Array.from(
+    { length: count },
+    (_, i) => effectLinks[Math.floor((i * effectLinks.length) / count)]!,
+  );
   const problems = watchConsole(page);
-  await page.goto(`${base}${effectLinks[0]}`);
-  for (let round = 0; round < 3; round++) {
-    for (const link of effectLinks) {
+  await page.goto(`${base}${links[0]}`);
+  for (let round = 0; round < 2; round++) {
+    for (const link of links) {
       await page.locator(`.VPSidebar a[href="${base}${link}"]`).click();
       await expect(page).toHaveURL(new RegExp(`${link}$`));
       await expect(page.locator('.xt-demo canvas')).toBeVisible();
@@ -162,6 +169,8 @@ test('with reduced motion the demo does not autoplay', async ({ browser }) => {
   await expect(
     page.locator('.xt-demo-meta', { hasText: 'Motion is off' }),
   ).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Play' })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Play', exact: true }),
+  ).toBeVisible();
   await context.close();
 });

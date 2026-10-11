@@ -6,9 +6,21 @@ export const effectLoaders: Record<
   string,
   () => Promise<EffectFactory<ParamSchema>>
 > = {
+  ascii: () =>
+    import('@mk7s/xtree/effects/ascii').then(
+      (m) => m.ascii as unknown as EffectFactory<ParamSchema>,
+    ),
+  'block-displacement': () =>
+    import('@mk7s/xtree/effects/block-displacement').then(
+      (m) => m.blockDisplacement as unknown as EffectFactory<ParamSchema>,
+    ),
   bloom: () =>
     import('@mk7s/xtree/effects/bloom').then(
       (m) => m.bloom as unknown as EffectFactory<ParamSchema>,
+    ),
+  blur: () =>
+    import('@mk7s/xtree/effects/blur').then(
+      (m) => m.blur as unknown as EffectFactory<ParamSchema>,
     ),
   'brightness-contrast': () =>
     import('@mk7s/xtree/effects/brightness-contrast').then(
@@ -18,13 +30,37 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/chromatic-aberration').then(
       (m) => m.chromaticAberration as unknown as EffectFactory<ParamSchema>,
     ),
+  crt: () =>
+    import('@mk7s/xtree/effects/crt').then(
+      (m) => m.crt as unknown as EffectFactory<ParamSchema>,
+    ),
+  'digital-noise': () =>
+    import('@mk7s/xtree/effects/digital-noise').then(
+      (m) => m.digitalNoise as unknown as EffectFactory<ParamSchema>,
+    ),
+  'displacement-map': () =>
+    import('@mk7s/xtree/effects/displacement-map').then(
+      (m) => m.displacementMap as unknown as EffectFactory<ParamSchema>,
+    ),
+  dither: () =>
+    import('@mk7s/xtree/effects/dither').then(
+      (m) => m.dither as unknown as EffectFactory<ParamSchema>,
+    ),
   'exposure-gamma': () =>
     import('@mk7s/xtree/effects/exposure-gamma').then(
       (m) => m.exposureGamma as unknown as EffectFactory<ParamSchema>,
     ),
+  'film-grain': () =>
+    import('@mk7s/xtree/effects/film-grain').then(
+      (m) => m.filmGrain as unknown as EffectFactory<ParamSchema>,
+    ),
   'gradient-map': () =>
     import('@mk7s/xtree/effects/gradient-map').then(
       (m) => m.gradientMap as unknown as EffectFactory<ParamSchema>,
+    ),
+  halftone: () =>
+    import('@mk7s/xtree/effects/halftone').then(
+      (m) => m.halftone as unknown as EffectFactory<ParamSchema>,
     ),
   'holographic-foil': () =>
     import('@mk7s/xtree/effects/holographic-foil').then(
@@ -38,6 +74,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/invert-threshold').then(
       (m) => m.invertThreshold as unknown as EffectFactory<ParamSchema>,
     ),
+  'lens-distortion': () =>
+    import('@mk7s/xtree/effects/lens-distortion').then(
+      (m) => m.lensDistortion as unknown as EffectFactory<ParamSchema>,
+    ),
   lut: () =>
     import('@mk7s/xtree/effects/lut').then(
       (m) => m.lut as unknown as EffectFactory<ParamSchema>,
@@ -46,9 +86,29 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/monochrome').then(
       (m) => m.monochrome as unknown as EffectFactory<ParamSchema>,
     ),
+  pixelate: () =>
+    import('@mk7s/xtree/effects/pixelate').then(
+      (m) => m.pixelate as unknown as EffectFactory<ParamSchema>,
+    ),
   'rgb-split-glitch': () =>
     import('@mk7s/xtree/effects/rgb-split-glitch').then(
       (m) => m.rgbSplitGlitch as unknown as EffectFactory<ParamSchema>,
+    ),
+  ripple: () =>
+    import('@mk7s/xtree/effects/ripple').then(
+      (m) => m.ripple as unknown as EffectFactory<ParamSchema>,
+    ),
+  'scanline-tear': () =>
+    import('@mk7s/xtree/effects/scanline-tear').then(
+      (m) => m.scanlineTear as unknown as EffectFactory<ParamSchema>,
+    ),
+  scanlines: () =>
+    import('@mk7s/xtree/effects/scanlines').then(
+      (m) => m.scanlines as unknown as EffectFactory<ParamSchema>,
+    ),
+  'tilt-shift': () =>
+    import('@mk7s/xtree/effects/tilt-shift').then(
+      (m) => m.tiltShift as unknown as EffectFactory<ParamSchema>,
     ),
   vignette: () =>
     import('@mk7s/xtree/effects/vignette').then(

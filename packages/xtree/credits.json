@@ -2,74 +2,221 @@
   "$comment": "Provenance for every shipped chunk, effect, material and transition. Checked by scripts/credits.mjs; see docs/adr/0006-licensing-and-credits.md.",
   "entries": [
     {
-      "id": "xtree/noise/hash",
+      "id": "effects/ascii",
       "kind": "original",
       "licence": "MIT",
       "references": [
-        "Jarzynski and Olano, Hash Functions for GPU Rendering, JCGT 9(3), 2020"
+        "Brightness-ordered character ramp \" .:-=+*#%@\" with an original 5×7 bitmap font"
       ]
     },
     {
-      "id": "xtree/noise/gradient",
+      "id": "effects/block-displacement",
       "kind": "original",
       "licence": "MIT",
       "references": [
-        "Shoemake, Uniform random rotations, Graphics Gems III, 1992"
+        "Random block offsets keyed by a hash of block and time step"
       ]
     },
     {
-      "id": "xtree/noise/value",
+      "id": "effects/bloom",
       "kind": "original",
       "licence": "MIT",
       "references": [
-        "Perlin, Improving Noise, SIGGRAPH 2002 (quintic interpolant)"
+        "Jimenez, Next Generation Post Processing in Call of Duty: Advanced Warfare, SIGGRAPH 2014 (13-tap downsample, tent upsample, Karis average)",
+        "Unity soft-knee threshold curve, as described in its documentation"
       ]
     },
     {
-      "id": "xtree/noise/perlin",
-      "kind": "original",
-      "licence": "MIT",
-      "references": ["Perlin, Improving Noise, SIGGRAPH 2002"]
-    },
-    {
-      "id": "xtree/noise/simplex",
+      "id": "effects/blur",
       "kind": "original",
       "licence": "MIT",
       "references": [
-        "Perlin, Noise hardware, SIGGRAPH 2001 course notes",
-        "Gustavson, Simplex noise demystified, 2005"
+        "Separable Gaussian and box filters",
+        "Kawase, Frame buffer postprocessing effects in DOUBLE-S.T.E.A.L, GDC 2003 (Kawase blur)"
       ]
     },
     {
-      "id": "xtree/noise/worley",
-      "kind": "original",
-      "licence": "MIT",
-      "references": ["Worley, A Cellular Texture Basis Function, SIGGRAPH 1996"]
-    },
-    {
-      "id": "xtree/noise/fbm",
+      "id": "effects/brightness-contrast",
       "kind": "original",
       "licence": "MIT",
       "references": [
-        "Musgrave, Texturing and Modeling: A Procedural Approach, 1994"
+        "Standard brightness, contrast and saturation adjustments on display-encoded values",
+        "Vibrance as saturation weighted by inverse chroma"
       ]
     },
     {
-      "id": "xtree/noise/curl",
+      "id": "effects/chromatic-aberration",
       "kind": "original",
       "licence": "MIT",
       "references": [
-        "Bridson, Hourihan and Nordenstam, Curl-Noise for Procedural Fluid Flow, SIGGRAPH 2007"
+        "Lateral chromatic aberration, radial model",
+        "Spectral sampling with triangle RGB weights"
       ]
     },
     {
-      "id": "xtree/noise/blue",
+      "id": "effects/crt",
       "kind": "original",
       "licence": "MIT",
       "references": [
-        "Jimenez, Next Generation Post Processing in Call of Duty: Advanced Warfare, SIGGRAPH 2014",
-        "Roberts, The Unreasonable Effectiveness of Quasirandom Sequences, 2018 (R2 sequence)"
+        "Barrel curvature, aperture-grille and shadow-mask phosphor masks, after common CRT shader techniques"
       ]
+    },
+    {
+      "id": "effects/digital-noise",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Hashed per-pixel luminance and chroma noise"]
+    },
+    {
+      "id": "effects/displacement-map",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Texture displacement with tileable value noise and simplex fallback"
+      ]
+    },
+    {
+      "id": "effects/dither",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Bayer, An optimum method for two-level rendition of continuous-tone pictures, 1973",
+        "Ulichney, The void-and-cluster method for dither array generation, SPIE 1993",
+        "Jimenez, Next Generation Post Processing in Call of Duty: Advanced Warfare, SIGGRAPH 2014 (interleaved gradient noise)"
+      ]
+    },
+    {
+      "id": "effects/exposure-gamma",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Photographic exposure in stops; power-law gamma"]
+    },
+    {
+      "id": "effects/film-grain",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Two-uniform approximation of Gaussian grain with a luminance response, after film stock grain curves"
+      ]
+    },
+    {
+      "id": "effects/gradient-map",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Three-stop gradient indexed by Rec. 709 luma"]
+    },
+    {
+      "id": "effects/halftone",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Traditional CMYK screen angles (C 15°, M 75°, Y 0°, K 45°) with area-proportional dots"
+      ]
+    },
+    {
+      "id": "effects/holographic-foil",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Thin-foil iridescence approximated with hue bands over view angle",
+        "HoloCSS design language (s4njee/holocss)"
+      ]
+    },
+    {
+      "id": "effects/hue-saturation",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Ottosson, OKLab/OKLCH (via xtree/color/space)"]
+    },
+    {
+      "id": "effects/invert-threshold",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Photographic negative and smoothstep threshold"]
+    },
+    {
+      "id": "effects/lens-distortion",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Brown, Decentering distortion of lenses, Photogrammetric Engineering, 1966 (Brown–Conrady radial model)"
+      ]
+    },
+    {
+      "id": "effects/lut",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Adobe Cube LUT Specification 1.0",
+        "Kasson, Nin, Plouffe and Hafner, Performing color space conversions with three-dimensional linear interpolation, J. Electronic Imaging, 1995 (tetrahedral interpolation)"
+      ]
+    },
+    {
+      "id": "effects/monochrome",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Rec. 709 luma",
+        "Widely published sepia tone matrix (0.393/0.769/0.189 …)"
+      ]
+    },
+    {
+      "id": "effects/pixelate",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Cell-center sampling on square and hexagonal grids"]
+    },
+    {
+      "id": "effects/rgb-split-glitch",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Channel-offset glitch, seeded PCG jitter"]
+    },
+    {
+      "id": "effects/ripple",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Damped travelling sine and windowed shockwave ring as radial displacement"
+      ]
+    },
+    {
+      "id": "effects/scanline-tear",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Hashed per-band horizontal offsets with a sinusoidal wobble"
+      ]
+    },
+    {
+      "id": "effects/scanlines",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Raster scanline mask with adjustable spacing and roll"]
+    },
+    {
+      "id": "effects/tilt-shift",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Variable-radius blur masked by distance from a focus line (miniature-faking)"
+      ]
+    },
+    {
+      "id": "effects/vignette",
+      "kind": "derived",
+      "licence": "MIT",
+      "notice": "three.js",
+      "references": [
+        "three.js VignetteShader (Eskil mode formula)",
+        "Smoothstep vignette: original"
+      ]
+    },
+    {
+      "id": "xtree/blend/modes",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["W3C Compositing and Blending Level 1"]
     },
     {
       "id": "xtree/color/luminance",
@@ -89,15 +236,6 @@
       ]
     },
     {
-      "id": "xtree/color/white-balance",
-      "kind": "original",
-      "licence": "MIT",
-      "references": [
-        "Kim et al., Design of advanced color temperature control system for HDTV applications, 2002",
-        "Lam, Metamerism and Colour Constancy, 1985 (Bradford transform)"
-      ]
-    },
-    {
       "id": "xtree/color/tonemap",
       "kind": "ported",
       "licence": "MIT",
@@ -112,104 +250,83 @@
       "additionalNotices": ["Filament"]
     },
     {
-      "id": "xtree/blend/modes",
-      "kind": "original",
-      "licence": "MIT",
-      "references": ["W3C Compositing and Blending Level 1"]
-    },
-    {
-      "id": "effects/vignette",
-      "kind": "derived",
-      "licence": "MIT",
-      "notice": "three.js",
-      "references": [
-        "three.js VignetteShader (Eskil mode formula)",
-        "Smoothstep vignette: original"
-      ]
-    },
-    {
-      "id": "effects/chromatic-aberration",
+      "id": "xtree/color/white-balance",
       "kind": "original",
       "licence": "MIT",
       "references": [
-        "Lateral chromatic aberration, radial model",
-        "Spectral sampling with triangle RGB weights"
+        "Kim et al., Design of advanced color temperature control system for HDTV applications, 2002",
+        "Lam, Metamerism and Colour Constancy, 1985 (Bradford transform)"
       ]
     },
     {
-      "id": "effects/bloom",
+      "id": "xtree/noise/blue",
       "kind": "original",
       "licence": "MIT",
       "references": [
-        "Jimenez, Next Generation Post Processing in Call of Duty: Advanced Warfare, SIGGRAPH 2014 (13-tap downsample, tent upsample, Karis average)",
-        "Unity soft-knee threshold curve, as described in its documentation"
+        "Jimenez, Next Generation Post Processing in Call of Duty: Advanced Warfare, SIGGRAPH 2014",
+        "Roberts, The Unreasonable Effectiveness of Quasirandom Sequences, 2018 (R2 sequence)"
       ]
     },
     {
-      "id": "effects/rgb-split-glitch",
-      "kind": "original",
-      "licence": "MIT",
-      "references": ["Channel-offset glitch, seeded PCG jitter"]
-    },
-    {
-      "id": "effects/holographic-foil",
+      "id": "xtree/noise/curl",
       "kind": "original",
       "licence": "MIT",
       "references": [
-        "Thin-foil iridescence approximated with hue bands over view angle",
-        "HoloCSS design language (s4njee/holocss)"
+        "Bridson, Hourihan and Nordenstam, Curl-Noise for Procedural Fluid Flow, SIGGRAPH 2007"
       ]
     },
     {
-      "id": "effects/brightness-contrast",
+      "id": "xtree/noise/fbm",
       "kind": "original",
       "licence": "MIT",
       "references": [
-        "Standard brightness, contrast and saturation adjustments on display-encoded values",
-        "Vibrance as saturation weighted by inverse chroma"
+        "Musgrave, Texturing and Modeling: A Procedural Approach, 1994"
       ]
     },
     {
-      "id": "effects/hue-saturation",
-      "kind": "original",
-      "licence": "MIT",
-      "references": ["Ottosson, OKLab/OKLCH (via xtree/color/space)"]
-    },
-    {
-      "id": "effects/exposure-gamma",
-      "kind": "original",
-      "licence": "MIT",
-      "references": ["Photographic exposure in stops; power-law gamma"]
-    },
-    {
-      "id": "effects/monochrome",
+      "id": "xtree/noise/gradient",
       "kind": "original",
       "licence": "MIT",
       "references": [
-        "Rec. 709 luma",
-        "Widely published sepia tone matrix (0.393/0.769/0.189 \u2026)"
+        "Shoemake, Uniform random rotations, Graphics Gems III, 1992"
       ]
     },
     {
-      "id": "effects/gradient-map",
-      "kind": "original",
-      "licence": "MIT",
-      "references": ["Three-stop gradient indexed by Rec. 709 luma"]
-    },
-    {
-      "id": "effects/invert-threshold",
-      "kind": "original",
-      "licence": "MIT",
-      "references": ["Photographic negative and smoothstep threshold"]
-    },
-    {
-      "id": "effects/lut",
+      "id": "xtree/noise/hash",
       "kind": "original",
       "licence": "MIT",
       "references": [
-        "Adobe Cube LUT Specification 1.0",
-        "Kasson, Nin, Plouffe and Hafner, Performing color space conversions with three-dimensional linear interpolation, J. Electronic Imaging, 1995 (tetrahedral interpolation)"
+        "Jarzynski and Olano, Hash Functions for GPU Rendering, JCGT 9(3), 2020"
       ]
+    },
+    {
+      "id": "xtree/noise/perlin",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Perlin, Improving Noise, SIGGRAPH 2002"]
+    },
+    {
+      "id": "xtree/noise/simplex",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Perlin, Noise hardware, SIGGRAPH 2001 course notes",
+        "Gustavson, Simplex noise demystified, 2005"
+      ]
+    },
+    {
+      "id": "xtree/noise/value",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Perlin, Improving Noise, SIGGRAPH 2002 (quintic interpolant)"
+      ]
+    },
+    {
+      "id": "xtree/noise/worley",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Worley, A Cellular Texture Basis Function, SIGGRAPH 1996"]
     }
   ]
 }
