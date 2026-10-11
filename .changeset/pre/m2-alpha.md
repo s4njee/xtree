@@ -1,0 +1,5 @@
+---
+'@mk7s/xtree': minor
+---
+
+M2 alpha: all 37 P0 effects (color and tone, lens and camera, blur and glow, glitch, retro, stylization, distortion, depth fog, holographic, materials and the crossfade transition) plus a buffer view and a foil material. Geometry buffers (depth, normals) and masks (texture, depth range, object selection with x-ray). Material effects through `patchMaterial`, and transitions through `createTransition` and `toHoloEffect` for HoloCSS's `transition3d()`. Composer `play()`/`pause()` (no autoplay), `progress` and `drive()`, pointer, scroll and audio inputs, GPU timing, `describe()` and a debug overlay. Stack serialization. New entries: `@mk7s/xtree/motion` (the HoloCSS motion policy without HoloCSS), `@mk7s/xtree/safety` (a WCAG 2.3.1 flash analyser) and `@mk7s/xtree/holocss` (theme roles with `bindTheme` and HoloCSS's motion policy with `bindMotion`; HoloCSS is an optional peer). Shader chunks for sampling, SDF shapes, ordered dithering, depth reconstruction and spectral color. Disabling a three.js pass in the stack now takes effect.

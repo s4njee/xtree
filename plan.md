@@ -1,6 +1,6 @@
 # xtree — three.js Effects Library
 
-**Status:** M0 and M1 complete; M2 (alpha) next. See the [M0](docs/project/m0-validation.md) and [M1](docs/project/m1-validation.md) validation records
+**Status:** M0, M1 and M2 complete (`0.1.0-alpha.0`); M3 (beta) next. See the [M0](docs/project/m0-validation.md), [M1](docs/project/m1-validation.md) and [M2](docs/project/m2-validation.md) validation records for what was verified, including what M2 deferred.
 **Created:** 2026-10-11
 **Working package name:** `@mk7s/xtree` (check the name is free on npm before release)
 **Purpose:** A large, reusable, tree-shakeable set of three.js effects: post-processing, materials and transitions. It has a VitePress documentation site that uses the [HoloCSS](https://github.com/s4njee/holocss) design system.
