@@ -58,6 +58,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/chromatic-aberration').then(
       (m) => m.chromaticAberration as unknown as EffectFactory<ParamSchema>,
     ),
+  'chromatic-rim': () =>
+    import('@mk7s/xtree/effects/chromatic-rim').then(
+      (m) => m.chromaticRim as unknown as EffectFactory<ParamSchema>,
+    ),
   'color-balance': () =>
     import('@mk7s/xtree/effects/color-balance').then(
       (m) => m.colorBalance as unknown as EffectFactory<ParamSchema>,
@@ -150,9 +154,17 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/frosted-glass').then(
       (m) => m.frostedGlass as unknown as EffectFactory<ParamSchema>,
     ),
+  glitter: () =>
+    import('@mk7s/xtree/effects/glitter').then(
+      (m) => m.glitter as unknown as EffectFactory<ParamSchema>,
+    ),
   glow: () =>
     import('@mk7s/xtree/effects/glow').then(
       (m) => m.glow as unknown as EffectFactory<ParamSchema>,
+    ),
+  'god-rays': () =>
+    import('@mk7s/xtree/effects/god-rays').then(
+      (m) => m.godRays as unknown as EffectFactory<ParamSchema>,
     ),
   'gradient-map': () =>
     import('@mk7s/xtree/effects/gradient-map').then(
@@ -177,6 +189,10 @@ export const effectLoaders: Record<
   'holographic-foil': () =>
     import('@mk7s/xtree/effects/holographic-foil').then(
       (m) => m.holographicFoil as unknown as EffectFactory<ParamSchema>,
+    ),
+  'hud-grid': () =>
+    import('@mk7s/xtree/effects/hud-grid').then(
+      (m) => m.hudGrid as unknown as EffectFactory<ParamSchema>,
     ),
   'hue-saturation': () =>
     import('@mk7s/xtree/effects/hue-saturation').then(
@@ -226,6 +242,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/mirror').then(
       (m) => m.mirror as unknown as EffectFactory<ParamSchema>,
     ),
+  moire: () =>
+    import('@mk7s/xtree/effects/moire').then(
+      (m) => m.moire as unknown as EffectFactory<ParamSchema>,
+    ),
   monochrome: () =>
     import('@mk7s/xtree/effects/monochrome').then(
       (m) => m.monochrome as unknown as EffectFactory<ParamSchema>,
@@ -250,6 +270,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/palette').then(
       (m) => m.palette as unknown as EffectFactory<ParamSchema>,
     ),
+  pearlescent: () =>
+    import('@mk7s/xtree/effects/pearlescent').then(
+      (m) => m.pearlescent as unknown as EffectFactory<ParamSchema>,
+    ),
   pencil: () =>
     import('@mk7s/xtree/effects/pencil').then(
       (m) => m.pencil as unknown as EffectFactory<ParamSchema>,
@@ -265,6 +289,10 @@ export const effectLoaders: Record<
   posterize: () =>
     import('@mk7s/xtree/effects/posterize').then(
       (m) => m.posterize as unknown as EffectFactory<ParamSchema>,
+    ),
+  prism: () =>
+    import('@mk7s/xtree/effects/prism').then(
+      (m) => m.prism as unknown as EffectFactory<ParamSchema>,
     ),
   'radial-blur': () =>
     import('@mk7s/xtree/effects/radial-blur').then(
@@ -286,6 +314,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/scanlines').then(
       (m) => m.scanlines as unknown as EffectFactory<ParamSchema>,
     ),
+  'screen-rim': () =>
+    import('@mk7s/xtree/effects/screen-rim').then(
+      (m) => m.screenRim as unknown as EffectFactory<ParamSchema>,
+    ),
   'selective-bloom': () =>
     import('@mk7s/xtree/effects/selective-bloom').then(
       (m) => m.selectiveBloom as unknown as EffectFactory<ParamSchema>,
@@ -301,6 +333,10 @@ export const effectLoaders: Record<
   'split-toning': () =>
     import('@mk7s/xtree/effects/split-toning').then(
       (m) => m.splitToning as unknown as EffectFactory<ParamSchema>,
+    ),
+  ssao: () =>
+    import('@mk7s/xtree/effects/ssao').then(
+      (m) => m.ssao as unknown as EffectFactory<ParamSchema>,
     ),
   'star-streaks': () =>
     import('@mk7s/xtree/effects/star-streaks').then(
@@ -329,6 +365,10 @@ export const effectLoaders: Record<
   vignette: () =>
     import('@mk7s/xtree/effects/vignette').then(
       (m) => m.vignette as unknown as EffectFactory<ParamSchema>,
+    ),
+  'volumetric-fog': () =>
+    import('@mk7s/xtree/effects/volumetric-fog').then(
+      (m) => m.volumetricFog as unknown as EffectFactory<ParamSchema>,
     ),
   watercolor: () =>
     import('@mk7s/xtree/effects/watercolor').then(

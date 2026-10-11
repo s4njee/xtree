@@ -97,5 +97,15 @@
   "./effects/posterize": 7104,
   "./effects/twirl": 5568,
   "./effects/watercolor": 8448,
-  "./effects/wave-warp": 5632
+  "./effects/wave-warp": 5632,
+  "./effects/chromatic-rim": 6528,
+  "./effects/glitter": 6656,
+  "./effects/god-rays": 6784,
+  "./effects/hud-grid": 5952,
+  "./effects/moire": 6016,
+  "./effects/pearlescent": 6784,
+  "./effects/prism": 6528,
+  "./effects/screen-rim": 5952,
+  "./effects/ssao": 8256,
+  "./effects/volumetric-fog": 9088
 }

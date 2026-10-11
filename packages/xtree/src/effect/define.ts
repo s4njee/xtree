@@ -97,6 +97,16 @@ export interface FrameInfo {
     readonly normal: THREE.Texture | null;
     readonly velocity: THREE.Texture | null;
   };
+  /** The camera the geometry buffers were rendered with, for reconstructing positions from depth in an effect's own passes. */
+  readonly camera: {
+    readonly near: number;
+    readonly far: number;
+    readonly orthographic: boolean;
+    readonly projection: THREE.Matrix4;
+    readonly inverseProjection: THREE.Matrix4;
+    /** Camera to world. */
+    readonly world: THREE.Matrix4;
+  };
 }
 
 /** GPU resources an `input` effect renders before its pass, such as bloom's mip chain. */

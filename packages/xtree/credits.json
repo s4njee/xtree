@@ -109,6 +109,14 @@
       ]
     },
     {
+      "id": "effects/chromatic-rim",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Per-channel Fresnel (Schlick, An inexpensive BRDF model, 1994) with offset powers for a dispersive rim"
+      ]
+    },
+    {
       "id": "effects/color-balance",
       "kind": "original",
       "licence": "MIT",
@@ -290,11 +298,25 @@
       ]
     },
     {
+      "id": "effects/glitter",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Hashed sparkle cells lit by view-space normals"]
+    },
+    {
       "id": "effects/glow",
       "kind": "original",
       "licence": "MIT",
       "references": [
         "Separable Gaussian blur of a selection mask, added as a colored halo"
+      ]
+    },
+    {
+      "id": "effects/god-rays",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Mitchell, Volumetric light scattering as a post-process, GPU Gems 3, ch. 13, 2007"
       ]
     },
     {
@@ -340,6 +362,14 @@
       "references": [
         "Thin-foil iridescence approximated with hue bands over view angle",
         "HoloCSS design language (s4njee/holocss)"
+      ]
+    },
+    {
+      "id": "effects/hud-grid",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Grid, brackets and scan sweep after sci-fi HUD conventions"
       ]
     },
     {
@@ -433,6 +463,12 @@
       "references": ["Reflection across vertical and horizontal axes"]
     },
     {
+      "id": "effects/moire",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Interference of two rotated line or ring gratings"]
+    },
+    {
       "id": "effects/monochrome",
       "kind": "original",
       "licence": "MIT",
@@ -483,6 +519,14 @@
       ]
     },
     {
+      "id": "effects/pearlescent",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Thin-film-like hue shift with view angle and hashed flakes, after automotive pearl paints"
+      ]
+    },
+    {
       "id": "effects/pencil",
       "kind": "original",
       "licence": "MIT",
@@ -510,6 +554,14 @@
       "licence": "MIT",
       "references": [
         "Brightness banding in HSV with gradient-based edge darkening"
+      ]
+    },
+    {
+      "id": "effects/prism",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Spectral dispersion by per-wavelength radial offsets, resolved through the spectral color chunk"
       ]
     },
     {
@@ -549,6 +601,14 @@
       "references": ["Raster scanline mask with adjustable spacing and roll"]
     },
     {
+      "id": "effects/screen-rim",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Rim light from view-space normals, weighted by depth separation from the background"
+      ]
+    },
+    {
       "id": "effects/selective-bloom",
       "kind": "original",
       "licence": "MIT",
@@ -577,6 +637,16 @@
       "kind": "original",
       "licence": "MIT",
       "references": ["Two-color split toning with a soft-light style blend"]
+    },
+    {
+      "id": "effects/ssao",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Normal-oriented hemisphere SSAO after Chapman, SSAO tutorial (2011), and the Crytek approach (Mittring, Finding next gen, 2007)",
+        "Interleaved gradient noise (Jimenez, Next generation post processing in Call of Duty: Advanced Warfare, 2014)",
+        "Depth-aware separable blur"
+      ]
     },
     {
       "id": "effects/star-streaks",
@@ -632,6 +702,16 @@
       "references": [
         "three.js VignetteShader (Eskil mode formula)",
         "Smoothstep vignette: original"
+      ]
+    },
+    {
+      "id": "effects/volumetric-fog",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Exponential height fog ray-marched in world space",
+        "Henyey and Greenstein, Diffuse radiation in the galaxy, 1941 (phase function)",
+        "Hillaire, Physically based and unified volumetric rendering in Frostbite, 2015 (energy-conserving integration)"
       ]
     },
     {

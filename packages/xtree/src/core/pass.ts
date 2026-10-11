@@ -230,6 +230,14 @@ export class EffectPass {
         normal: this.#globals.xt_normalBuffer.value,
         velocity: this.#globals.xt_velocityBuffer.value,
       },
+      camera: {
+        near: this.#globals.xt_cameraNear.value,
+        far: this.#globals.xt_cameraFar.value,
+        orthographic: this.#globals.xt_cameraOrtho.value,
+        projection: this.#globals.xt_projection.value,
+        inverseProjection: this.#globals.xt_inverseProjection.value,
+        world: this.#globals.xt_cameraWorld.value,
+      },
     };
     for (const effect of this.effects) {
       effect.resolveSamples(createSampleTexture);

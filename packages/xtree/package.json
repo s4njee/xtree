@@ -83,6 +83,10 @@
       "types": "./dist/effects/chromatic-aberration/index.d.ts",
       "import": "./dist/effects/chromatic-aberration/index.js"
     },
+    "./effects/chromatic-rim": {
+      "types": "./dist/effects/chromatic-rim/index.d.ts",
+      "import": "./dist/effects/chromatic-rim/index.js"
+    },
     "./effects/color-balance": {
       "types": "./dist/effects/color-balance/index.d.ts",
       "import": "./dist/effects/color-balance/index.js"
@@ -175,9 +179,17 @@
       "types": "./dist/effects/frosted-glass/index.d.ts",
       "import": "./dist/effects/frosted-glass/index.js"
     },
+    "./effects/glitter": {
+      "types": "./dist/effects/glitter/index.d.ts",
+      "import": "./dist/effects/glitter/index.js"
+    },
     "./effects/glow": {
       "types": "./dist/effects/glow/index.d.ts",
       "import": "./dist/effects/glow/index.js"
+    },
+    "./effects/god-rays": {
+      "types": "./dist/effects/god-rays/index.d.ts",
+      "import": "./dist/effects/god-rays/index.js"
     },
     "./effects/gradient-map": {
       "types": "./dist/effects/gradient-map/index.d.ts",
@@ -202,6 +214,10 @@
     "./effects/holographic-foil": {
       "types": "./dist/effects/holographic-foil/index.d.ts",
       "import": "./dist/effects/holographic-foil/index.js"
+    },
+    "./effects/hud-grid": {
+      "types": "./dist/effects/hud-grid/index.d.ts",
+      "import": "./dist/effects/hud-grid/index.js"
     },
     "./effects/hue-saturation": {
       "types": "./dist/effects/hue-saturation/index.d.ts",
@@ -251,6 +267,10 @@
       "types": "./dist/effects/mirror/index.d.ts",
       "import": "./dist/effects/mirror/index.js"
     },
+    "./effects/moire": {
+      "types": "./dist/effects/moire/index.d.ts",
+      "import": "./dist/effects/moire/index.js"
+    },
     "./effects/monochrome": {
       "types": "./dist/effects/monochrome/index.d.ts",
       "import": "./dist/effects/monochrome/index.js"
@@ -275,6 +295,10 @@
       "types": "./dist/effects/palette/index.d.ts",
       "import": "./dist/effects/palette/index.js"
     },
+    "./effects/pearlescent": {
+      "types": "./dist/effects/pearlescent/index.d.ts",
+      "import": "./dist/effects/pearlescent/index.js"
+    },
     "./effects/pencil": {
       "types": "./dist/effects/pencil/index.d.ts",
       "import": "./dist/effects/pencil/index.js"
@@ -290,6 +314,10 @@
     "./effects/posterize": {
       "types": "./dist/effects/posterize/index.d.ts",
       "import": "./dist/effects/posterize/index.js"
+    },
+    "./effects/prism": {
+      "types": "./dist/effects/prism/index.d.ts",
+      "import": "./dist/effects/prism/index.js"
     },
     "./effects/radial-blur": {
       "types": "./dist/effects/radial-blur/index.d.ts",
@@ -311,6 +339,10 @@
       "types": "./dist/effects/scanlines/index.d.ts",
       "import": "./dist/effects/scanlines/index.js"
     },
+    "./effects/screen-rim": {
+      "types": "./dist/effects/screen-rim/index.d.ts",
+      "import": "./dist/effects/screen-rim/index.js"
+    },
     "./effects/selective-bloom": {
       "types": "./dist/effects/selective-bloom/index.d.ts",
       "import": "./dist/effects/selective-bloom/index.js"
@@ -326,6 +358,10 @@
     "./effects/split-toning": {
       "types": "./dist/effects/split-toning/index.d.ts",
       "import": "./dist/effects/split-toning/index.js"
+    },
+    "./effects/ssao": {
+      "types": "./dist/effects/ssao/index.d.ts",
+      "import": "./dist/effects/ssao/index.js"
     },
     "./effects/star-streaks": {
       "types": "./dist/effects/star-streaks/index.d.ts",
@@ -354,6 +390,10 @@
     "./effects/vignette": {
       "types": "./dist/effects/vignette/index.d.ts",
       "import": "./dist/effects/vignette/index.js"
+    },
+    "./effects/volumetric-fog": {
+      "types": "./dist/effects/volumetric-fog/index.d.ts",
+      "import": "./dist/effects/volumetric-fog/index.js"
     },
     "./effects/watercolor": {
       "types": "./dist/effects/watercolor/index.d.ts",

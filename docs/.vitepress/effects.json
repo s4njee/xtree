@@ -340,6 +340,22 @@
       {
         "text": "Depth fog",
         "link": "/effects/depth-fog"
+      },
+      {
+        "text": "God rays",
+        "link": "/effects/god-rays"
+      },
+      {
+        "text": "Screen-space rim light",
+        "link": "/effects/screen-rim"
+      },
+      {
+        "text": "Ambient occlusion (SSAO)",
+        "link": "/effects/ssao"
+      },
+      {
+        "text": "Volumetric fog",
+        "link": "/effects/volumetric-fog"
       }
     ]
   },
@@ -351,12 +367,28 @@
         "link": "/effects/foil-material"
       },
       {
+        "text": "Glitter",
+        "link": "/effects/glitter"
+      },
+      {
         "text": "Hologram",
         "link": "/effects/hologram"
       },
       {
         "text": "Holographic foil",
         "link": "/effects/holographic-foil"
+      },
+      {
+        "text": "HUD grid",
+        "link": "/effects/hud-grid"
+      },
+      {
+        "text": "Moiré interference",
+        "link": "/effects/moire"
+      },
+      {
+        "text": "Prism dispersion",
+        "link": "/effects/prism"
       },
       {
         "text": "Thin-film iridescence",
@@ -368,12 +400,20 @@
     "text": "Materials",
     "items": [
       {
+        "text": "Chromatic fresnel rim",
+        "link": "/effects/chromatic-rim"
+      },
+      {
         "text": "Dissolve",
         "link": "/effects/dissolve"
       },
       {
         "text": "Fresnel glow",
         "link": "/effects/fresnel-glow"
+      },
+      {
+        "text": "Pearlescent & opal",
+        "link": "/effects/pearlescent"
       }
     ]
   },

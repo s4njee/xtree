@@ -1180,6 +1180,101 @@
     ]
   },
   {
+    "id": "god-rays",
+    "title": "God rays",
+    "family": "atmosphere",
+    "familyTitle": "Atmosphere & lighting",
+    "summary": "Light shafts that stream from a light past the objects in front of it, as sunbeams through dusty air.",
+    "kind": "post",
+    "cost": "pass",
+    "buffers": ["depth"],
+    "motion": "static",
+    "presets": 4,
+    "params": [
+      "position",
+      "worldLight",
+      "lightWorld",
+      "intensity",
+      "density",
+      "decay",
+      "weight",
+      "samples",
+      "threshold",
+      "skyWeight",
+      "color"
+    ]
+  },
+  {
+    "id": "screen-rim",
+    "title": "Screen-space rim light",
+    "family": "atmosphere",
+    "familyTitle": "Atmosphere & lighting",
+    "summary": "Adds a rim light to every object’s silhouette from the depth and normal buffers, like a backlight separating subjects from the background, without touching materials.",
+    "kind": "post",
+    "cost": "merged",
+    "buffers": ["depth", "normal"],
+    "motion": "static",
+    "presets": 4,
+    "params": [
+      "color",
+      "intensity",
+      "width",
+      "backlight",
+      "directional",
+      "angle"
+    ]
+  },
+  {
+    "id": "ssao",
+    "title": "Ambient occlusion (SSAO)",
+    "family": "atmosphere",
+    "familyTitle": "Atmosphere & lighting",
+    "summary": "Darkens creases, corners and contact points where ambient light is blocked, from a normal-oriented hemisphere of samples around each pixel.",
+    "kind": "post",
+    "cost": "multipass",
+    "buffers": ["depth", "normal"],
+    "motion": "static",
+    "presets": 5,
+    "params": [
+      "radius",
+      "intensity",
+      "samples",
+      "bias",
+      "blur",
+      "resolution",
+      "color",
+      "debug"
+    ]
+  },
+  {
+    "id": "volumetric-fog",
+    "title": "Volumetric fog",
+    "family": "atmosphere",
+    "familyTitle": "Atmosphere & lighting",
+    "summary": "Fog with volume: rays march from the camera through height fog that drifts with noise, collecting light scattered toward the viewer (stronger looking toward the light).",
+    "kind": "post",
+    "cost": "multipass",
+    "buffers": ["depth"],
+    "motion": "settle",
+    "presets": 4,
+    "params": [
+      "density",
+      "height",
+      "falloff",
+      "maxDistance",
+      "noise",
+      "noiseScale",
+      "wind",
+      "windSpeed",
+      "light",
+      "anisotropy",
+      "color",
+      "brightness",
+      "steps",
+      "resolution"
+    ]
+  },
+  {
     "id": "foil-material",
     "title": "Holographic foil material",
     "family": "holographic",
@@ -1200,6 +1295,28 @@
       "sparkle",
       "speed",
       "tint"
+    ]
+  },
+  {
+    "id": "glitter",
+    "title": "Glitter",
+    "family": "holographic",
+    "familyTitle": "Holographic & iridescent",
+    "summary": "Scatters tiny tilted flakes over surfaces that catch the light one by one, so they twinkle as the light sweeps or the pointer moves.",
+    "kind": "post",
+    "cost": "merged",
+    "buffers": ["normal"],
+    "motion": "freeze",
+    "presets": 4,
+    "params": [
+      "density",
+      "size",
+      "intensity",
+      "color",
+      "rainbow",
+      "speed",
+      "followPointer",
+      "seed"
     ]
   },
   {
@@ -1253,6 +1370,55 @@
     ]
   },
   {
+    "id": "hud-grid",
+    "title": "HUD grid",
+    "family": "holographic",
+    "familyTitle": "Holographic & iridescent",
+    "summary": "A holographic heads-up overlay in the accent color: a fine grid with brighter major lines, corner brackets around the frame, and a slow scan sweep.",
+    "kind": "post",
+    "cost": "merged",
+    "buffers": [],
+    "motion": "settle",
+    "presets": 4,
+    "params": ["gridSize", "color", "intensity", "sweep", "sweepSpeed", "fade"]
+  },
+  {
+    "id": "moire",
+    "title": "Moiré interference",
+    "family": "holographic",
+    "familyTitle": "Holographic & iridescent",
+    "summary": "Overlays two fine line or ring patterns at a slight angle, so they interfere into the large, shifting bands of moiré, as in security holograms and layered screens.",
+    "kind": "post",
+    "cost": "merged",
+    "buffers": [],
+    "motion": "freeze",
+    "presets": 4,
+    "params": [
+      "pattern",
+      "frequency",
+      "angle",
+      "twist",
+      "scale",
+      "offset",
+      "speed",
+      "iridescence",
+      "amount"
+    ]
+  },
+  {
+    "id": "prism",
+    "title": "Prism dispersion",
+    "family": "holographic",
+    "familyTitle": "Holographic & iridescent",
+    "summary": "Splits the image into a full spectrum fanning out from a center, so edges grow rainbow fringes like light through a prism or a cheap lens.",
+    "kind": "post",
+    "cost": "pass",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": ["spread", "center", "falloff", "samples", "amount"]
+  },
+  {
     "id": "thin-film",
     "title": "Thin-film iridescence",
     "family": "holographic",
@@ -1273,6 +1439,19 @@
       "sheen",
       "speed"
     ]
+  },
+  {
+    "id": "chromatic-rim",
+    "title": "Chromatic fresnel rim",
+    "family": "material",
+    "familyTitle": "Materials",
+    "summary": "Lights the rim of a surface in a full spectrum, violet to red across its width, like dispersive glass or a soap film at grazing angles.",
+    "kind": "material",
+    "cost": "none",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": ["intensity", "power", "width", "reverse"]
   },
   {
     "id": "dissolve",
@@ -1308,6 +1487,27 @@
     "motion": "settle",
     "presets": 4,
     "params": ["color", "intensity", "power", "bias", "inverted", "pulse"]
+  },
+  {
+    "id": "pearlescent",
+    "title": "Pearlescent & opal",
+    "family": "material",
+    "familyTitle": "Materials",
+    "summary": "A pale, glowing sheen that shifts hue as the surface turns away and varies from flake to flake, like pearl, opal or pearlescent car paint.",
+    "kind": "material",
+    "cost": "none",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": [
+      "sheen",
+      "hueRange",
+      "hueOffset",
+      "saturation",
+      "flakeScale",
+      "flakeVariation",
+      "tintBase"
+    ]
   },
   {
     "id": "crossfade",
