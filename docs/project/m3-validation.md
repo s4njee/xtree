@@ -44,7 +44,7 @@ Recorded 2026-10-11 in a Linux container with Node 22.22.0, pnpm 11.15.1, headle
   - `sin(π)` came out slightly negative, and `pow()` of a negative number is undefined, which broke the pixelate transition's last frame.
   - `smoothstep()` with equal edges is undefined, which made the `cut` preset flash.
 
-  Both are now guarded.
+  Both are now guarded. On Mesa the pixelate transition still flashed: each block was one point sample of a detailed image, so a block could swing between light and dark as the block size changed. Each block is now the average of a 3×3 grid of taps. On Mesa that takes every preset from 3–4 flashes a second to none. Chromium can run on Mesa locally (`--use-angle=gl` under `xvfb-run`) to reproduce these differences.
 
 - **Seeds (X14.7).** The same seed renders the same frames, and another seed renders a different pattern. A unit test fails if a stochastic effect has no `seed`. Blurs whose only randomness is sample jitter are exempt.
 

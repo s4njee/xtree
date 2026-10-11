@@ -1,9 +1,21 @@
 // Pixelate transition: the image breaks into growing blocks, switches at the coarsest point, and sharpens back into the next image.
 
+const int $taps = 3;
+
 vec4 $sampleBlocks(vec2 uv, float cell, bool next) {
+  // Each block is the average of a grid of taps across it, not one point: a
+  // point sample of a detailed image swings between light and dark as the
+  // blocks change size, while a block's average is the average of the blocks
+  // it splits into, so it changes smoothly.
   vec2 size = xt_size();
-  vec2 st = (floor(uv * size / cell) + 0.5) * cell / size;
-  return next ? xt_to(st) : xt_from(st);
+  vec2 corner = floor(uv * size / cell) * cell;
+  vec4 sum = vec4(0.0);
+  for (int y = 0; y < $taps; y++)
+    for (int x = 0; x < $taps; x++) {
+      vec2 st = (corner + (vec2(x, y) + 0.5) * cell / float($taps)) / size;
+      sum += next ? xt_to(st) : xt_from(st);
+    }
+  return sum / float($taps * $taps);
 }
 
 vec4 $levels(vec2 uv, float cell, bool next) {
