@@ -53,6 +53,15 @@ export const scanlineTear = defineEffect({
       step: 0.1,
       description: 'Speed of the wobble.',
     }),
+    rate: float({
+      default: 6,
+      min: 0.5,
+      max: 12,
+      step: 0.5,
+      unit: '/s',
+      description:
+        'How often each band picks a new tear. Keep wide, dense tears under 3/s for photosensitive viewers.',
+    }),
     seed: int({
       default: 1,
       min: 0,
@@ -63,9 +72,10 @@ export const scanlineTear = defineEffect({
   },
   presets: {
     subtle: { amount: 0.01, frequency: 0.08, wave: 0.15 },
-    lostSync: { amount: 0.12, frequency: 0.3, lineHeight: 12 },
+    // Dense, wide tears stay under three changes a second to pass WCAG 2.3.1.
+    lostSync: { amount: 0.12, frequency: 0.3, lineHeight: 12, rate: 2.5 },
     wobble: { frequency: 0, wave: 1, amount: 0.04 },
-    shredded: { amount: 0.2, frequency: 0.5, lineHeight: 2 },
+    shredded: { amount: 0.2, frequency: 0.5, lineHeight: 2, rate: 2.5 },
   },
   fragment,
 });

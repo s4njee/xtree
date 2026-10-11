@@ -3,6 +3,7 @@
 // 320x180 canvas and read the pixels back.
 import { createStudio } from '@xtree/scenes';
 import { blendModes } from '../../src/shaders/blend/constants.js';
+import { analyseFlashes, type FlashFrame } from '../../src/safety/index.js';
 import {
   ACESFilmicToneMapping,
   AgXToneMapping,
@@ -367,6 +368,11 @@ const xt = {
   kind(id: string) {
     return factories[id]?.definition.kind ?? 'post';
   },
+  /** Whether an effect animates (declares freeze or settle). */
+  animated(id: string) {
+    const motion = factories[id]?.definition.motion ?? 'static';
+    return motion !== 'static';
+  },
   renderTransition,
   /**
    * Runs a transition through HoloCSS's own transition3d() between two solid
@@ -551,6 +557,23 @@ const xt = {
         if (pixels.some((v, j) => v !== first[j])) changed++;
       }
       return { changed, time: composer.time };
+    });
+  },
+  /** Renders `seconds` of an animated stack at `fps` and runs the photosensitivity analyser on it. */
+  flashCheck(spec: RenderSpec, seconds = 2, fps = 30) {
+    return withComposer(spec, (composer, effects) => {
+      composer.play();
+      const frames: FlashFrame[] = [];
+      for (let i = 0; i < seconds * fps; i++) {
+        for (const effect of effects)
+          if (effect instanceof MaterialEffect) effect.tick(1 / fps);
+        studio.update(i / fps);
+        composer.render(i === 0 ? 0 : 1 / fps);
+        frames.push({ width, height, pixels: readPixels() });
+      }
+      studio.update(0);
+      const { flashFrames, ...report } = analyseFlashes(frames, { fps });
+      return { ...report, flashes: flashFrames.length };
     });
   },
   /** The composer clock: time while paused, after play, and with autoplay. */

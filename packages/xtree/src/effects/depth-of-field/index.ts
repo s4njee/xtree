@@ -1,4 +1,5 @@
 import { bool, defineEffect, float, select, vec2 } from '../../effect/index.js';
+import { samplingSpiralChunks } from '../../shaders/maps.js';
 import fragment from './shader.glsl';
 
 /** Camera-style depth of field with round or hexagonal bokeh. */
@@ -14,6 +15,7 @@ export const depthOfField = defineEffect({
   },
   sampling: 'input',
   buffers: ['depth'],
+  chunks: [samplingSpiralChunks],
   params: {
     focusMode: select({
       options: ['distance', 'point'],

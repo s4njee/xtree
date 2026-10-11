@@ -109,6 +109,8 @@ export interface ThreeKit {
 export interface SetupContext<S extends ParamSchema> {
   readonly three: ThreeKit;
   readonly effect: EffectInstance<S>;
+  /** Resolves xtree `#include`s in a standalone shader (for example a downsample pass) against chunk maps. */
+  include(source: string, ...chunks: ChunkMap[]): string;
   /** Draws a full-screen triangle with `material` into `target` (null for the canvas). */
   draw(
     renderer: THREE.WebGLRenderer,

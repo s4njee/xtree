@@ -105,3 +105,42 @@ test.describe('motion policy (X16.1)', () => {
     });
   }
 });
+
+test.describe('photosensitivity (X16.3)', () => {
+  test('every animated effect and preset stays within WCAG 2.3.1', async ({
+    page,
+  }) => {
+    test.setTimeout(600_000);
+    const ids = await page.evaluate(() =>
+      window.xt.factories.filter((id) => window.xt.animated(id)),
+    );
+    expect(ids.length).toBeGreaterThan(10);
+    for (const id of ids) {
+      const presets = await page.evaluate((i) => window.xt.presets(i), id);
+      for (const preset of [undefined, ...presets]) {
+        const report = await page.evaluate(
+          ([effect, p]) =>
+            window.xt.flashCheck({
+              effects: [
+                {
+                  id: effect!,
+                  mask: 'demo',
+                  ...(p ? { preset: p } : {}),
+                  ...(effect === 'rgb-split-glitch'
+                    ? { params: { trigger: 'always' } }
+                    : {}),
+                },
+              ],
+            }),
+          [id, preset] as const,
+        );
+        expect
+          .soft(
+            report.pass,
+            `${id} ${preset ?? 'default'}: ${JSON.stringify(report)}`,
+          )
+          .toBe(true);
+      }
+    }
+  });
+});

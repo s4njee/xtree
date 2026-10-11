@@ -6,7 +6,11 @@ import {
   select,
   texture,
 } from '../../effect/index.js';
-import { colorSpaceChunks, noiseBlueChunks } from '../../shaders/maps.js';
+import {
+  colorSpaceChunks,
+  ditherOrderedChunks,
+  noiseBlueChunks,
+} from '../../shaders/maps.js';
 import { blueNoiseTexels } from './blue-noise.js';
 import fragment from './shader.glsl';
 
@@ -23,7 +27,7 @@ export const dither = defineEffect({
       'Reduces each channel to a few levels and hides the banding with a dither pattern: ordered Bayer matrices, void-and-cluster blue noise, or interleaved gradient noise.',
     related: ['pixelate', 'halftone', 'scanlines'],
   },
-  chunks: [colorSpaceChunks, noiseBlueChunks],
+  chunks: [colorSpaceChunks, noiseBlueChunks, ditherOrderedChunks],
   params: {
     pattern: select({
       options: ['bayer2', 'bayer4', 'bayer8', 'blueNoise', 'noise'],

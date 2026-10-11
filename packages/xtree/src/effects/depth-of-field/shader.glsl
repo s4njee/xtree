@@ -1,5 +1,6 @@
 // Depth of field: a single-pass gather along a golden-angle spiral (Gustafsson, "Bokeh depth of field in a single pass", 2018).
 // Samples behind the center pixel can't blur over it more than the center's own blur, which keeps sharp edges in front.
+#include <xtree/sampling/spiral>
 
 float $focus() {
   return $focusMode == $focusMode_point ? xt_viewDepth($focusPoint) : $focusDistance;
@@ -40,7 +41,7 @@ vec4 $main(vec4 color, vec2 uv) {
     sum += mix(sum / total, sampled, m);
     total += 1.0;
     radius += spacing / radius;
-    angle += 2.39996323;
+    angle += XT_GOLDEN_ANGLE;
   }
   vec3 result = sum / total;
   if ($showFocus) {

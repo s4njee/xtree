@@ -7,11 +7,14 @@ import {
   chunks,
   color,
   depth,
+  dither,
   noise,
+  sampling,
+  sdf,
 } from '../../src/shaders/index.js';
 
 const shaderDir = new URL('../../src/shaders/', import.meta.url);
-const families = { noise, color, blend, depth } as const;
+const families = { noise, color, blend, depth, sampling, sdf, dither } as const;
 
 describe('chunk registry', () => {
   for (const [family, map] of Object.entries(families)) {
@@ -31,6 +34,9 @@ describe('chunk registry', () => {
         ...Object.keys(color),
         ...Object.keys(blend),
         ...Object.keys(depth),
+        ...Object.keys(sampling),
+        ...Object.keys(sdf),
+        ...Object.keys(dither),
       ].sort(),
     );
   });

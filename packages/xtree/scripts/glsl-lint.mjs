@@ -305,7 +305,12 @@ for (const { id, factory } of effects) {
   )) {
     const source = readFileSync(`${packageRoot}${folder}/${file}`, 'utf8');
     if (!/void\s+main\s*\(/.test(source)) continue;
-    const log = validate(`#version 300 es\n${source}`);
+    // Standalone passes resolve their includes in setup (context.include).
+    const resolved = resolveIncludes(source, map, {
+      name: file,
+      lineDirectives: false,
+    }).code;
+    const log = validate(`#version 300 es\n${resolved}`);
     if (log)
       problems.push(
         `${folder}/${file}: glslangValidator failed\n${log.trim()}`,

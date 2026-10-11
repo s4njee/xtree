@@ -16,6 +16,11 @@ import colorSpectralSource from './color/spectral.glsl';
 import colorTonemapSource from './color/tonemap.glsl';
 import blendModesSource from './blend/modes.glsl';
 import depthReconstructSource from './depth/reconstruct.glsl';
+import samplingSpiralSource from './sampling/spiral.glsl';
+import samplingPyramidSource from './sampling/pyramid.glsl';
+import samplingBicubicSource from './sampling/bicubic.glsl';
+import sdfShapesSource from './sdf/shapes.glsl';
+import ditherOrderedSource from './dither/ordered.glsl';
 
 /** `xtree/noise/hash` and the chunks it includes. */
 export const noiseHashChunks: ChunkMap = {
@@ -109,4 +114,29 @@ export const blendModesChunks: ChunkMap = {
 /** `xtree/depth/reconstruct` and the chunks it includes. */
 export const depthReconstructChunks: ChunkMap = {
   'xtree/depth/reconstruct': depthReconstructSource,
+};
+
+/** `xtree/sampling/spiral` and the chunks it includes. */
+export const samplingSpiralChunks: ChunkMap = {
+  'xtree/sampling/spiral': samplingSpiralSource,
+};
+
+/** `xtree/sampling/pyramid` and the chunks it includes. */
+export const samplingPyramidChunks: ChunkMap = {
+  'xtree/sampling/pyramid': samplingPyramidSource,
+};
+
+/** `xtree/sampling/bicubic` and the chunks it includes. */
+export const samplingBicubicChunks: ChunkMap = {
+  'xtree/sampling/bicubic': samplingBicubicSource,
+};
+
+/** `xtree/sdf/shapes` and the chunks it includes. */
+export const sdfShapesChunks: ChunkMap = {
+  'xtree/sdf/shapes': sdfShapesSource,
+};
+
+/** `xtree/dither/ordered` and the chunks it includes. */
+export const ditherOrderedChunks: ChunkMap = {
+  'xtree/dither/ordered': ditherOrderedSource,
 };

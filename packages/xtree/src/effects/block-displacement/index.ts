@@ -71,6 +71,8 @@ export const blockDisplacement = defineEffect({
     subtle: { density: 0.08, amount: 0.3 },
     corrupted: {
       trigger: 'always',
+      // Kept under three changes a second: dense, high-contrast blocks flashing faster fail WCAG 2.3.1.
+      rate: 2.5,
       density: 0.35,
       amount: 0.7,
       colorShift: 0.015,

@@ -2,6 +2,7 @@ import type { WebGLRenderTarget } from 'three';
 import type { EffectResources, SetupContext } from '../../effect/define.js';
 import { fullscreenVertex } from '../../effect/index.js';
 import type { ParamSchema } from '../../effect/params.js';
+import { samplingPyramidChunks } from '../../shaders/maps.js';
 import downsampleSource from './downsample.glsl';
 import upsampleSource from './upsample.glsl';
 
@@ -21,7 +22,7 @@ export function bloomChain(
   context: SetupContext<ParamSchema>,
   masked = false,
 ): EffectResources {
-  const { three, draw } = context;
+  const { three, draw, include } = context;
   const effect =
     context.effect as unknown as SetupContext<ParamSchema>['effect'] &
       BloomValues & { readonly luminance?: string };
@@ -46,7 +47,7 @@ export function bloomChain(
       depthTest: false,
       depthWrite: false,
     });
-  const down = material(downsampleSource, {
+  const down = material(include(downsampleSource, samplingPyramidChunks), {
     source: { value: null },
     texel: { value: new Vector2() },
     prefilter: { value: true },
@@ -58,7 +59,7 @@ export function bloomChain(
     maskChannel: effect.uniforms.xtMaskChannel!,
     maskInvert: effect.uniforms.xtMaskInvert!,
   });
-  const up = material(upsampleSource, {
+  const up = material(include(upsampleSource, samplingPyramidChunks), {
     low: { value: null },
     high: { value: null },
     texel: { value: new Vector2() },

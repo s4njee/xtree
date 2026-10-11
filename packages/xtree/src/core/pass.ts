@@ -16,7 +16,7 @@ import type {
   ThreeKit,
 } from '../effect/define.js';
 import type { ParamSchema } from '../effect/params.js';
-import { formatShaderError } from '../glsl/index.js';
+import { formatShaderError, resolveIncludes } from '../glsl/index.js';
 import {
   compilePass,
   passBuffers,
@@ -279,6 +279,11 @@ export class EffectPass {
         three: threeKit,
         effect: effect as SetupContext<ParamSchema>['effect'],
         draw: (r, material, target) => fullscreen.draw(r, material, target),
+        include: (source, ...chunks) =>
+          resolveIncludes(source, chunks, {
+            name: `${effect.name}:setup`,
+            lineDirectives: false,
+          }).code,
       };
       effect.resources = setup(context);
       effect.resources.setSize(this.#width, this.#height);

@@ -396,3 +396,98 @@ Depth buffer helpers: stored depth to view-space Z and back, view positions from
 | `vec3 xt_normalFromDepth(sampler2D depthTexture, vec2 uv, vec2 texel, mat4 inverseProjection)` | View-space normal estimated from a depth texture. Each axis differences toward the neighbour nearer in depth, so silhouettes don't smear. |
 
 **Credits:** Original implementation (MIT). References: three.js packing functions (perspectiveDepthToViewZ, orthographicDepthToViewZ), reimplemented and tested for equality; Normal reconstruction from depth choosing the smaller one-sided difference, after Bavoil and Sainz, Screen Space Ambient Occlusion, NVIDIA 2008.
+
+## Sampling
+
+Import from `@mk7s/xtree/shaders/sampling` as `sampling`, or every family at once as `chunks` from `@mk7s/xtree/shaders`.
+
+### spiral
+
+```glsl
+#include <xtree/sampling/spiral>
+```
+
+Sample patterns for gathers such as depth of field: a golden-angle spiral that fills a disk evenly (Vogel, 1979) and a 16-point Poisson disk.
+
+| Function                       | Description                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------ |
+| `vec2 xt_spiral(int i, int n)` | Offset of sample i of n on a golden-angle spiral filling the unit disk evenly. |
+| `vec2 xt_poissonDisk(int i)`   | Point i (0–15) of a Poisson disk in the unit disk, minimum spacing about 0.35. |
+
+**Credits:** Original implementation (MIT). References: Vogel, A better way to construct the sunflower head, 1979 (golden-angle spiral); Poisson-disk sample set as commonly used for shadow filtering.
+
+### pyramid
+
+```glsl
+#include <xtree/sampling/pyramid>
+```
+
+Pyramid and blur filters for bloom and blur: the 13-tap downsample and 3×3 tent upsample from Jimenez's "Next Generation Post Processing in Call of Duty: Advanced Warfare" (SIGGRAPH 2014), and Kawase taps (Kawase, GDC 2003).
+
+| Function                                                              | Description                                                                             |
+| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `vec3 xt_downsample13(sampler2D source, vec2 uv, vec2 texel)`         | 13-tap downsample to half resolution; `texel` is the source's texel size.               |
+| `vec3 xt_upsampleTent9(sampler2D source, vec2 uv, vec2 texel)`        | 3×3 tent upsample; `texel` is the source's (lower mip's) texel size.                    |
+| `vec3 xt_kawase(sampler2D source, vec2 uv, vec2 texel, float offset)` | One Kawase iteration: the mean of four diagonal bilinear taps at `offset` + 0.5 texels. |
+
+**Credits:** Original implementation (MIT). References: Jimenez, Next Generation Post Processing in Call of Duty: Advanced Warfare, SIGGRAPH 2014 (13-tap downsample, tent upsample); Kawase, Frame buffer postprocessing effects in DOUBLE-S.T.E.A.L, GDC 2003.
+
+### bicubic
+
+```glsl
+#include <xtree/sampling/bicubic>
+```
+
+Higher-order texture reconstruction from bilinear taps: a cubic B-spline from four taps (Sigg and Hadwiger, GPU Gems 2 ch. 20) and Catmull-Rom from nine.
+
+| Function                                               | Description                                                                                    |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `vec4 xt_textureBicubic(sampler2D source, vec2 uv)`    | Cubic B-spline reconstruction from four bilinear taps; smoother than bilinear when magnifying. |
+| `vec4 xt_textureCatmullRom(sampler2D source, vec2 uv)` | Catmull-Rom reconstruction from nine bilinear taps: sharp, passes through the texel values.    |
+
+**Credits:** Original implementation (MIT). References: Sigg and Hadwiger, Fast Third-Order Texture Filtering, GPU Gems 2 ch. 20, 2005; Catmull-Rom from nine bilinear taps, after Jimenez.
+
+## Signed distance
+
+Import from `@mk7s/xtree/shaders/sdf` as `sdf`, or every family at once as `chunks` from `@mk7s/xtree/shaders`.
+
+### shapes
+
+```glsl
+#include <xtree/sdf/shapes>
+```
+
+2D signed distance functions and coordinate helpers (after Inigo Quilez's distance function articles): negative inside, positive outside, in the units of `p`.
+
+| Function                                       | Description                                                                    |
+| ---------------------------------------------- | ------------------------------------------------------------------------------ |
+| `float xt_sdCircle(vec2 p, float r)`           | Distance to a circle of radius r at the origin.                                |
+| `float xt_sdBox(vec2 p, vec2 b)`               | Distance to a box with half-size b at the origin.                              |
+| `float xt_sdRoundBox(vec2 p, vec2 b, float r)` | Distance to a box with half-size b and corner radius r.                        |
+| `float xt_sdHexagon(vec2 p, float r)`          | Distance to a regular hexagon with inner radius r (flat sides top and bottom). |
+| `float xt_sdSegment(vec2 p, vec2 a, vec2 b)`   | Distance to the segment from a to b.                                           |
+| `float xt_smin(float a, float b, float k)`     | Smooth minimum of two distances over a blend width k (polynomial).             |
+| `vec2 xt_rotate(vec2 p, float a)`              | Rotates p by angle a (radians, counter-clockwise).                             |
+| `vec2 xt_toPolar(vec2 p)`                      | Polar coordinates (radius, angle in radians from -π to π).                     |
+| `vec2 xt_toLogPolar(vec2 p)`                   | Log-polar coordinates (log radius, angle), for spirals and Droste-style zooms. |
+
+**Credits:** Original implementation (MIT). References: Quilez, 2D distance functions (articles), reimplemented.
+
+## Dithering
+
+Import from `@mk7s/xtree/shaders/dither` as `dither`, or every family at once as `chunks` from `@mk7s/xtree/shaders`.
+
+### ordered
+
+```glsl
+#include <xtree/dither/ordered>
+```
+
+Ordered dithering and quantization: Bayer threshold matrices of any power of two (Bayer, "An optimum method for two-level rendition of continuous-tone pictures", 1973) and level quantization against a threshold.
+
+| Function                                                  | Description                                                                                                      |
+| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `float xt_bayer(ivec2 p, int n)`                          | Bayer threshold in (0, 1) for a pixel of a 2^n × 2^n matrix (n = 1 for 2×2, 2 for 4×4, 3 for 8×8).               |
+| `vec3 xt_quantize(vec3 c, float levels, float threshold)` | Quantizes each channel to `levels` steps (at least 2), rounding by a threshold in (0, 1); 0.5 rounds to nearest. |
+
+**Credits:** Original implementation (MIT). References: Bayer, An optimum method for two-level rendition of continuous-tone pictures, 1973.

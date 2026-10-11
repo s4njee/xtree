@@ -44,12 +44,12 @@ Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#mo
 
 ## Presets
 
-| Preset      | Settings                                                                 |
-| ----------- | ------------------------------------------------------------------------ |
-| `subtle`    | `density: 0.08`, `amount: 0.3`                                           |
-| `corrupted` | `trigger: 'always'`, `density: 0.35`, `amount: 0.7`, `colorShift: 0.015` |
-| `chunky`    | `trigger: 'always'`, `blockSize: 64`, `density: 0.2`                     |
-| `fine`      | `trigger: 'always'`, `blockSize: 8`, `density: 0.25`, `amount: 0.4`      |
+| Preset      | Settings                                                                              |
+| ----------- | ------------------------------------------------------------------------------------- |
+| `subtle`    | `density: 0.08`, `amount: 0.3`                                                        |
+| `corrupted` | `trigger: 'always'`, `rate: 2.5`, `density: 0.35`, `amount: 0.7`, `colorShift: 0.015` |
+| `chunky`    | `trigger: 'always'`, `blockSize: 64`, `density: 0.2`                                  |
+| `fine`      | `trigger: 'always'`, `blockSize: 8`, `density: 0.25`, `amount: 0.4`                   |
 
 Apply one with `blockDisplacement({ preset: 'name' })` or `effect.applyPreset('name')`; presets start from the defaults.
 

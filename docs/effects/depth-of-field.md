@@ -60,7 +60,7 @@ Apply one with `depthOfField({ preset: 'name' })` or `effect.applyPreset('name')
 - **Geometry buffers:** reads depth, which the composer renders only while an effect needs them.
 - **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Static: nothing animates.
-- **Size:** 5.8 KB gzip budget for `@mk7s/xtree/effects/depth-of-field`, including the shared effect runtime.
+- **Size:** 6.8 KB gzip budget for `@mk7s/xtree/effects/depth-of-field`, including the shared effect runtime.
 
 ### Cost
 

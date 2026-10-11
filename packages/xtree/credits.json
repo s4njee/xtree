@@ -373,6 +373,14 @@
       ]
     },
     {
+      "id": "xtree/dither/ordered",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Bayer, An optimum method for two-level rendition of continuous-tone pictures, 1973"
+      ]
+    },
+    {
       "id": "xtree/noise/blue",
       "kind": "original",
       "licence": "MIT",
@@ -441,6 +449,39 @@
       "kind": "original",
       "licence": "MIT",
       "references": ["Worley, A Cellular Texture Basis Function, SIGGRAPH 1996"]
+    },
+    {
+      "id": "xtree/sampling/bicubic",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Sigg and Hadwiger, Fast Third-Order Texture Filtering, GPU Gems 2 ch. 20, 2005",
+        "Catmull-Rom from nine bilinear taps, after Jimenez"
+      ]
+    },
+    {
+      "id": "xtree/sampling/pyramid",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Jimenez, Next Generation Post Processing in Call of Duty: Advanced Warfare, SIGGRAPH 2014 (13-tap downsample, tent upsample)",
+        "Kawase, Frame buffer postprocessing effects in DOUBLE-S.T.E.A.L, GDC 2003"
+      ]
+    },
+    {
+      "id": "xtree/sampling/spiral",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Vogel, A better way to construct the sunflower head, 1979 (golden-angle spiral)",
+        "Poisson-disk sample set as commonly used for shadow filtering"
+      ]
+    },
+    {
+      "id": "xtree/sdf/shapes",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Quilez, 2D distance functions (articles), reimplemented"]
     }
   ]
 }

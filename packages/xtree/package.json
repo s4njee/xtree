@@ -194,6 +194,10 @@
       "types": "./dist/motion/index.d.ts",
       "import": "./dist/motion/index.js"
     },
+    "./safety": {
+      "types": "./dist/safety/index.d.ts",
+      "import": "./dist/safety/index.js"
+    },
     "./shaders/blend": {
       "types": "./dist/shaders/blend/index.d.ts",
       "import": "./dist/shaders/blend/index.js"
@@ -206,6 +210,10 @@
       "types": "./dist/shaders/depth/index.d.ts",
       "import": "./dist/shaders/depth/index.js"
     },
+    "./shaders/dither": {
+      "types": "./dist/shaders/dither/index.d.ts",
+      "import": "./dist/shaders/dither/index.js"
+    },
     "./shaders": {
       "types": "./dist/shaders/index.d.ts",
       "import": "./dist/shaders/index.js"
@@ -213,6 +221,14 @@
     "./shaders/noise": {
       "types": "./dist/shaders/noise/index.d.ts",
       "import": "./dist/shaders/noise/index.js"
+    },
+    "./shaders/sampling": {
+      "types": "./dist/shaders/sampling/index.d.ts",
+      "import": "./dist/shaders/sampling/index.js"
+    },
+    "./shaders/sdf": {
+      "types": "./dist/shaders/sdf/index.d.ts",
+      "import": "./dist/shaders/sdf/index.js"
     },
     "./package.json": "./package.json"
   },

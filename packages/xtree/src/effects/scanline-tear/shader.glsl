@@ -3,7 +3,8 @@
 
 vec4 $main(vec4 color, vec2 uv) {
   float line = floor(uv.y * xt_resolution.y / $lineHeight);
-  float stepIndex = floor(xt_time * 10.0);
+  // Bands change on their own phases, so the frame never jumps all at once (WCAG 2.3.1).
+  float stepIndex = floor(xt_time * $rate + xt_hash1(vec2(line, float($seed) + 3.0)));
   float torn = step(1.0 - $frequency, xt_hash1(vec2(line, stepIndex + float($seed))));
   float jump = (xt_hash1(vec2(line, stepIndex + float($seed) + 7.0)) - 0.5) * 2.0;
   float wobble = sin(uv.y * 40.0 + xt_time * $speed * 6.28318530718) * $wave;

@@ -6,6 +6,7 @@ import {
   int,
   select,
 } from '../../effect/index.js';
+import { samplingPyramidChunks } from '../../shaders/maps.js';
 import fragment from './composite.glsl';
 import kawaseSource from './kawase.glsl';
 import separableSource from './separable.glsl';
@@ -60,7 +61,7 @@ export const blur = defineEffect({
   },
   textures: ['blurred'],
   fragment,
-  setup({ three, effect, draw }) {
+  setup({ three, effect, draw, include }) {
     const {
       WebGLRenderTarget,
       RawShaderMaterial,
@@ -88,7 +89,7 @@ export const blur = defineEffect({
       radius: { value: 0 },
       box: { value: false },
     });
-    const kawase = material(kawaseSource, {
+    const kawase = material(include(kawaseSource, samplingPyramidChunks), {
       source: { value: null },
       texel: { value: new Vector2() },
       offset: { value: 0 },

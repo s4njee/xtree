@@ -9,9 +9,13 @@ const fixed = {
   'shaders/color/index': 'src/shaders/color/index.ts',
   'shaders/blend/index': 'src/shaders/blend/index.ts',
   'shaders/depth/index': 'src/shaders/depth/index.ts',
+  'shaders/sampling/index': 'src/shaders/sampling/index.ts',
+  'shaders/sdf/index': 'src/shaders/sdf/index.ts',
+  'shaders/dither/index': 'src/shaders/dither/index.ts',
   'effect/index': 'src/effect/index.ts',
   'core/index': 'src/core/index.ts',
   'motion/index': 'src/motion/index.ts',
+  'safety/index': 'src/safety/index.ts',
 } as const;
 
 /** Every folder in src/effects is an entry, `@mk7s/xtree/effects/<id>`. */

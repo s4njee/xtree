@@ -54,7 +54,7 @@ Apply one with `blur({ preset: 'name' })` or `effect.applyPreset('name')`; prese
 - **Passes:** samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass. It also renders its own intermediate passes before the merged pass.
 - **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Static: nothing animates.
-- **Size:** 5.9 KB gzip budget for `@mk7s/xtree/effects/blur`, including the shared effect runtime.
+- **Size:** 6.8 KB gzip budget for `@mk7s/xtree/effects/blur`, including the shared effect runtime.
 
 ## Credits
 

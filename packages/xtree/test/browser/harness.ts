@@ -10,13 +10,14 @@ const shaderRoot = new URL('../../src/shaders/', import.meta.url);
 
 /** Every chunk, read from disk exactly as the library ships it (before minification). */
 export const chunks: ChunkMap = Object.fromEntries(
-  ['noise', 'color', 'blend', 'depth'].flatMap((family) =>
-    readdirSync(new URL(`${family}/`, shaderRoot))
-      .filter((file) => file.endsWith('.glsl'))
-      .map((file) => [
-        `xtree/${family}/${file.replace(/\.glsl$/, '')}`,
-        readFileSync(new URL(`${family}/${file}`, shaderRoot), 'utf8'),
-      ]),
+  ['noise', 'color', 'blend', 'depth', 'sampling', 'sdf', 'dither'].flatMap(
+    (family) =>
+      readdirSync(new URL(`${family}/`, shaderRoot))
+        .filter((file) => file.endsWith('.glsl'))
+        .map((file) => [
+          `xtree/${family}/${file.replace(/\.glsl$/, '')}`,
+          readFileSync(new URL(`${family}/${file}`, shaderRoot), 'utf8'),
+        ]),
   ),
 );
 
@@ -29,11 +30,15 @@ export interface ShaderRun {
   readonly source: string;
   /** Flattened vec4 inputs. */
   readonly inputs: readonly number[];
-  /** Optional RGBA32F texture bound to `xt_aux`. */
+  /**
+   * Optional texture bound to `xt_aux`: RGBA32F with nearest filtering, or
+   * RGBA16F with linear filtering (always filterable in WebGL2).
+   */
   readonly aux?: {
     readonly width: number;
     readonly height: number;
     readonly data: readonly number[];
+    readonly filter?: 'nearest' | 'linear';
   };
   /** Extra code placed before the resolved source, for example another library's chunk. */
   readonly prelude?: string;
@@ -70,6 +75,7 @@ export async function compileAndRun(
           width: run.aux.width,
           height: run.aux.height,
           data: [...run.aux.data],
+          filter: run.aux.filter ?? 'nearest',
         }
       : null,
   });
@@ -86,7 +92,12 @@ function gpuEvaluate(args: {
   code: string;
   prelude: string;
   inputs: number[];
-  aux: { width: number; height: number; data: number[] } | null;
+  aux: {
+    width: number;
+    height: number;
+    data: number[];
+    filter: 'nearest' | 'linear';
+  } | null;
 }): { output: number[]; error?: string } {
   const width = 256;
   const count = args.inputs.length / 4;
@@ -153,16 +164,20 @@ ${args.code}
       w: number,
       h: number,
       data: Float32Array,
+      linear = false,
     ) => {
       const t = gl.createTexture();
       gl.activeTexture(gl.TEXTURE0 + unit);
       gl.bindTexture(gl.TEXTURE_2D, t);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      const filter = linear ? gl.LINEAR : gl.NEAREST;
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
       gl.texImage2D(
         gl.TEXTURE_2D,
         0,
-        gl.RGBA32F,
+        linear ? gl.RGBA16F : gl.RGBA32F,
         w,
         h,
         0,
@@ -175,8 +190,19 @@ ${args.code}
     const input = new Float32Array(width * height * 4);
     input.set(args.inputs);
     texture(0, width, height, input);
-    const aux = args.aux ?? { width: 1, height: 1, data: [0, 0, 0, 0] };
-    texture(1, aux.width, aux.height, new Float32Array(aux.data));
+    const aux = args.aux ?? {
+      width: 1,
+      height: 1,
+      data: [0, 0, 0, 0],
+      filter: 'nearest',
+    };
+    texture(
+      1,
+      aux.width,
+      aux.height,
+      new Float32Array(aux.data),
+      aux.filter === 'linear',
+    );
     const target = texture(
       2,
       width,

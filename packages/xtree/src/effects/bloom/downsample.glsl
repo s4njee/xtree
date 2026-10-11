@@ -1,4 +1,5 @@
 precision highp float;
+#include <xtree/sampling/pyramid>
 uniform sampler2D source;
 uniform vec2 texel;
 uniform bool prefilter;
@@ -68,7 +69,7 @@ void main() {
     float w4 = karis(g4) * 0.125;
     result = (g0 * w0 + g1 * w1 + g2 * w2 + g3 * w3 + g4 * w4) / (w0 + w1 + w2 + w3 + w4);
   } else {
-    result = e * 0.125 + (a + c + g + i) * 0.03125 + (b + d + f + h) * 0.0625 + (j + k + l + m) * 0.125;
+    result = xt_downsample13(source, vUv, texel);
   }
   fragColor = vec4(max(result, 0.0), 1.0);
 }

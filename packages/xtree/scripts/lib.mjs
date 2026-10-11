@@ -31,6 +31,13 @@ export const families = [
   },
   { id: 'blend', title: 'Blend', order: ['modes'] },
   { id: 'depth', title: 'Depth', order: ['reconstruct'] },
+  {
+    id: 'sampling',
+    title: 'Sampling',
+    order: ['spiral', 'pyramid', 'bicubic'],
+  },
+  { id: 'sdf', title: 'Signed distance', order: ['shapes'] },
+  { id: 'dither', title: 'Dithering', order: ['ordered'] },
 ];
 
 const rank = (order, file) => {

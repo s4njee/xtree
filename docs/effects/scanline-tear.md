@@ -30,25 +30,26 @@ Every parameter is also a property: `effect.amount = 0.03`. Uniform changes take
 
 ## Parameters
 
-| Parameter    | Type    | Default | Range     | Description                                         |
-| ------------ | ------- | ------- | --------- | --------------------------------------------------- |
-| `amount`     | number  | `0.03`  | 0 – 0.3   | Largest sideways shift, as a fraction of the width. |
-| `lineHeight` | number  | `6`     | 1 – 64 px | Height of a band that moves together.               |
-| `frequency`  | number  | `0.15`  | 0 – 1     | Fraction of bands torn at any moment.               |
-| `wave`       | number  | `0.3`   | 0 – 1     | Strength of a slow sinusoidal wobble.               |
-| `speed`      | number  | `1`     | 0 – 10    | Speed of the wobble.                                |
-| `seed`       | integer | `1`     | 0 – 9999  | Changes the random sequence.                        |
+| Parameter    | Type    | Default | Range       | Description                                                                                        |
+| ------------ | ------- | ------- | ----------- | -------------------------------------------------------------------------------------------------- |
+| `amount`     | number  | `0.03`  | 0 – 0.3     | Largest sideways shift, as a fraction of the width.                                                |
+| `lineHeight` | number  | `6`     | 1 – 64 px   | Height of a band that moves together.                                                              |
+| `frequency`  | number  | `0.15`  | 0 – 1       | Fraction of bands torn at any moment.                                                              |
+| `wave`       | number  | `0.3`   | 0 – 1       | Strength of a slow sinusoidal wobble.                                                              |
+| `speed`      | number  | `1`     | 0 – 10      | Speed of the wobble.                                                                               |
+| `rate`       | number  | `6`     | 0.5 – 12 /s | How often each band picks a new tear. Keep wide, dense tears under 3/s for photosensitive viewers. |
+| `seed`       | integer | `1`     | 0 – 9999    | Changes the random sequence.                                                                       |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 
 ## Presets
 
-| Preset     | Settings                                           |
-| ---------- | -------------------------------------------------- |
-| `subtle`   | `amount: 0.01`, `frequency: 0.08`, `wave: 0.15`    |
-| `lostSync` | `amount: 0.12`, `frequency: 0.3`, `lineHeight: 12` |
-| `wobble`   | `frequency: 0`, `wave: 1`, `amount: 0.04`          |
-| `shredded` | `amount: 0.2`, `frequency: 0.5`, `lineHeight: 2`   |
+| Preset     | Settings                                                        |
+| ---------- | --------------------------------------------------------------- |
+| `subtle`   | `amount: 0.01`, `frequency: 0.08`, `wave: 0.15`                 |
+| `lostSync` | `amount: 0.12`, `frequency: 0.3`, `lineHeight: 12`, `rate: 2.5` |
+| `wobble`   | `frequency: 0`, `wave: 1`, `amount: 0.04`                       |
+| `shredded` | `amount: 0.2`, `frequency: 0.5`, `lineHeight: 2`, `rate: 2.5`   |
 
 Apply one with `scanlineTear({ preset: 'name' })` or `effect.applyPreset('name')`; presets start from the defaults.
 
