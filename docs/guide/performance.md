@@ -50,7 +50,7 @@ ao.quality = 'auto'; // the default: an adaptive composer chooses
 
 Ambient occlusion and volumetric fog render at half resolution by default (`resolution: 0.5`), and depth of field can (`resolution: 'half'`). Their results are upsampled with depth-aware weights: each pixel blends the four nearest low-resolution texels by how close their depth is to its own, so occlusion, fog and blur don't bleed across silhouettes. Depth of field keeps in-focus pixels at full resolution.
 
-In the test scene, half resolution cuts each effect's cost by well over 40% (depth of field by about 89%). The browser tests hold the image difference against full resolution under these limits:
+In the test scene, half resolution cuts the cost of each effect's own passes by more than 40% (depth of field by about 89%). The depth and normal prepasses they read stay at full resolution. The browser tests hold the image difference against full resolution under these limits:
 
 | Effect                                      | Mean difference | 99th percentile |
 | ------------------------------------------- | --------------- | --------------- |

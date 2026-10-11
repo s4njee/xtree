@@ -17,14 +17,15 @@ vec4 $transition(vec2 uv, float progress) {
   if (v > c + w + $charWidth) return from;
   // Charring darkens the old image just ahead of the edge.
   float ahead = v - c;
-  float char = 1.0 - smoothstep(w, w + $charWidth, ahead);
+  // smoothstep() needs edge0 < edge1, so a zero char width still gets a sliver.
+  float char = 1.0 - smoothstep(w, w + max($charWidth, 1e-5), ahead);
   vec4 color = from;
   color.rgb *= 1.0 - char * $charring;
   // The edge itself: a hot band from the accent color to white at its core.
   float band = 1.0 - smoothstep(0.0, w, abs(ahead));
   vec3 glow = mix(xt_accent, vec3(1.0), band * band) * band * $glow;
   // Behind the edge, the next image shows through.
-  float burnt = smoothstep(w * 0.5, -w * 0.5, ahead);
+  float burnt = 1.0 - smoothstep(-w * 0.5, w * 0.5, ahead);
   color = mix(color, to, burnt);
   color.rgb += glow;
   return color;

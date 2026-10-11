@@ -19,7 +19,7 @@ vec4 $transition(vec2 uv, float progress) {
   float strength = 1.0 - s * s;
   // Refraction: each color channel is displaced a little differently across the band.
   vec2 push = dir / aspect * strength * $refraction;
-  float t = smoothstep(0.6, -0.6, s);
+  float t = 1.0 - smoothstep(-0.6, 0.6, s);
   vec4 from = vec4(xt_from(uv + push * 1.2).r, xt_from(uv + push).g, xt_from(uv + push * 0.8).b, xt_from(uv).a);
   vec4 to = vec4(xt_to(uv - push * 0.8).r, xt_to(uv - push).g, xt_to(uv - push * 1.2).b, xt_to(uv).a);
   vec4 color = mix(from, to, t);

@@ -28,6 +28,9 @@ const projects = {
       firefoxUserPrefs: {
         'webgl.force-enabled': true,
         'webgl.disabled': false,
+        // Let Web Audio start without a real gesture, as Chromium does headless.
+        'media.autoplay.default': 0,
+        'media.autoplay.block-webaudio': false,
       },
     },
   },

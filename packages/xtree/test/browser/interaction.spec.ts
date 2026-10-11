@@ -6,6 +6,7 @@ test.beforeEach(async ({ page }) => openFixture(page));
 
 test('bindings follow the pointer, orientation, scroll and audio, and rest', async ({
   page,
+  browserName,
 }) => {
   const r = await page.evaluate(() => window.xt.animationBindings());
   // Pointer: fine pointers drive the value (UV, origin bottom left); touch doesn't; leaving rests.
@@ -22,8 +23,11 @@ test('bindings follow the pointer, orientation, scroll and audio, and rest', asy
   // Scroll: 500 of 1000 pixels of range is halfway, natively or sampled.
   expect(r.scrolled).toBeCloseTo(0.5, 1);
   expect(r.sampled).toBeCloseTo(0.25, 1);
-  // Audio: a bass tone raises the value, which returns when unbound.
-  expect(r.audio).toBeGreaterThan(0.05);
+  // Audio: a bass tone raises the value, which returns when unbound. A context
+  // the browser keeps suspended without a real gesture leaves it at rest.
+  if (browserName === 'chromium') expect(r.audioRunning).toBe(true);
+  if (r.audioRunning) expect(r.audio).toBeGreaterThan(0.05);
+  else expect(r.audio).toBe(0);
   expect(r.audioStopped).toBe(0);
 });
 
@@ -46,6 +50,8 @@ test('effects render on a HoloCSS stage without a second context, and its ambien
 test('the same seed renders the same frames, another seed a different pattern (X14.7)', async ({
   page,
 }) => {
+  // 18 float readbacks; slow on a software renderer under load.
+  test.setTimeout(120_000);
   const render = (id: string, seed: number) =>
     page
       .evaluate(

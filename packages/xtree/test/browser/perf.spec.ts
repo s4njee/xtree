@@ -30,14 +30,21 @@ test('half resolution costs at least 40% less within the documented difference (
 }) => {
   test.setTimeout(300_000);
   for (const spec of [
-    { id: 'ssao', full: { resolution: 1 }, half: { resolution: 0.5 } },
+    {
+      id: 'ssao',
+      buffers: ['depth', 'normal'],
+      full: { resolution: 1 },
+      half: { resolution: 0.5 },
+    },
     {
       id: 'volumetric-fog',
+      buffers: ['depth'],
       full: { resolution: 1 },
       half: { resolution: 0.5 },
     },
     {
       id: 'depth-of-field',
+      buffers: ['depth'],
       full: { resolution: 'full', aperture: 4 },
       half: { resolution: 'half', aperture: 4 },
     },

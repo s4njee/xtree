@@ -17,11 +17,13 @@ vec4 $levels(vec2 uv, float cell, bool next) {
 
 vec4 $transition(vec2 uv, float progress) {
   // Cell size rises to its maximum at the middle and falls back to one pixel.
-  float rise = sin(3.14159265 * progress);
+  // Clamped: sin(pi) can come out slightly negative, and pow() of a negative is undefined.
+  float rise = max(sin(3.14159265 * progress), 0.0);
   float cell = mix(1.0, $maxCell, pow(rise, $curve));
   // Below a pixel the blocks are the image itself, which keeps both ends exact.
   if (cell < 1.001) return progress < 0.5 ? xt_from(uv) : xt_to(uv);
-  float t = smoothstep(0.5 - $switchTime * 0.5, 0.5 + $switchTime * 0.5, progress);
+  // smoothstep() with equal edges is undefined, so a zero switch time is a plain cut.
+  float t = $switchTime > 0.0 ? smoothstep(0.5 - $switchTime * 0.5, 0.5 + $switchTime * 0.5, progress) : step(0.5, progress);
   if (t <= 0.0) return $levels(uv, cell, false);
   if (t >= 1.0) return $levels(uv, cell, true);
   return mix($levels(uv, cell, false), $levels(uv, cell, true), t);

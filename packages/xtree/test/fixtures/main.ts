@@ -1348,14 +1348,24 @@ const xt = {
       rest: [0.5, 0.5],
       range: 30,
     });
-    const orient = (beta: number, gamma: number) =>
-      window.dispatchEvent(
-        new DeviceOrientationEvent('deviceorientation', {
+    const orient = (beta: number, gamma: number) => {
+      let event: Event;
+      try {
+        event = new DeviceOrientationEvent('deviceorientation', {
           beta,
           gamma,
           alpha: 0,
-        }),
-      );
+        });
+      } catch {
+        // WebKit on Linux has the interface but not its constructor.
+        event = Object.assign(new Event('deviceorientation'), {
+          beta,
+          gamma,
+          alpha: 0,
+        });
+      }
+      window.dispatchEvent(event);
+    };
     orient(40, 0);
     await frames();
     const neutral = [...tilt.center];
@@ -1421,6 +1431,8 @@ const xt = {
     await settle(context.resume());
     await wait(300);
     const audio = pulse.darkness;
+    // Whether the browser let the context run without a real gesture.
+    const audioRunning = context.state === 'running';
     stopAudio();
     const audioStopped = pulse.darkness;
     oscillator.stop();
@@ -1438,6 +1450,7 @@ const xt = {
       scrolled,
       sampled,
       audio,
+      audioRunning,
       audioStopped,
     };
   },
@@ -1705,20 +1718,35 @@ const xt = {
   /** Full against reduced resolution for an effect: frame cost and image difference (X17.4). */
   async halfResolution(spec: {
     id: string;
+    buffers: string[];
     full: Record<string, unknown>;
     half: Record<string, unknown>;
   }) {
+    // The baseline renders the same geometry buffers (through cheap buffer
+    // views), so the costs compare the effect's own passes: the prepasses stay
+    // at full resolution either way.
+    const buffers = spec.buffers.map((buffer) => ({
+      id: 'buffer-view',
+      params: { buffer },
+    }));
     const bench = (params: Record<string, unknown> | null) =>
       xt.bench({
-        effects: params ? [{ id: spec.id, params }] : [],
+        effects: params ? [{ id: spec.id, params }] : buffers,
         frames: 12,
         warmup: 3,
         width: 960,
         height: 540,
       });
-    const base = await bench(null);
-    const full = await bench(spec.full);
-    const half = await bench(spec.half);
+    // Interleaved rounds, best median of each: a load spike during one
+    // configuration's run would otherwise skew the comparison.
+    let base = Infinity;
+    let full = Infinity;
+    let half = Infinity;
+    for (let round = 0; round < 3; round++) {
+      base = Math.min(base, (await bench(null)).medianMs);
+      full = Math.min(full, (await bench(spec.full)).medianMs);
+      half = Math.min(half, (await bench(spec.half)).medianMs);
+    }
     const a = xt.renderFloat({
       toneMapping: 'aces',
       effects: [{ id: spec.id, params: spec.full }],
@@ -1736,8 +1764,8 @@ const xt = {
       }
     errors.sort((p, q) => p - q);
     return {
-      fullCost: full.medianMs - base.medianMs,
-      halfCost: half.medianMs - base.medianMs,
+      fullCost: full - base,
+      halfCost: half - base,
       meanError: errors.reduce((sum, e) => sum + e, 0) / errors.length,
       p99Error: errors[Math.floor(errors.length * 0.99)]!,
     };
