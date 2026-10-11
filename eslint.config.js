@@ -42,4 +42,11 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    // The HoloCSS entry is the one place HoloCSS may be imported (X15.1).
+    files: ['packages/xtree/src/holocss/**/*.ts'],
+    rules: {
+      'no-restricted-imports': ['error', { patterns: ['node:*'] }],
+    },
+  },
 );

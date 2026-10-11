@@ -88,6 +88,7 @@ export const foilMaterial = defineMaterialEffect({
       description: 'Drift of the cosmos pattern (stops when motion is off).',
     }),
     tint: color({
+      theme: 'accent',
       default: '#ffffff',
       description: 'Color multiplied into the foil.',
     }),

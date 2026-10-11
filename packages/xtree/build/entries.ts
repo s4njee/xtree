@@ -16,6 +16,7 @@ const fixed = {
   'core/index': 'src/core/index.ts',
   'motion/index': 'src/motion/index.ts',
   'safety/index': 'src/safety/index.ts',
+  'holocss/index': 'src/holocss/index.ts',
 } as const;
 
 /** Every folder in src/effects is an entry, `@mk7s/xtree/effects/<id>`. */

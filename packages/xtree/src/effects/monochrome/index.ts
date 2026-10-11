@@ -28,10 +28,12 @@ export const monochrome = defineEffect({
       description: 'Mix between the original and the toned image.',
     }),
     shadows: color({
+      theme: 'background',
       default: '#1b1f3b',
       description: 'Duotone: the color of the darkest areas.',
     }),
     highlights: color({
+      theme: 'text',
       default: '#ffd59e',
       description: 'Duotone: the color of the brightest areas.',
     }),

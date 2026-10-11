@@ -31,17 +31,17 @@ Every parameter is also a property: `effect.intensity = 0.7`. Uniform changes ta
 
 ## Parameters
 
-| Parameter       | Type                             | Default     | Range    | Description                                                                         |
-| --------------- | -------------------------------- | ----------- | -------- | ----------------------------------------------------------------------------------- |
-| `intensity`     | number                           | `0.7`       | 0 – 1    | How strongly the foil tints the surface.                                            |
-| `sheen`         | number                           | `0.35`      | 0 – 2    | Foil light added on top, strongest on lit areas.                                    |
-| `pattern`       | 'linear' \| 'radial' \| 'cosmos' | `'linear'`  |          | Rainbow layout across the surface: straight bands, rings, or bands warped by noise. |
-| `scale`         | number                           | `1.5`       | 0.1 – 10 | Rainbow repeats per unit of surface (UV or object space).                           |
-| `angleResponse` | number                           | `1.5`       | 0 – 5    | How far the colors slide as the viewing angle changes.                              |
-| `saturation`    | number                           | `0.75`      | 0 – 1    | Color saturation of the foil.                                                       |
-| `sparkle`       | number                           | `0.4`       | 0 – 1    | Density of view-dependent glints.                                                   |
-| `speed`         | number                           | `0.2`       | 0 – 2    | Drift of the cosmos pattern (stops when motion is off).                             |
-| `tint`          | hex color                        | `'#ffffff'` |          | Color multiplied into the foil.                                                     |
+| Parameter       | Type                                                      | Default     | Range    | Description                                                                         |
+| --------------- | --------------------------------------------------------- | ----------- | -------- | ----------------------------------------------------------------------------------- |
+| `intensity`     | number                                                    | `0.7`       | 0 – 1    | How strongly the foil tints the surface.                                            |
+| `sheen`         | number                                                    | `0.35`      | 0 – 2    | Foil light added on top, strongest on lit areas.                                    |
+| `pattern`       | 'linear' \| 'radial' \| 'cosmos'                          | `'linear'`  |          | Rainbow layout across the surface: straight bands, rings, or bands warped by noise. |
+| `scale`         | number                                                    | `1.5`       | 0.1 – 10 | Rainbow repeats per unit of surface (UV or object space).                           |
+| `angleResponse` | number                                                    | `1.5`       | 0 – 5    | How far the colors slide as the viewing angle changes.                              |
+| `saturation`    | number                                                    | `0.75`      | 0 – 1    | Color saturation of the foil.                                                       |
+| `sparkle`       | number                                                    | `0.4`       | 0 – 1    | Density of view-dependent glints.                                                   |
+| `speed`         | number                                                    | `0.2`       | 0 – 2    | Drift of the cosmos pattern (stops when motion is off).                             |
+| `tint`          | hex color (theme: [`accent`](/guide/holocss#theme-roles)) | `'#ffffff'` |          | Color multiplied into the foil.                                                     |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

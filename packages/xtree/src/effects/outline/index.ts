@@ -28,7 +28,11 @@ export const outline = defineEffect({
       unit: 'px',
       description: 'Line width.',
     }),
-    color: color({ default: '#7cc4ff', description: 'Line color.' }),
+    color: color({
+      theme: 'accent',
+      default: '#7cc4ff',
+      description: 'Line color.',
+    }),
     depthThreshold: float({
       default: 0.1,
       min: 0.005,
@@ -59,6 +63,7 @@ export const outline = defineEffect({
       description: 'Draw lines over the image, or on plain paper.',
     }),
     paper: color({
+      theme: 'background',
       default: '#f3efe6',
       description: 'Ink style: background color.',
     }),

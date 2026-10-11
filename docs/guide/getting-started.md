@@ -47,14 +47,17 @@ Consecutive effects compile into one shader, so five color effects cost one full
 
 ## Motion and accessibility
 
-`composer.motion = false` stops animated effects: some freeze on their current frame, and others switch to still values (the RGB split glitch stops jumping). While motion is off, setting `composer.time` changes nothing on screen. To follow the user's settings with [HoloCSS](https://github.com/s4njee/holocss):
+`composer.motion = false` stops animated effects: some freeze on their current frame, and others switch to still values (the RGB split glitch stops jumping). While motion is off, setting `composer.time` changes nothing on screen.
+
+To follow the user's settings, use `bindMotion`. Motion then stops under OS reduced motion, inside `data-hcss-motion="none"` and under the high-contrast theme, and starts again when those settings change:
 
 ```ts
-import { motionAllowed, watchMotion } from '@mk7s/holocss/runtime';
+import { bindMotion } from '@mk7s/xtree/motion';
 
-composer.motion = motionAllowed(canvas);
-const stop = watchMotion(canvas, (allowed) => (composer.motion = allowed));
+const unbind = bindMotion([composer, hologram], canvas);
 ```
+
+With [HoloCSS](https://github.com/s4njee/holocss), use `bindMotion` from `@mk7s/xtree/holocss` instead. It applies HoloCSS's own policy, and `bindTheme` from the same entry lets effects follow the theme colors (see [HoloCSS themes and motion](/guide/holocss)).
 
 ## Use three.js's own EffectComposer
 

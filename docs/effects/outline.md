@@ -28,15 +28,15 @@ Every parameter is also a property: `effect.thickness = 1.5`. Uniform changes ta
 
 ## Parameters
 
-| Parameter              | Type                         | Default             | Range      | Description                                                                                       |
-| ---------------------- | ---------------------------- | ------------------- | ---------- | ------------------------------------------------------------------------------------------------- |
-| `thickness`            | number                       | `1.5`               | 0.5 – 6 px | Line width.                                                                                       |
-| `color`                | hex color                    | `'#7cc4ff'`         |            | Line color.                                                                                       |
-| `depthThreshold`       | number                       | `0.1`               | 0.005 – 1  | How sharply depth must bend (relative to its distance) to count as an edge.                       |
-| `normalThreshold`      | number                       | `0.4`               | 0.02 – 2   | How sharply the surface direction must turn to count as a crease.                                 |
-| `edges` _(structural)_ | 'depthAndNormals' \| 'depth' | `'depthAndNormals'` |            | Find silhouettes from depth only, or creases too from the normal buffer (one extra scene render). |
-| `style`                | 'overlay' \| 'ink'           | `'overlay'`         |            | Draw lines over the image, or on plain paper.                                                     |
-| `paper`                | hex color                    | `'#f3efe6'`         |            | Ink style: background color.                                                                      |
+| Parameter              | Type                                                          | Default             | Range      | Description                                                                                       |
+| ---------------------- | ------------------------------------------------------------- | ------------------- | ---------- | ------------------------------------------------------------------------------------------------- |
+| `thickness`            | number                                                        | `1.5`               | 0.5 – 6 px | Line width.                                                                                       |
+| `color`                | hex color (theme: [`accent`](/guide/holocss#theme-roles))     | `'#7cc4ff'`         |            | Line color.                                                                                       |
+| `depthThreshold`       | number                                                        | `0.1`               | 0.005 – 1  | How sharply depth must bend (relative to its distance) to count as an edge.                       |
+| `normalThreshold`      | number                                                        | `0.4`               | 0.02 – 2   | How sharply the surface direction must turn to count as a crease.                                 |
+| `edges` _(structural)_ | 'depthAndNormals' \| 'depth'                                  | `'depthAndNormals'` |            | Find silhouettes from depth only, or creases too from the normal buffer (one extra scene render). |
+| `style`                | 'overlay' \| 'ink'                                            | `'overlay'`         |            | Draw lines over the image, or on plain paper.                                                     |
+| `paper`                | hex color (theme: [`background`](/guide/holocss#theme-roles)) | `'#f3efe6'`         |            | Ink style: background color.                                                                      |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

@@ -55,7 +55,9 @@ function typeOf(param) {
     case 'select':
       return param.options.map((o) => `'${o}'`).join(' \\| ');
     case 'color':
-      return 'hex color';
+      return param.theme
+        ? `hex color (theme: [\`${param.theme}\`](/guide/holocss#theme-roles))`
+        : 'hex color';
     case 'texture':
       return `${param.dimension.toUpperCase()} texture${
         param.samples

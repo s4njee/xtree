@@ -64,6 +64,7 @@ export const dissolve = defineMaterialEffect({
       description: 'Width of the glowing edge, in units of progress.',
     }),
     edgeColor: color({
+      theme: 'accent',
       default: '#ff8a3d',
       description: 'Color of the burning edge.',
     }),

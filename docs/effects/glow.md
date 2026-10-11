@@ -29,13 +29,13 @@ Every parameter is also a property: `effect.color = '#5ad8ff'`. Uniform changes 
 
 ## Parameters
 
-| Parameter   | Type              | Default     | Range     | Description                                                                |
-| ----------- | ----------------- | ----------- | --------- | -------------------------------------------------------------------------- |
-| `color`     | hex color         | `'#5ad8ff'` |           | Halo color.                                                                |
-| `intensity` | number            | `2`         | 0 – 10    | Brightness of the halo, in linear units (above 1 blooms with HDR effects). |
-| `radius`    | number            | `16`        | 1 – 64 px | How far the halo spreads.                                                  |
-| `mode`      | 'outer' \| 'both' | `'outer'`   |           | Halo only outside the selection, or over it as well.                       |
-| `threshold` | number            | `1`         | 0 – 8     | Without a mask: linear brightness that starts to glow.                     |
+| Parameter   | Type                                                      | Default     | Range     | Description                                                                |
+| ----------- | --------------------------------------------------------- | ----------- | --------- | -------------------------------------------------------------------------- |
+| `color`     | hex color (theme: [`accent`](/guide/holocss#theme-roles)) | `'#5ad8ff'` |           | Halo color.                                                                |
+| `intensity` | number                                                    | `2`         | 0 – 10    | Brightness of the halo, in linear units (above 1 blooms with HDR effects). |
+| `radius`    | number                                                    | `16`        | 1 – 64 px | How far the halo spreads.                                                  |
+| `mode`      | 'outer' \| 'both'                                         | `'outer'`   |           | Halo only outside the selection, or over it as well.                       |
+| `threshold` | number                                                    | `1`         | 0 – 8     | Without a mask: linear brightness that starts to glow.                     |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

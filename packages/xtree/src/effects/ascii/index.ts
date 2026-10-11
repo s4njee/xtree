@@ -47,10 +47,12 @@ export const ascii = defineEffect({
         'Draw characters in the colors underneath, or in the foreground color.',
     }),
     foreground: color({
+      theme: 'text',
       default: '#e8f0ff',
       description: 'Mono: character color.',
     }),
     background: color({
+      theme: 'background',
       default: '#05070c',
       description: 'Color behind the characters.',
     }),

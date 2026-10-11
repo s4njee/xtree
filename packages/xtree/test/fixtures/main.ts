@@ -712,6 +712,96 @@ const xt = {
     host.remove();
     return rows;
   },
+  /**
+   * The HoloCSS round trip (X15.2, X15.3): HoloCSS's real tokens and runtime,
+   * every built-in theme applied in turn to an ancestor, and what the bound
+   * effects, a transition accent and a composer's motion follow.
+   */
+  async holocssRoundTrip() {
+    const [{ default: tokens }, { builtinThemes }, holo] = await Promise.all([
+      import('@holocss-src/components/tokens.css?inline'),
+      import('@holocss-src/theme/registry'),
+      import('../../src/holocss/index.js'),
+    ]);
+    const style = document.createElement('style');
+    style.textContent = tokens;
+    document.head.append(style);
+    const host = document.createElement('div');
+    const probe = document.createElement('span');
+    host.append(probe);
+    document.body.append(host);
+    const ids = ['outline', 'depth-fog', 'gradient-map', 'holographic-foil'];
+    const effects = createEffects(ids.map((id) => ({ id })));
+    let accent = '';
+    const player = { setAccent: (hex: string) => (accent = hex) };
+    const composer = new EffectComposer(renderer);
+    const unbindTheme = holo.bindTheme([...effects, player], probe);
+    const unbindMotion = holo.bindMotion(composer, probe);
+    const settle = () => new Promise((r) => setTimeout(r, 0));
+    const colors = (effect: Effect) =>
+      Object.fromEntries(
+        Object.entries(effect.definition.params)
+          .filter(([, p]) => p.kind === 'color')
+          .map(([name]) => [name, effect.get(name as never) as string]),
+      );
+    const themes = [];
+    try {
+      for (const theme of builtinThemes.filter((t) => t !== 'auto')) {
+        host.dataset.hcssTheme = theme;
+        await settle();
+        const css = getComputedStyle(probe);
+        themes.push({
+          theme,
+          tokens: Object.fromEntries(
+            ['accent', 'background', 'surface', 'text'].map((role) => [
+              role,
+              css.getPropertyValue(`--hcss-${role}`).trim(),
+            ]),
+          ),
+          resolved: holo.resolveTheme(probe),
+          effects: Object.fromEntries(
+            ids.map((id, i) => [id, colors(effects[i]!)]),
+          ),
+          accent,
+          motion: composer.motion,
+        });
+      }
+      host.dataset.hcssTheme = 'dark';
+      host.dataset.hcssMotion = 'none';
+      await settle();
+      const motionNone = composer.motion;
+      delete host.dataset.hcssMotion;
+      await settle();
+      const motionRestored = composer.motion;
+      unbindTheme();
+      host.dataset.hcssTheme = 'light';
+      await settle();
+      const afterUnbind = colors(effects[0]!);
+      return {
+        themes,
+        motionNone,
+        motionRestored,
+        afterUnbind,
+        roles: Object.fromEntries(
+          ids.map((id, i) => [
+            id,
+            Object.fromEntries(
+              Object.entries(effects[i]!.definition.params)
+                .filter(([, p]) => p.kind === 'color')
+                .map(([name, p]) => [name, (p as { theme?: string }).theme]),
+            ),
+          ]),
+        ),
+      };
+    } finally {
+      unbindTheme();
+      unbindMotion();
+      composer.dispose();
+      for (const effect of effects) effect.dispose();
+      host.remove();
+      style.remove();
+    }
+  },
   motionPair(spec: RenderSpec & { times: [number, number] }) {
     return withComposer(spec, (composer) => {
       composer.time = spec.times[0];

@@ -4,7 +4,8 @@ import { defineConfig } from 'vite';
 import { ensureHolocss } from '../../../../scripts/holocss.mjs';
 import { glsl } from '../../build/glsl-plugin.js';
 
-// HoloCSS source at the pinned commit, for testing transitions with its real transition3d().
+// HoloCSS source at the pinned commit, for testing transitions with its real
+// transition3d(), and the HoloCSS entry with its real runtime, tokens and themes.
 const holocss: string = ensureHolocss();
 
 // Serves the GPU fixture page that the Playwright visual and integration tests drive.
@@ -15,13 +16,15 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: /^@holocss\/runtime$/,
+        find: /^(@holocss|@mk7s\/holocss)\/runtime$/,
         replacement: resolve(holocss, 'src/runtime/index.ts'),
       },
       {
         find: /^@holocss\/three$/,
         replacement: resolve(holocss, 'src/three/index.ts'),
       },
+      // Any other HoloCSS source file, such as its theme tokens and registry.
+      { find: /^@holocss-src\//, replacement: `${resolve(holocss, 'src')}/` },
     ],
     // HoloCSS's source has no node_modules; resolve its `three` import to ours.
     dedupe: ['three'],

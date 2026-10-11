@@ -31,14 +31,14 @@ Every parameter is also a property: `effect.color = '#5ad8ff'`. Uniform changes 
 
 ## Parameters
 
-| Parameter   | Type      | Default     | Range    | Description                                                                       |
-| ----------- | --------- | ----------- | -------- | --------------------------------------------------------------------------------- |
-| `color`     | hex color | `'#5ad8ff'` |          | Glow color.                                                                       |
-| `intensity` | number    | `2`         | 0 – 10   | Brightness at the rim, in linear units (above 1 blooms with HDR effects).         |
-| `power`     | number    | `3`         | 0.5 – 10 | Rim width: higher values hug the silhouette.                                      |
-| `bias`      | number    | `0`         | 0 – 1    | Glow added everywhere, before the rim.                                            |
-| `inverted`  | boolean   | `false`     |          | Light the faces toward the camera instead of the rim.                             |
-| `pulse`     | number    | `0`         | 0 – 1    | Slow breathing of the brightness, as a fraction of it (stops when motion is off). |
+| Parameter   | Type                                                      | Default     | Range    | Description                                                                       |
+| ----------- | --------------------------------------------------------- | ----------- | -------- | --------------------------------------------------------------------------------- |
+| `color`     | hex color (theme: [`accent`](/guide/holocss#theme-roles)) | `'#5ad8ff'` |          | Glow color.                                                                       |
+| `intensity` | number                                                    | `2`         | 0 – 10   | Brightness at the rim, in linear units (above 1 blooms with HDR effects).         |
+| `power`     | number                                                    | `3`         | 0.5 – 10 | Rim width: higher values hug the silhouette.                                      |
+| `bias`      | number                                                    | `0`         | 0 – 1    | Glow added everywhere, before the rim.                                            |
+| `inverted`  | boolean                                                   | `false`     |          | Light the faces toward the camera instead of the rim.                             |
+| `pulse`     | number                                                    | `0`         | 0 – 1    | Slow breathing of the brightness, as a fraction of it (stops when motion is off). |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

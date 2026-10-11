@@ -28,14 +28,14 @@ Every parameter is also a property: `effect.intensity = 1`. Uniform changes take
 
 ## Parameters
 
-| Parameter   | Type      | Default     | Range | Description                                                                              |
-| ----------- | --------- | ----------- | ----- | ---------------------------------------------------------------------------------------- |
-| `intensity` | number    | `1`         | 0 – 4 | How much of the blurred light is added back.                                             |
-| `threshold` | number    | `1`         | 0 – 8 | Linear brightness above which pixels bloom. 1 is the brightest non-HDR white.            |
-| `knee`      | number    | `0.5`       | 0 – 1 | Softness of the threshold, as a fraction of it.                                          |
-| `radius`    | number    | `0.7`       | 0 – 1 | Spread: low values keep the glow tight, high values favor the widest blur levels.        |
-| `levels`    | integer   | `6`         | 2 – 8 | Number of half-resolution blur levels. More levels reach further and cost a little more. |
-| `tint`      | hex color | `'#ffffff'` |       | Color multiplied into the glow.                                                          |
+| Parameter   | Type                                                      | Default     | Range | Description                                                                              |
+| ----------- | --------------------------------------------------------- | ----------- | ----- | ---------------------------------------------------------------------------------------- |
+| `intensity` | number                                                    | `1`         | 0 – 4 | How much of the blurred light is added back.                                             |
+| `threshold` | number                                                    | `1`         | 0 – 8 | Linear brightness above which pixels bloom. 1 is the brightest non-HDR white.            |
+| `knee`      | number                                                    | `0.5`       | 0 – 1 | Softness of the threshold, as a fraction of it.                                          |
+| `radius`    | number                                                    | `0.7`       | 0 – 1 | Spread: low values keep the glow tight, high values favor the widest blur levels.        |
+| `levels`    | integer                                                   | `6`         | 2 – 8 | Number of half-resolution blur levels. More levels reach further and cost a little more. |
+| `tint`      | hex color (theme: [`accent`](/guide/holocss#theme-roles)) | `'#ffffff'` |       | Color multiplied into the glow.                                                          |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

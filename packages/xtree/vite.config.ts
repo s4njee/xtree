@@ -18,7 +18,7 @@ export default defineConfig(({ mode }) => ({
     target: 'es2022',
     lib: { entry: entries, formats: ['es'] },
     rolldownOptions: {
-      external: [/^three(\/.*)?$/],
+      external: [/^three(\/.*)?$/, /^@mk7s\/holocss(\/.*)?$/],
       output: {
         entryFileNames: '[name].js',
         chunkFileNames: 'chunks/[name]-[hash].js',

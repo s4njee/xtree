@@ -20,7 +20,11 @@ export const depthFog = defineEffect({
   },
   buffers: ['depth'],
   params: {
-    color: color({ default: '#6f7f9f', description: 'Fog color.' }),
+    color: color({
+      theme: 'surface',
+      default: '#6f7f9f',
+      description: 'Fog color.',
+    }),
     mode: select({
       options: ['linear', 'exponential', 'exponential2'],
       default: 'exponential2',

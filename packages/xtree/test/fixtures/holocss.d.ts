@@ -27,3 +27,12 @@ declare module '@holocss/runtime' {
     callback: (allowed: boolean) => void,
   ): () => void;
 }
+
+declare module '@holocss-src/theme/registry' {
+  export const builtinThemes: readonly string[];
+}
+
+declare module '*.css?inline' {
+  const css: string;
+  export default css;
+}

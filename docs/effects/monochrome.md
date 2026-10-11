@@ -28,12 +28,12 @@ Every parameter is also a property: `effect.mode = 'grayscale'`. Uniform changes
 
 ## Parameters
 
-| Parameter    | Type                                | Default       | Range | Description                                   |
-| ------------ | ----------------------------------- | ------------- | ----- | --------------------------------------------- |
-| `mode`       | 'grayscale' \| 'sepia' \| 'duotone' | `'grayscale'` |       | The kind of toning.                           |
-| `amount`     | number                              | `1`           | 0 – 1 | Mix between the original and the toned image. |
-| `shadows`    | hex color                           | `'#1b1f3b'`   |       | Duotone: the color of the darkest areas.      |
-| `highlights` | hex color                           | `'#ffd59e'`   |       | Duotone: the color of the brightest areas.    |
+| Parameter    | Type                                                          | Default       | Range | Description                                   |
+| ------------ | ------------------------------------------------------------- | ------------- | ----- | --------------------------------------------- |
+| `mode`       | 'grayscale' \| 'sepia' \| 'duotone'                           | `'grayscale'` |       | The kind of toning.                           |
+| `amount`     | number                                                        | `1`           | 0 – 1 | Mix between the original and the toned image. |
+| `shadows`    | hex color (theme: [`background`](/guide/holocss#theme-roles)) | `'#1b1f3b'`   |       | Duotone: the color of the darkest areas.      |
+| `highlights` | hex color (theme: [`text`](/guide/holocss#theme-roles))       | `'#ffd59e'`   |       | Duotone: the color of the brightest areas.    |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

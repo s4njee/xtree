@@ -53,8 +53,13 @@ export const halftone = defineEffect({
       unit: 'px',
       description: 'Width of the antialiased edge.',
     }),
-    ink: color({ default: '#1a1a1a', description: 'Mono: ink color.' }),
+    ink: color({
+      theme: 'text',
+      default: '#1a1a1a',
+      description: 'Mono: ink color.',
+    }),
     paper: color({
+      theme: 'background',
       default: '#f4efe4',
       description: 'Paper color for CMYK and mono.',
     }),

@@ -54,6 +54,7 @@ export const bloom = defineEffect({
         'Number of half-resolution blur levels. More levels reach further and cost a little more.',
     }),
     tint: color({
+      theme: 'accent',
       default: '#ffffff',
       description: 'Color multiplied into the glow.',
     }),

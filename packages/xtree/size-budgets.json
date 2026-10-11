@@ -51,5 +51,6 @@
   "./safety": 1344,
   "./shaders/dither": 384,
   "./shaders/sampling": 1408,
-  "./shaders/sdf": 640
+  "./shaders/sdf": 640,
+  "./holocss": 1600
 }

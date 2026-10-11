@@ -113,6 +113,7 @@ export const holographicFoil = defineEffect({
         'Drift of the pattern over time. Freezes when motion is off.',
     }),
     tint: color({
+      theme: 'accent',
       default: '#ffffff',
       description: 'Color multiplied into the foil.',
     }),

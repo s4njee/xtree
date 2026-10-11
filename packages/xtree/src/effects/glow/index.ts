@@ -25,7 +25,11 @@ export const glow = defineEffect({
   sampling: 'input',
   masking: 'custom',
   params: {
-    color: color({ default: '#5ad8ff', description: 'Halo color.' }),
+    color: color({
+      theme: 'accent',
+      default: '#5ad8ff',
+      description: 'Halo color.',
+    }),
     intensity: float({
       default: 2,
       min: 0,

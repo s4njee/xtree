@@ -28,17 +28,17 @@ Every parameter is also a property: `effect.color = '#6f7f9f'`. Uniform changes 
 
 ## Parameters
 
-| Parameter       | Type                                        | Default          | Range     | Description                                                                      |
-| --------------- | ------------------------------------------- | ---------------- | --------- | -------------------------------------------------------------------------------- |
-| `color`         | hex color                                   | `'#6f7f9f'`      |           | Fog color.                                                                       |
-| `mode`          | 'linear' \| 'exponential' \| 'exponential2' | `'exponential2'` |           | How density grows with distance: evenly between start and end, or exponentially. |
-| `start`         | number                                      | `2`              | 0 – 100   | Distance where fog begins, in scene units.                                       |
-| `end`           | number                                      | `30`             | 0.1 – 500 | Linear: distance where fog is thickest.                                          |
-| `density`       | number                                      | `0.06`           | 0 – 1     | Exponential: fog per scene unit.                                                 |
-| `heightFalloff` | number                                      | `0`              | 0 – 5     | How quickly fog thins above the base height; 0 fills the whole view.             |
-| `height`        | number                                      | `0`              | -50 – 50  | Base height of the fog in world units.                                           |
-| `maxOpacity`    | number                                      | `1`              | 0 – 1     | Thickest the fog gets.                                                           |
-| `background`    | boolean                                     | `true`           |           | Fog the background too (it counts as the far plane).                             |
+| Parameter       | Type                                                       | Default          | Range     | Description                                                                      |
+| --------------- | ---------------------------------------------------------- | ---------------- | --------- | -------------------------------------------------------------------------------- |
+| `color`         | hex color (theme: [`surface`](/guide/holocss#theme-roles)) | `'#6f7f9f'`      |           | Fog color.                                                                       |
+| `mode`          | 'linear' \| 'exponential' \| 'exponential2'                | `'exponential2'` |           | How density grows with distance: evenly between start and end, or exponentially. |
+| `start`         | number                                                     | `2`              | 0 – 100   | Distance where fog begins, in scene units.                                       |
+| `end`           | number                                                     | `30`             | 0.1 – 500 | Linear: distance where fog is thickest.                                          |
+| `density`       | number                                                     | `0.06`           | 0 – 1     | Exponential: fog per scene unit.                                                 |
+| `heightFalloff` | number                                                     | `0`              | 0 – 5     | How quickly fog thins above the base height; 0 fills the whole view.             |
+| `height`        | number                                                     | `0`              | -50 – 50  | Base height of the fog in world units.                                           |
+| `maxOpacity`    | number                                                     | `1`              | 0 – 1     | Thickest the fog gets.                                                           |
+| `background`    | boolean                                                    | `true`           |           | Fog the background too (it counts as the far plane).                             |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

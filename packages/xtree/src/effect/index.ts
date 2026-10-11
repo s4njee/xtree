@@ -52,6 +52,7 @@ export {
   type SampleTexture,
   type TextureLike,
   type TextureParam,
+  type ThemeRole,
   type Vec2Param,
   type Vec3Param,
 } from './params.js';

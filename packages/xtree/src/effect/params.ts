@@ -32,8 +32,24 @@ interface RangeOptions {
 export interface FloatParam extends BaseParam<'float', number>, RangeOptions {}
 export interface IntParam extends BaseParam<'int', number>, RangeOptions {}
 export type BoolParam = BaseParam<'bool', boolean>;
+/** HoloCSS color roles (`--hcss-<role>`) a color parameter can follow; see `bindTheme`. */
+export type ThemeRole =
+  | 'accent'
+  | 'background'
+  | 'surface'
+  | 'elevated-surface'
+  | 'text'
+  | 'text-muted'
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'info';
+
 /** A color written as a CSS hex string (sRGB); the uniform holds linear RGB. */
-export type ColorParam = BaseParam<'color', string>;
+export interface ColorParam extends BaseParam<'color', string> {
+  /** The theme role `bindTheme` sets this color from. */
+  readonly theme?: ThemeRole;
+}
 export interface Vec2Param
   extends BaseParam<'vec2', readonly [number, number]>, RangeOptions {}
 export interface Vec3Param

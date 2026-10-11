@@ -30,20 +30,20 @@ Every parameter is also a property: `effect.intensity = 0.5`. Uniform changes ta
 
 ## Parameters
 
-| Parameter       | Type                             | Default     | Range       | Description                                                                  |
-| --------------- | -------------------------------- | ----------- | ----------- | ---------------------------------------------------------------------------- |
-| `intensity`     | number                           | `0.5`       | 0 – 1       | Strength of the iridescent tint on lit surfaces.                             |
-| `sheen`         | number                           | `0.15`      | 0 – 1       | Foil light added on top of bright areas.                                     |
-| `pattern`       | 'linear' \| 'radial' \| 'cosmos' | `'cosmos'`  |             | Shape of the rainbow bands.                                                  |
-| `tilt`          | [x, y]                           | `[0, 0]`    | -1 – 1      | Viewing angle, for example the pointer position. Moves the bands and glints. |
-| `angle`         | number                           | `35`        | 0 – 360 °   | Direction of the bands (linear and cosmos patterns).                         |
-| `scale`         | number                           | `1.6`       | 0.1 – 8     | Number of rainbow cycles across the frame.                                   |
-| `hueShift`      | number                           | `0`         | 0 – 1 turns | Rotates the rainbow.                                                         |
-| `saturation`    | number                           | `0.65`      | 0 – 1       | Color purity of the foil.                                                    |
-| `luminanceMask` | number                           | `0.5`       | 0 – 1       | How much the foil favors bright areas, as printed foil does.                 |
-| `sparkle`       | number                           | `0.3`       | 0 – 1       | Density of view-dependent glitter.                                           |
-| `speed`         | number                           | `0.5`       | 0 – 4       | Drift of the pattern over time. Freezes when motion is off.                  |
-| `tint`          | hex color                        | `'#ffffff'` |             | Color multiplied into the foil.                                              |
+| Parameter       | Type                                                      | Default     | Range       | Description                                                                  |
+| --------------- | --------------------------------------------------------- | ----------- | ----------- | ---------------------------------------------------------------------------- |
+| `intensity`     | number                                                    | `0.5`       | 0 – 1       | Strength of the iridescent tint on lit surfaces.                             |
+| `sheen`         | number                                                    | `0.15`      | 0 – 1       | Foil light added on top of bright areas.                                     |
+| `pattern`       | 'linear' \| 'radial' \| 'cosmos'                          | `'cosmos'`  |             | Shape of the rainbow bands.                                                  |
+| `tilt`          | [x, y]                                                    | `[0, 0]`    | -1 – 1      | Viewing angle, for example the pointer position. Moves the bands and glints. |
+| `angle`         | number                                                    | `35`        | 0 – 360 °   | Direction of the bands (linear and cosmos patterns).                         |
+| `scale`         | number                                                    | `1.6`       | 0.1 – 8     | Number of rainbow cycles across the frame.                                   |
+| `hueShift`      | number                                                    | `0`         | 0 – 1 turns | Rotates the rainbow.                                                         |
+| `saturation`    | number                                                    | `0.65`      | 0 – 1       | Color purity of the foil.                                                    |
+| `luminanceMask` | number                                                    | `0.5`       | 0 – 1       | How much the foil favors bright areas, as printed foil does.                 |
+| `sparkle`       | number                                                    | `0.3`       | 0 – 1       | Density of view-dependent glitter.                                           |
+| `speed`         | number                                                    | `0.5`       | 0 – 4       | Drift of the pattern over time. Freezes when motion is off.                  |
+| `tint`          | hex color (theme: [`accent`](/guide/holocss#theme-roles)) | `'#ffffff'` |             | Color multiplied into the foil.                                              |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

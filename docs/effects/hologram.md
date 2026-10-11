@@ -31,18 +31,18 @@ Every parameter is also a property: `effect.color = '#5ad8ff'`. Uniform changes 
 
 ## Parameters
 
-| Parameter          | Type      | Default     | Range    | Description                                                                          |
-| ------------------ | --------- | ----------- | -------- | ------------------------------------------------------------------------------------ |
-| `color`            | hex color | `'#5ad8ff'` |          | Hologram color.                                                                      |
-| `intensity`        | number    | `1.2`       | 0 – 5    | Brightness, in linear units.                                                         |
-| `shading`          | number    | `0.5`       | 0 – 1    | How much of the original lighting shows through.                                     |
-| `rimPower`         | number    | `2.5`       | 0.5 – 8  | Width of the bright rim: higher hugs the silhouette.                                 |
-| `rimIntensity`     | number    | `2`         | 0 – 8    | Brightness of the rim.                                                               |
-| `scanlineDensity`  | number    | `40`        | 0 – 200  | Scanlines per world unit of height; 0 turns them off.                                |
-| `scanlineStrength` | number    | `0.5`       | 0 – 1    | Darkness between scanlines.                                                          |
-| `scanlineSpeed`    | number    | `0.3`       | -3 – 3   | Scroll speed of the scanlines, in world units per second.                            |
-| `flicker`          | number    | `0.12`      | 0 – 0.25 | Brightness wobble; slow (under 3 Hz) and at most 25%, to stay photosensitivity-safe. |
-| `glitch`           | number    | `0.06`      | 0 – 0.5  | Sideways shift of occasional horizontal slices, in object units.                     |
+| Parameter          | Type                                                      | Default     | Range    | Description                                                                          |
+| ------------------ | --------------------------------------------------------- | ----------- | -------- | ------------------------------------------------------------------------------------ |
+| `color`            | hex color (theme: [`accent`](/guide/holocss#theme-roles)) | `'#5ad8ff'` |          | Hologram color.                                                                      |
+| `intensity`        | number                                                    | `1.2`       | 0 – 5    | Brightness, in linear units.                                                         |
+| `shading`          | number                                                    | `0.5`       | 0 – 1    | How much of the original lighting shows through.                                     |
+| `rimPower`         | number                                                    | `2.5`       | 0.5 – 8  | Width of the bright rim: higher hugs the silhouette.                                 |
+| `rimIntensity`     | number                                                    | `2`         | 0 – 8    | Brightness of the rim.                                                               |
+| `scanlineDensity`  | number                                                    | `40`        | 0 – 200  | Scanlines per world unit of height; 0 turns them off.                                |
+| `scanlineStrength` | number                                                    | `0.5`       | 0 – 1    | Darkness between scanlines.                                                          |
+| `scanlineSpeed`    | number                                                    | `0.3`       | -3 – 3   | Scroll speed of the scanlines, in world units per second.                            |
+| `flicker`          | number                                                    | `0.12`      | 0 – 0.25 | Brightness wobble; slow (under 3 Hz) and at most 25%, to stay photosensitivity-safe. |
+| `glitch`           | number                                                    | `0.06`      | 0 – 0.5  | Sideways shift of occasional horizontal slices, in object units.                     |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

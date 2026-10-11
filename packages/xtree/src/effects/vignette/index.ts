@@ -44,6 +44,7 @@ export const vignette = defineEffect({
         'Smooth mode shape: 1 is a circle, 0 follows the frame aspect ratio.',
     }),
     color: color({
+      theme: 'background',
       default: '#000000',
       description: 'Color the edges move toward.',
     }),

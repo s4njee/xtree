@@ -27,16 +27,16 @@ Every parameter is also a property: `effect.progress = 0.45`. Uniform changes ta
 
 ## Parameters
 
-| Parameter       | Type               | Default     | Range    | Description                                                                  |
-| --------------- | ------------------ | ----------- | -------- | ---------------------------------------------------------------------------- |
-| `progress`      | number             | `0.45`      | 0 – 1    | How much has dissolved: 0 is whole, 1 is gone.                               |
-| `pattern`       | 'noise' \| 'sweep' | `'noise'`   |          | Dissolve in noisy patches, or as a front moving up through the height range. |
-| `range`         | [x, y]             | `[0, 2.5]`  | -50 – 50 | Sweep: world heights where the front starts and ends.                        |
-| `noiseScale`    | number             | `2.5`       | 0.1 – 20 | Size of the noise patches: higher is finer.                                  |
-| `noiseAmount`   | number             | `0.25`      | 0 – 1    | Sweep: how ragged the front is.                                              |
-| `edgeWidth`     | number             | `0.06`      | 0 – 0.3  | Width of the glowing edge, in units of progress.                             |
-| `edgeColor`     | hex color          | `'#ff8a3d'` |          | Color of the burning edge.                                                   |
-| `edgeIntensity` | number             | `4`         | 0 – 20   | Brightness of the edge, in linear units (above 1 blooms with HDR effects).   |
+| Parameter       | Type                                                      | Default     | Range    | Description                                                                  |
+| --------------- | --------------------------------------------------------- | ----------- | -------- | ---------------------------------------------------------------------------- |
+| `progress`      | number                                                    | `0.45`      | 0 – 1    | How much has dissolved: 0 is whole, 1 is gone.                               |
+| `pattern`       | 'noise' \| 'sweep'                                        | `'noise'`   |          | Dissolve in noisy patches, or as a front moving up through the height range. |
+| `range`         | [x, y]                                                    | `[0, 2.5]`  | -50 – 50 | Sweep: world heights where the front starts and ends.                        |
+| `noiseScale`    | number                                                    | `2.5`       | 0.1 – 20 | Size of the noise patches: higher is finer.                                  |
+| `noiseAmount`   | number                                                    | `0.25`      | 0 – 1    | Sweep: how ragged the front is.                                              |
+| `edgeWidth`     | number                                                    | `0.06`      | 0 – 0.3  | Width of the glowing edge, in units of progress.                             |
+| `edgeColor`     | hex color (theme: [`accent`](/guide/holocss#theme-roles)) | `'#ff8a3d'` |          | Color of the burning edge.                                                   |
+| `edgeIntensity` | number                                                    | `4`         | 0 – 20   | Brightness of the edge, in linear units (above 1 blooms with HDR effects).   |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

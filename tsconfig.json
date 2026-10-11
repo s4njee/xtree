@@ -10,6 +10,7 @@
     "packages/xtree/test/browser/**/*.ts",
     "packages/xtree/test/fixtures/**/*.ts",
     "packages/xtree/src/glsl-modules.d.ts",
+    "packages/xtree/src/holocss/holocss-runtime.d.ts",
     "playwright.docs.config.ts",
     "docs/tests/**/*.ts"
   ]

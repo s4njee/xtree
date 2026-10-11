@@ -28,16 +28,16 @@ Every parameter is also a property: `effect.cellSize = 8`. Uniform changes take 
 
 ## Parameters
 
-| Parameter    | Type                                         | Default      | Range     | Description                                                                                                                                       |
-| ------------ | -------------------------------------------- | ------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cellSize`   | number                                       | `8`          | 4 – 32 px | Width of a character cell; cells are 4:3 tall.                                                                                                    |
-| `charset`    | 'classic' \| 'binary' \| 'blocks' \| 'atlas' | `'classic'`  |           | Classic is the ramp " .:-=+*#%@", binary uses 1 and 0 (blank in the dark), blocks draws shaded blocks, atlas uses every tile of the font texture. |
-| `colorMode`  | 'original' \| 'mono'                         | `'original'` |           | Draw characters in the colors underneath, or in the foreground color.                                                                             |
-| `foreground` | hex color                                    | `'#e8f0ff'`  |           | Mono: character color.                                                                                                                            |
-| `background` | hex color                                    | `'#05070c'`  |           | Color behind the characters.                                                                                                                      |
-| `brightness` | number                                       | `1`          | 0.25 – 3  | Gain before picking a character.                                                                                                                  |
-| `invert`     | boolean                                      | `false`      |           | Use dense characters for dark areas, for dark text on a light background.                                                                         |
-| `font`       | 2D texture or 'font5x7'                      | `'font5x7'`  |           | A strip of 6×8-texel glyph tiles ordered from least to most ink; the built-in one holds " .:-=+*#%@01".                                           |
+| Parameter    | Type                                                          | Default      | Range     | Description                                                                                                                                       |
+| ------------ | ------------------------------------------------------------- | ------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cellSize`   | number                                                        | `8`          | 4 – 32 px | Width of a character cell; cells are 4:3 tall.                                                                                                    |
+| `charset`    | 'classic' \| 'binary' \| 'blocks' \| 'atlas'                  | `'classic'`  |           | Classic is the ramp " .:-=+*#%@", binary uses 1 and 0 (blank in the dark), blocks draws shaded blocks, atlas uses every tile of the font texture. |
+| `colorMode`  | 'original' \| 'mono'                                          | `'original'` |           | Draw characters in the colors underneath, or in the foreground color.                                                                             |
+| `foreground` | hex color (theme: [`text`](/guide/holocss#theme-roles))       | `'#e8f0ff'`  |           | Mono: character color.                                                                                                                            |
+| `background` | hex color (theme: [`background`](/guide/holocss#theme-roles)) | `'#05070c'`  |           | Color behind the characters.                                                                                                                      |
+| `brightness` | number                                                        | `1`          | 0.25 – 3  | Gain before picking a character.                                                                                                                  |
+| `invert`     | boolean                                                       | `false`      |           | Use dense characters for dark areas, for dark text on a light background.                                                                         |
+| `font`       | 2D texture or 'font5x7'                                       | `'font5x7'`  |           | A strip of 6×8-texel glyph tiles ordered from least to most ink; the built-in one holds " .:-=+*#%@01".                                           |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

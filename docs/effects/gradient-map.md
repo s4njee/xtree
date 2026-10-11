@@ -28,13 +28,13 @@ Every parameter is also a property: `effect.shadows = '#120458'`. Uniform change
 
 ## Parameters
 
-| Parameter    | Type      | Default     | Range       | Description                                    |
-| ------------ | --------- | ----------- | ----------- | ---------------------------------------------- |
-| `shadows`    | hex color | `'#120458'` |             | Color for the darkest areas.                   |
-| `midtones`   | hex color | `'#ff2a6d'` |             | Color at the midpoint.                         |
-| `highlights` | hex color | `'#fff6c2'` |             | Color for the brightest areas.                 |
-| `midpoint`   | number    | `0.5`       | 0.05 – 0.95 | Brightness that maps to the midtone color.     |
-| `amount`     | number    | `1`         | 0 – 1       | Mix between the original and the mapped image. |
+| Parameter    | Type                                                          | Default     | Range       | Description                                    |
+| ------------ | ------------------------------------------------------------- | ----------- | ----------- | ---------------------------------------------- |
+| `shadows`    | hex color (theme: [`background`](/guide/holocss#theme-roles)) | `'#120458'` |             | Color for the darkest areas.                   |
+| `midtones`   | hex color (theme: [`accent`](/guide/holocss#theme-roles))     | `'#ff2a6d'` |             | Color at the midpoint.                         |
+| `highlights` | hex color (theme: [`text`](/guide/holocss#theme-roles))       | `'#fff6c2'` |             | Color for the brightest areas.                 |
+| `midpoint`   | number                                                        | `0.5`       | 0.05 – 0.95 | Brightness that maps to the midtone color.     |
+| `amount`     | number                                                        | `1`         | 0 – 1       | Mix between the original and the mapped image. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

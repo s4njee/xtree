@@ -20,7 +20,11 @@ export const fresnelGlow = defineMaterialEffect({
   },
   motion: { settle: { pulse: 0 } },
   params: {
-    color: color({ default: '#5ad8ff', description: 'Glow color.' }),
+    color: color({
+      theme: 'accent',
+      default: '#5ad8ff',
+      description: 'Glow color.',
+    }),
     intensity: float({
       default: 2,
       min: 0,

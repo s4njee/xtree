@@ -28,15 +28,15 @@ Every parameter is also a property: `effect.mode = 'cmyk'`. Uniform changes take
 
 ## Parameters
 
-| Parameter  | Type                        | Default     | Range       | Description                                                                     |
-| ---------- | --------------------------- | ----------- | ----------- | ------------------------------------------------------------------------------- |
-| `mode`     | 'cmyk' \| 'mono' \| 'rgb'   | `'cmyk'`    |             | Four subtractive screens, one ink on paper, or three additive screens on black. |
-| `shape`    | 'dot' \| 'line' \| 'square' | `'dot'`     |             | Shape of each screen element.                                                   |
-| `scale`    | number                      | `8`         | 2 – 48 px   | Screen period: the distance between neighbouring elements.                      |
-| `angle`    | number                      | `0`         | -90 – 90 °  | Rotates every screen. CMYK screens keep their 15°, 75°, 0° and 45° offsets.     |
-| `softness` | number                      | `1`         | 0.25 – 4 px | Width of the antialiased edge.                                                  |
-| `ink`      | hex color                   | `'#1a1a1a'` |             | Mono: ink color.                                                                |
-| `paper`    | hex color                   | `'#f4efe4'` |             | Paper color for CMYK and mono.                                                  |
+| Parameter  | Type                                                          | Default     | Range       | Description                                                                     |
+| ---------- | ------------------------------------------------------------- | ----------- | ----------- | ------------------------------------------------------------------------------- |
+| `mode`     | 'cmyk' \| 'mono' \| 'rgb'                                     | `'cmyk'`    |             | Four subtractive screens, one ink on paper, or three additive screens on black. |
+| `shape`    | 'dot' \| 'line' \| 'square'                                   | `'dot'`     |             | Shape of each screen element.                                                   |
+| `scale`    | number                                                        | `8`         | 2 – 48 px   | Screen period: the distance between neighbouring elements.                      |
+| `angle`    | number                                                        | `0`         | -90 – 90 °  | Rotates every screen. CMYK screens keep their 15°, 75°, 0° and 45° offsets.     |
+| `softness` | number                                                        | `1`         | 0.25 – 4 px | Width of the antialiased edge.                                                  |
+| `ink`      | hex color (theme: [`text`](/guide/holocss#theme-roles))       | `'#1a1a1a'` |             | Mono: ink color.                                                                |
+| `paper`    | hex color (theme: [`background`](/guide/holocss#theme-roles)) | `'#f4efe4'` |             | Paper color for CMYK and mono.                                                  |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

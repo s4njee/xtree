@@ -28,14 +28,14 @@ Every parameter is also a property: `effect.darkness = 0.5`. Uniform changes tak
 
 ## Parameters
 
-| Parameter    | Type                | Default     | Range      | Description                                                                               |
-| ------------ | ------------------- | ----------- | ---------- | ----------------------------------------------------------------------------------------- |
-| `darkness`   | number              | `0.5`       | 0 – 1      | How strongly the edges move toward the vignette color.                                    |
-| `offset`     | number              | `0.5`       | 0 – 1.5    | Radius where the falloff starts, as a fraction of the half-diagonal.                      |
-| `smoothness` | number              | `0.6`       | 0.01 – 1.5 | Width of the falloff (smooth mode).                                                       |
-| `roundness`  | number              | `1`         | 0 – 1      | Smooth mode shape: 1 is a circle, 0 follows the frame aspect ratio.                       |
-| `color`      | hex color           | `'#000000'` |            | Color the edges move toward.                                                              |
-| `mode`       | 'smooth' \| 'eskil' | `'smooth'`  |            | Smooth uses a smoothstep falloff; Eskil is the quadratic vignette from three.js examples. |
+| Parameter    | Type                                                          | Default     | Range      | Description                                                                               |
+| ------------ | ------------------------------------------------------------- | ----------- | ---------- | ----------------------------------------------------------------------------------------- |
+| `darkness`   | number                                                        | `0.5`       | 0 – 1      | How strongly the edges move toward the vignette color.                                    |
+| `offset`     | number                                                        | `0.5`       | 0 – 1.5    | Radius where the falloff starts, as a fraction of the half-diagonal.                      |
+| `smoothness` | number                                                        | `0.6`       | 0.01 – 1.5 | Width of the falloff (smooth mode).                                                       |
+| `roundness`  | number                                                        | `1`         | 0 – 1      | Smooth mode shape: 1 is a circle, 0 follows the frame aspect ratio.                       |
+| `color`      | hex color (theme: [`background`](/guide/holocss#theme-roles)) | `'#000000'` |            | Color the edges move toward.                                                              |
+| `mode`       | 'smooth' \| 'eskil'                                           | `'smooth'`  |            | Smooth uses a smoothstep falloff; Eskil is the quadratic vignette from three.js examples. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

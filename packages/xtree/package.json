@@ -190,6 +190,10 @@
       "types": "./dist/glsl/index.d.ts",
       "import": "./dist/glsl/index.js"
     },
+    "./holocss": {
+      "types": "./dist/holocss/index.d.ts",
+      "import": "./dist/holocss/index.js"
+    },
     "./motion": {
       "types": "./dist/motion/index.d.ts",
       "import": "./dist/motion/index.js"
@@ -250,7 +254,13 @@
     "exports": "node scripts/exports.mjs"
   },
   "peerDependencies": {
-    "three": ">=0.180.0 <0.187.0"
+    "three": ">=0.180.0 <0.187.0",
+    "@mk7s/holocss": ">=0.1.0-alpha.0"
+  },
+  "peerDependenciesMeta": {
+    "@mk7s/holocss": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/node": "26.6.5",

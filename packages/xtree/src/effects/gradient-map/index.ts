@@ -16,14 +16,17 @@ export const gradientMap = defineEffect({
   chunks: [colorSpaceChunks],
   params: {
     shadows: color({
+      theme: 'background',
       default: '#120458',
       description: 'Color for the darkest areas.',
     }),
     midtones: color({
+      theme: 'accent',
       default: '#ff2a6d',
       description: 'Color at the midpoint.',
     }),
     highlights: color({
+      theme: 'text',
       default: '#fff6c2',
       description: 'Color for the brightest areas.',
     }),

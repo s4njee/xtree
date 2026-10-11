@@ -28,7 +28,11 @@ export const hologram = defineMaterialEffect({
   },
   chunks: [colorLuminanceChunks, noiseHashChunks, noiseSimplexChunks],
   params: {
-    color: color({ default: '#5ad8ff', description: 'Hologram color.' }),
+    color: color({
+      theme: 'accent',
+      default: '#5ad8ff',
+      description: 'Hologram color.',
+    }),
     intensity: float({
       default: 1.2,
       min: 0,

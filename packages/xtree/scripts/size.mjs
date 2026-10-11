@@ -22,7 +22,9 @@ async function bundle(entry) {
       minify: true,
       target: 'es2022',
       lib: { entry, formats: ['es'], fileName: 'entry' },
-      rolldownOptions: { external: [/^three(\/.*)?$/] },
+      rolldownOptions: {
+        external: [/^three(\/.*)?$/, /^@mk7s\/holocss(\/.*)?$/],
+      },
     },
   });
   const outputs = (Array.isArray(result) ? result : [result]).flatMap(
