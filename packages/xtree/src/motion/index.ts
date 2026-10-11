@@ -4,6 +4,8 @@
  * without it. Motion is off under OS reduced motion, inside
  * `[data-hcss-motion="none"]` or the `high-contrast` theme, and under
  * `prefers-contrast: more` while the theme is `auto`.
+ *
+ * @module motion
  */
 
 const off = '[data-hcss-motion="none"], [data-hcss-theme="high-contrast"]';
@@ -50,11 +52,20 @@ export function watchMotion(
 
 /** Anything that follows the motion policy: a composer (`motion`) or an effect (`setMotion`). */
 export type MotionTarget =
-  { motion: boolean } | { setMotion(allowed: boolean): void };
+  | {
+      /** Whether the target animates. */
+      motion: boolean;
+    }
+  | {
+      /** Turns the target's motion on or off. */
+      setMotion(allowed: boolean): void;
+    };
 
 /** A motion policy implementation, such as HoloCSS's runtime. */
 export interface MotionPolicy {
+  /** Whether `element` may animate now. */
   motionAllowed(element: Element): boolean;
+  /** Calls back when the answer for `element` changes; returns a function that stops watching. */
   watchMotion(
     element: Element,
     callback: (allowed: boolean) => void,

@@ -9,6 +9,7 @@ import { declareParams, renameEffectSource } from './compile.js';
 /** Prefix that replaces `$` for the material effect at `index` in a material. */
 export const materialPrefix = (index: number): string => `xtm${index}_`;
 
+/** The code `patchMaterial` splices into a built-in material's shaders. */
 export interface MaterialInjection {
   /** Declarations after `#include <common>` in the vertex shader. */
   readonly vertexPars: string;

@@ -7,6 +7,7 @@ interface TimerExtension {
   readonly GPU_DISJOINT_EXT: number;
 }
 
+/** GPU time per labelled span from `EXT_disjoint_timer_query_webgl2`; results arrive a frame or more late. */
 export class GpuTimer {
   readonly #gl: WebGL2RenderingContext;
   readonly #ext: TimerExtension | null;
@@ -82,6 +83,7 @@ export class GpuTimer {
       for (const { query } of this.#pending.shift()!) gl.deleteQuery(query);
   }
 
+  /** Deletes the timer's outstanding queries. */
   dispose(): void {
     for (const frame of [...this.#pending, this.#frame])
       for (const { query } of frame) this.#gl.deleteQuery(query);

@@ -28,4 +28,5 @@ export const blendModes = {
   luminosity: 25,
 } as const;
 
+/** The name of a blend mode. */
 export type BlendMode = keyof typeof blendModes;

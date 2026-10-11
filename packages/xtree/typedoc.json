@@ -1,0 +1,40 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "src/index.ts",
+    "src/core/index.ts",
+    "src/effect/index.ts",
+    "src/motion/index.ts",
+    "src/safety/index.ts",
+    "src/holocss/index.ts",
+    "src/glsl/index.ts",
+    "src/shaders/index.ts"
+  ],
+  "tsconfig": "tsconfig.json",
+  "plugin": ["typedoc-plugin-markdown"],
+  "out": "../../docs/api",
+  "readme": "none",
+  "entryFileName": "index.md",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "excludeExternals": true,
+  "hidePageHeader": true,
+  "hideBreadcrumbs": true,
+  "useCodeBlocks": true,
+  "sort": ["kind", "alphabetical"],
+  "validation": {
+    "notExported": true,
+    "invalidLink": true,
+    "notDocumented": true
+  },
+  "treatValidationWarningsAsErrors": true,
+  "requiredToBeDocumented": [
+    "Enum",
+    "Variable",
+    "Function",
+    "Class",
+    "Interface",
+    "TypeAlias",
+    "Method"
+  ]
+}

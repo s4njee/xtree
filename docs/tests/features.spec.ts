@@ -210,3 +210,25 @@ test('searching a parameter name finds the effects that have it', async ({
   expect(text).toMatch(/Bloom/);
   expect(text).toMatch(/Invert \/ threshold/);
 });
+
+test('the API reference covers every entry point', async ({ page }) => {
+  await page.goto(`${base}/api/`);
+  for (const module of [
+    'core',
+    'effect',
+    'glsl',
+    'holocss',
+    'motion',
+    'safety',
+    'shaders',
+    'xtree',
+  ])
+    await expect(
+      page.locator('.vp-doc a', { hasText: new RegExp(`^${module}$`) }),
+    ).toBeVisible();
+  await page.goto(`${base}/api/core/classes/EffectComposer`);
+  await expect(page.locator('.vp-doc')).toContainText('setScene');
+  await expect(page.locator('.vp-doc')).toContainText(
+    'Sets the scene and camera the composer renders',
+  );
+});

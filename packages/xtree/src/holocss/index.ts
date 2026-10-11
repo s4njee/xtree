@@ -2,6 +2,8 @@
  * HoloCSS integration: the only entry that imports `@mk7s/holocss` (an
  * optional peer dependency). Effects follow the HoloCSS theme roles with
  * {@link bindTheme} and HoloCSS's motion policy with {@link bindMotion}.
+ *
+ * @module holocss
  */
 import { motionAllowed, watchMotion } from '@mk7s/holocss/runtime';
 import {

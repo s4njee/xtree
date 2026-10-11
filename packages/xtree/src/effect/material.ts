@@ -24,6 +24,7 @@ export interface MaterialSettings {
   readonly doubleSided?: boolean;
 }
 
+/** Everything `defineMaterialEffect` needs to describe a material effect. */
 export interface MaterialEffectDefinition<S extends ParamSchema> {
   /** Kebab-case id, also the export path: `@mk7s/xtree/effects/<name>`. */
   readonly name: string;
@@ -90,7 +91,9 @@ export class MaterialEffect<
 export type MaterialEffectInstance<S extends ParamSchema> = MaterialEffect<S> &
   ParamValues<S>;
 
+/** Creates instances of a material effect; `definition` describes it. */
 export interface MaterialEffectFactory<S extends ParamSchema> {
+  /** Creates a material effect with any parameter values or a `preset`. */
   (values?: Partial<ParamValues<S>> & EffectOptions): MaterialEffectInstance<S>;
   readonly definition: MaterialEffectDefinition<S> & {
     readonly kind: 'material';

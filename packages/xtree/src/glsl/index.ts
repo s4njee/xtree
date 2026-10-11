@@ -1,11 +1,14 @@
 /**
  * GLSL source utilities: `#include` resolution against chunk maps, compile
  * error mapping, and line-preserving minification.
+ *
+ * @module glsl
  */
 
 /** GLSL chunk sources keyed by include id, for example `xtree/noise/simplex`. */
 export type ChunkMap = Readonly<Record<string, string>>;
 
+/** Options for `resolveIncludes`. */
 export interface ResolveOptions {
   /** Name reported for the root source in compile errors. Defaults to `shader`. */
   readonly name?: string;
@@ -17,6 +20,7 @@ export interface ResolveOptions {
   readonly lineDirectives?: boolean;
 }
 
+/** GLSL with every include expanded, and the files its line numbers map back to. */
 export interface ResolvedShader {
   /** Source with every xtree include expanded once. */
   readonly code: string;

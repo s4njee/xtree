@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node ../scripts/holocss.mjs && node ../scripts/thumbnails.mjs && vitepress dev",
-    "build": "node ../scripts/holocss.mjs && node ../scripts/demo-parity.mjs && node ../scripts/thumbnails.mjs && vitepress build",
+    "dev": "node ../scripts/holocss.mjs && node ../scripts/thumbnails.mjs && pnpm --filter @mk7s/xtree api:docs && vitepress dev",
+    "build": "node ../scripts/holocss.mjs && node ../scripts/demo-parity.mjs && node ../scripts/thumbnails.mjs && pnpm --filter @mk7s/xtree api:docs && vitepress build",
     "preview": "vitepress preview"
   },
   "devDependencies": {

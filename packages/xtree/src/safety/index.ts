@@ -16,6 +16,8 @@
  *
  * This is a development and CI tool; it is not a substitute for a full
  * Harding or PEAT analysis of finished content.
+ *
+ * @module safety
  */
 
 /** One rendered frame: RGBA8 pixels, display-encoded (sRGB). */
@@ -25,6 +27,7 @@ export interface FlashFrame {
   readonly pixels: ArrayLike<number>;
 }
 
+/** How `analyseFlashes` reads a frame sequence. */
 export interface FlashOptions {
   /** Frames per second of the sequence. */
   readonly fps: number;
@@ -39,6 +42,7 @@ export interface FlashOptions {
   readonly cell?: number;
 }
 
+/** The result of `analyseFlashes`: the worst one-second windows and whether they pass. */
 export interface FlashReport {
   /** Largest number of general flashes in any one-second window. */
   readonly generalPerSecond: number;

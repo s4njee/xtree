@@ -191,6 +191,7 @@ export class EffectPass {
     g.xt_cameraWorld.value.copy(camera.matrixWorld);
   }
 
+  /** Resizes the pass and its effects' resources, in pixels. */
   setSize(width: number, height: number): void {
     this.#width = Math.max(1, Math.floor(width));
     this.#height = Math.max(1, Math.floor(height));
@@ -200,6 +201,7 @@ export class EffectPass {
       effect.resources?.setSize(this.#width, this.#height);
   }
 
+  /** Renders the pass from `readBuffer` into `writeBuffer` (or the canvas), as three.js's `Pass` contract defines. */
   render(
     renderer: WebGLRenderer,
     writeBuffer: WebGLRenderTarget | null,
@@ -235,6 +237,7 @@ export class EffectPass {
     );
   }
 
+  /** Releases the pass's shaders and its effects' resources. */
   dispose(): void {
     this.#material?.dispose();
     this.#material = null;

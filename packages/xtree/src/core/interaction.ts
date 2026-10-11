@@ -3,7 +3,8 @@
  * Each helper returns a function that stops it.
  */
 
-interface InputTarget {
+/** Anything with composer-style `inputs`, such as an `EffectComposer`. */
+export interface InputTarget {
   readonly inputs: {
     pointer: [number, number];
     pointerVelocity: [number, number];

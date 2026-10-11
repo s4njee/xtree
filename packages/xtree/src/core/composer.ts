@@ -32,6 +32,7 @@ import {
   type StackItem,
 } from './plan.js';
 
+/** Options for `new EffectComposer(renderer, options)`. */
 export interface EffectComposerOptions {
   /** Texture type of the intermediate buffers. Defaults to half float, which keeps HDR values. */
   readonly frameBufferType?: TextureDataType;
@@ -57,6 +58,7 @@ export interface EffectComposerOptions {
   readonly autoplay?: boolean;
 }
 
+/** Counters from the composer, for tests, inspectors and the debug overlay. */
 export interface ComposerStats {
   /** Shader (re)compilations across all passes. */
   compiles: number;
@@ -203,6 +205,7 @@ export class EffectComposer {
     }
   }
 
+  /** Sets the scene and camera the composer renders before its effects. */
   setScene(scene: Object3D, camera: Camera): this {
     this.scene = scene;
     this.camera = camera;

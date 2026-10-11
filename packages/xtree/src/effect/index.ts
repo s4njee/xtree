@@ -1,3 +1,8 @@
+/**
+ * `@mk7s/xtree/effect`: defining effects, their parameters, masks, presets and serialization.
+ *
+ * @module effect
+ */
 export {
   buildFactory,
   defineEffect,
@@ -39,12 +44,14 @@ export {
   validateParam,
   vec2,
   vec3,
+  type BaseParam,
   type BoolParam,
   type ColorParam,
   type FloatParam,
   type IntParam,
   type Param,
   type ParamKind,
+  type ParamOptions,
   type ParamSchema,
   type ParamValue,
   type ParamValues,

@@ -1,3 +1,8 @@
+/**
+ * The root entry, `@mk7s/xtree`: the installed version and the GLSL include tools.
+ *
+ * @module xtree
+ */
 /** The installed version of @mk7s/xtree. */
 export const version: string = __XTREE_VERSION__;
 

@@ -16,6 +16,7 @@ import type { ParamSchema, ParamValues } from './params.js';
 export type HoloFallback =
   'hcss-depth' | 'hcss-fold' | 'hcss-flip-y' | 'hcss-swing-left';
 
+/** Everything `defineTransition` needs to describe a transition. */
 export interface TransitionDefinition<S extends ParamSchema> {
   /** Kebab-case id, also the export path: `@mk7s/xtree/effects/<name>`. */
   readonly name: string;
@@ -42,10 +43,13 @@ export class Transition<S extends ParamSchema = ParamSchema> extends Effect<S> {
   }
 }
 
+/** A transition with a property per parameter. */
 export type TransitionInstance<S extends ParamSchema> = Transition<S> &
   ParamValues<S>;
 
+/** Creates instances of a transition; `definition` describes it. */
 export interface TransitionFactory<S extends ParamSchema> {
+  /** Creates a transition with any parameter values or a `preset`. */
   (values?: Partial<ParamValues<S>> & EffectOptions): TransitionInstance<S>;
   readonly definition: TransitionDefinition<S> & {
     readonly kind: 'transition';

@@ -1,9 +1,11 @@
 import type { EffectComposer } from './composer.js';
 
+/** The overlay `createDebugOverlay` returns. */
 export interface DebugOverlay {
   readonly element: HTMLElement;
   /** Copies a pass's fragment shader to the clipboard (or returns it). */
   shaderSource(passIndex: number): string;
+  /** Removes the overlay and restores the composer's timing setting. */
   dispose(): void;
 }
 

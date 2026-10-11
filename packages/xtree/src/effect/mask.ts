@@ -34,7 +34,9 @@ export interface SelectionMask {
   readonly invert?: boolean;
 }
 
+/** Where an effect applies: a texture, a depth range or a selection of objects. */
 export type EffectMask = TextureMask | DepthMask | SelectionMask;
+/** The kinds of mask. */
 export type MaskKind = 'texture' | 'depth' | 'selection';
 
 /** Compiled mask kinds: 0 for no mask. */
@@ -44,6 +46,7 @@ export const maskKinds: Readonly<Record<MaskKind, number>> = {
   selection: 3,
 };
 
+/** Which kind of mask `mask` is. */
 export function maskKind(mask: EffectMask): MaskKind {
   if ('texture' in mask) return 'texture';
   if ('depth' in mask) return 'depth';

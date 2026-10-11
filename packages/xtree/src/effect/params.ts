@@ -4,7 +4,7 @@
  * presets, serialization and the documentation controls.
  */
 
-interface BaseParam<K extends string, V> {
+export interface BaseParam<K extends string, V> {
   readonly kind: K;
   readonly default: V;
   /** One sentence for docs and tooltips. */
@@ -29,8 +29,11 @@ interface RangeOptions {
   readonly unit?: string;
 }
 
+/** A float parameter. */
 export interface FloatParam extends BaseParam<'float', number>, RangeOptions {}
+/** An integer parameter. */
 export interface IntParam extends BaseParam<'int', number>, RangeOptions {}
+/** An on/off parameter. */
 export type BoolParam = BaseParam<'bool', boolean>;
 /** HoloCSS color roles (`--hcss-<role>`) a color parameter can follow; see `bindTheme`. */
 export type ThemeRole =
@@ -50,10 +53,13 @@ export interface ColorParam extends BaseParam<'color', string> {
   /** The theme role `bindTheme` sets this color from. */
   readonly theme?: ThemeRole;
 }
+/** A two-component vector parameter. */
 export interface Vec2Param
   extends BaseParam<'vec2', readonly [number, number]>, RangeOptions {}
+/** A three-component vector parameter. */
 export interface Vec3Param
   extends BaseParam<'vec3', readonly [number, number, number]>, RangeOptions {}
+/** A choice between named options; each becomes a GLSL constant. */
 export interface SelectParam<O extends string = string> extends BaseParam<
   'select',
   O
@@ -120,6 +126,7 @@ export interface CurveParam extends BaseParam<'curve', CurvePoints> {
   readonly max?: number;
 }
 
+/** Any parameter declaration. */
 export type Param =
   | FloatParam
   | IntParam
@@ -131,7 +138,9 @@ export type Param =
   | TextureParam
   | GradientParam
   | CurveParam;
+/** An effect's parameters by name. */
 export type ParamSchema = Readonly<Record<string, Param>>;
+/** The kinds of parameter. */
 export type ParamKind = Param['kind'];
 
 /** The value type a parameter accepts. */
@@ -159,32 +168,40 @@ export type ParamValues<S extends ParamSchema> = {
   -readonly [K in keyof S]: ParamValue<S[K]>;
 };
 
-type Options<P> = Omit<P, 'kind'>;
+/** A parameter declaration without its `kind`, as the parameter helpers take it. */
+export type ParamOptions<P> = Omit<P, 'kind'>;
 
-export const float = (options: Options<FloatParam>): FloatParam => ({
+/** A float parameter with a range. */
+export const float = (options: ParamOptions<FloatParam>): FloatParam => ({
   kind: 'float',
   ...options,
 });
-export const int = (options: Options<IntParam>): IntParam => ({
+/** An integer parameter with a range. */
+export const int = (options: ParamOptions<IntParam>): IntParam => ({
   kind: 'int',
   ...options,
 });
-export const bool = (options: Options<BoolParam>): BoolParam => ({
+/** An on/off parameter. */
+export const bool = (options: ParamOptions<BoolParam>): BoolParam => ({
   kind: 'bool',
   ...options,
 });
-export const color = (options: Options<ColorParam>): ColorParam => ({
+/** A color parameter, as a CSS hex string; it can follow a HoloCSS theme role. */
+export const color = (options: ParamOptions<ColorParam>): ColorParam => ({
   kind: 'color',
   ...options,
 });
-export const vec2 = (options: Options<Vec2Param>): Vec2Param => ({
+/** A two-component vector parameter. */
+export const vec2 = (options: ParamOptions<Vec2Param>): Vec2Param => ({
   kind: 'vec2',
   ...options,
 });
-export const vec3 = (options: Options<Vec3Param>): Vec3Param => ({
+/** A three-component vector parameter. */
+export const vec3 = (options: ParamOptions<Vec3Param>): Vec3Param => ({
   kind: 'vec3',
   ...options,
 });
+/** A texture parameter, optionally with built-in named samples. */
 export const texture = (
   options: Omit<TextureParam, 'kind' | 'default'> & {
     readonly default?: string | null;
@@ -194,14 +211,19 @@ export const texture = (
   ...options,
   default: options.default ?? null,
 });
-export const gradient = (options: Options<GradientParam>): GradientParam => ({
+/** A color gradient parameter, baked to a texture. */
+export const gradient = (
+  options: ParamOptions<GradientParam>,
+): GradientParam => ({
   kind: 'gradient',
   ...options,
 });
-export const curve = (options: Options<CurveParam>): CurveParam => ({
+/** A curve parameter, baked to a texture. */
+export const curve = (options: ParamOptions<CurveParam>): CurveParam => ({
   kind: 'curve',
   ...options,
 });
+/** A choice between named options. */
 export const select = <const O extends string>(
   options: Omit<SelectParam<O>, 'kind' | 'default'> & {
     readonly default: NoInfer<O>;

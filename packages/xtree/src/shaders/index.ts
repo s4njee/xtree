@@ -1,3 +1,8 @@
+/**
+ * `@mk7s/xtree/shaders`: the GLSL chunk maps to pass to `resolveIncludes` or an effect's `chunks`.
+ *
+ * @module shaders
+ */
 import type { ChunkMap } from '../glsl/index.js';
 import { blend } from './blend/index.js';
 import { color } from './color/index.js';

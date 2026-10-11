@@ -5,6 +5,7 @@ export interface ForeignPass {
   enabled?: boolean;
   needsSwap?: boolean;
   renderToScreen?: boolean;
+  /** Renders from `readBuffer` into `writeBuffer`, as three.js passes do. */
   render(
     renderer: unknown,
     writeBuffer: unknown,
@@ -12,12 +13,16 @@ export interface ForeignPass {
     deltaTime?: number,
     maskActive?: boolean,
   ): void;
+  /** Resizes the pass, in pixels. */
   setSize?(width: number, height: number): void;
+  /** Releases the pass's GPU resources. */
   dispose?(): void;
 }
 
+/** Anything a composer stack can hold: an xtree effect or a three.js pass. */
 export type StackItem = Effect | ForeignPass;
 
+/** A step of the render plan: effects merged into one pass, or a three.js pass. */
 export type PassGroup =
   | { readonly kind: 'effects'; readonly effects: readonly Effect[] }
   | { readonly kind: 'foreign'; readonly pass: ForeignPass };

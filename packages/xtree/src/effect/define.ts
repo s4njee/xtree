@@ -37,8 +37,10 @@ export const effectFamilies = {
   transition: 'Transitions',
   utility: 'Utilities',
 } as const;
+/** The family an effect belongs to in the catalogue. */
 export type EffectFamily = keyof typeof effectFamilies;
 
+/** Documentation and catalogue metadata for an effect. */
 export interface EffectMeta {
   /** Display name, for example "Chromatic aberration". */
   readonly title: string;
@@ -72,6 +74,7 @@ export type Sampling = 'pixel' | 'input';
 export type MotionBehavior<S extends ParamSchema> =
   'static' | 'freeze' | { readonly settle: Partial<ParamValues<S>> };
 
+/** Per-frame information passed to an effect's `prepare`. */
 export interface FrameInfo {
   readonly time: number;
   readonly delta: number;
@@ -82,12 +85,15 @@ export interface FrameInfo {
 
 /** GPU resources an `input` effect renders before its pass, such as bloom's mip chain. */
 export interface EffectResources {
+  /** Called when the pass is resized, in pixels. */
   setSize(width: number, height: number): void;
+  /** Called before each frame of the merged pass, to render the effect's own passes. */
   prepare(
     renderer: THREE.WebGLRenderer,
     input: THREE.Texture,
     frame: FrameInfo,
   ): void;
+  /** Releases the resources `setup` created. */
   dispose(): void;
 }
 
@@ -106,6 +112,7 @@ export interface ThreeKit {
   readonly ClampToEdgeWrapping: typeof THREE.ClampToEdgeWrapping;
 }
 
+/** What an effect's `setup` can use: three.js, the renderer, the effect and helpers. */
 export interface SetupContext<S extends ParamSchema> {
   readonly three: ThreeKit;
   readonly effect: EffectInstance<S>;
@@ -121,6 +128,7 @@ export interface SetupContext<S extends ParamSchema> {
 
 /** Picks buffers from an effect's current values. (The bivariance wrapper keeps specific effects assignable to the general `Effect` type.) */
 export type BufferSelector<S extends ParamSchema> = {
+  /** Returns the buffers the effect needs with its current values. */
   bivariance(effect: EffectInstance<S>): readonly GeometryBuffer[];
 }['bivariance'];
 
@@ -132,6 +140,7 @@ export type BufferSelector<S extends ParamSchema> = {
  */
 export type Masking = 'opacity' | 'custom';
 
+/** Everything `defineEffect` needs to describe a post-processing effect. */
 export interface EffectDefinition<S extends ParamSchema> {
   /** Kebab-case id, also the export path: `@mk7s/xtree/effects/<name>`. */
   readonly name: string;
@@ -172,6 +181,7 @@ export interface EffectDefinition<S extends ParamSchema> {
   setup?(context: SetupContext<S>): EffectResources;
 }
 
+/** Options every effect takes besides its parameters. */
 export interface EffectOptions {
   readonly preset?: string;
   readonly blend?: BlendMode;
@@ -181,6 +191,7 @@ export interface EffectOptions {
   readonly mask?: EffectMask | null;
 }
 
+/** An effect's settings as plain JSON, from `effect.toJSON()`. */
 export interface EffectJSON {
   readonly effect: string;
   readonly params?: Record<string, unknown>;
@@ -194,7 +205,9 @@ export interface EffectJSON {
 /** An effect instance with a typed property per parameter. */
 export type EffectInstance<S extends ParamSchema> = Effect<S> & ParamValues<S>;
 
+/** Creates instances of an effect; `definition` describes it. */
 export interface EffectFactory<S extends ParamSchema> {
+  /** Creates an effect with any parameter values, a `preset`, a `mask` and blending options. */
   (values?: Partial<ParamValues<S>> & EffectOptions): EffectInstance<S>;
   readonly definition: EffectDefinition<S>;
 }
@@ -383,6 +396,7 @@ export class Effect<S extends ParamSchema = ParamSchema> {
       : own;
   }
 
+  /** The current value of a parameter. */
   get<K extends keyof S & string>(name: K): ParamValue<S[K]> {
     if (!(name in this.definition.params))
       throw new TypeError(`${this.name}: unknown parameter ${name}`);

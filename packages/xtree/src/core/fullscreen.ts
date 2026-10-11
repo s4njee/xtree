@@ -24,6 +24,7 @@ export class Fullscreen {
     this.#scene.add(this.#mesh);
   }
 
+  /** Draws a full-screen triangle with `material` into `target` (the canvas when null). */
   draw(
     renderer: WebGLRenderer,
     material: Material,
@@ -36,6 +37,7 @@ export class Fullscreen {
     renderer.setRenderTarget(previous);
   }
 
+  /** Releases the triangle's geometry. */
   dispose(): void {
     this.#geometry.dispose();
   }

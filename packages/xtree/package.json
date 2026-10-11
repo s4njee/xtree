@@ -251,7 +251,8 @@
     "fixtures": "vite --config test/fixtures/vite.config.ts",
     "chunks": "node scripts/chunk-maps.mjs",
     "effects:docs": "node scripts/effect-docs.mjs",
-    "exports": "node scripts/exports.mjs"
+    "exports": "node scripts/exports.mjs",
+    "api:docs": "typedoc"
   },
   "peerDependencies": {
     "three": ">=0.180.0 <0.187.0",

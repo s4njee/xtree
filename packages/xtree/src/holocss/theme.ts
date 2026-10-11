@@ -55,16 +55,20 @@ interface ThemedParam {
 /** An effect (or material effect) whose color parameters can follow the theme. */
 export interface ThemedEffect {
   readonly definition: { readonly params: object };
+  /** Sets parameter values, as `effect.set` does. */
   set(values: Record<string, unknown>): unknown;
 }
 
 /** A transition player, which takes the accent. */
 export interface ThemedAccent {
+  /** Sets the accent color from `#rrggbb`. */
   setAccent(hex: string): void;
 }
 
+/** Anything `bindTheme` can theme: an effect, or a transition player's accent. */
 export type ThemeTarget = ThemedEffect | ThemedAccent;
 
+/** Options for `bindTheme`. */
 export interface BindThemeOptions {
   /**
    * Per-parameter roles that replace the ones effects declare, by parameter

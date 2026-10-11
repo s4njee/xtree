@@ -24,6 +24,7 @@ export type EffectRegistry = Readonly<
   >
 >;
 
+/** Options for `stackFromJSON`. */
 export interface FromJSONOptions {
   /** Called for each thing skipped: unknown effects, parameters and keys. Defaults to `console.warn`. */
   readonly warn?: (message: string) => void;
@@ -129,8 +130,12 @@ export function decodeStack(text: string): StackJSON {
 
 /** Stack serialization under one name: `EffectStack.fromJSON(json, registry)`. */
 export const EffectStack = {
+  /** See `stackToJSON`. */
   toJSON: stackToJSON,
+  /** See `stackFromJSON`. */
   fromJSON: stackFromJSON,
+  /** See `encodeStack`. */
   encode: encodeStack,
+  /** See `decodeStack`. */
   decode: decodeStack,
 } as const;

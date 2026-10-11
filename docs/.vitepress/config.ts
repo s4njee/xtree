@@ -1,4 +1,5 @@
 import { buildSync } from 'esbuild';
+import { existsSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, type DefaultTheme } from 'vitepress';
@@ -62,6 +63,7 @@ export default defineConfig({
         link: '/reference/shaders',
         activeMatch: '^/reference/',
       },
+      { text: 'API', link: '/api/', activeMatch: '^/api/' },
       { text: 'Project', link: '/project/', activeMatch: '^/(project|adr)/' },
     ],
     sidebar: {
@@ -91,6 +93,7 @@ export default defineConfig({
           items: [{ text: 'Shader chunks', link: '/reference/shaders' }],
         },
       ],
+      '/api/': apiSidebar(),
       '/project/': projectSidebar(),
       '/adr/': projectSidebar(),
     },
@@ -136,6 +139,64 @@ export default defineConfig({
     server: { fs: { allow: [repoRoot, holocss] } },
   },
 });
+
+/**
+ * The API reference sidebar, from the pages TypeDoc writes to docs/api
+ * (`pnpm --filter @mk7s/xtree api:docs`, run by the docs build): one
+ * collapsible group per entry point, with its classes, functions, types.
+ */
+function apiSidebar(): DefaultTheme.SidebarItem[] {
+  const root = fileURLToPath(new URL('../api/', import.meta.url));
+  if (!existsSync(root)) return [];
+  const kinds: Record<string, string> = {
+    classes: 'Classes',
+    functions: 'Functions',
+    interfaces: 'Interfaces',
+    'type-aliases': 'Types',
+    variables: 'Variables',
+  };
+  const order = [
+    'xtree',
+    'core',
+    'effect',
+    'holocss',
+    'motion',
+    'safety',
+    'glsl',
+    'shaders',
+  ];
+  const modules = readdirSync(root, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort((a, b) => order.indexOf(a) - order.indexOf(b));
+  return [
+    { text: 'API reference', items: [{ text: 'Overview', link: '/api/' }] },
+    ...modules.map((module) => ({
+      text: module === 'xtree' ? '@mk7s/xtree' : `@mk7s/xtree/${module}`,
+      collapsed: true,
+      items: [
+        { text: 'Overview', link: `/api/${module}/` },
+        ...Object.entries(kinds).flatMap(([folder, title]) => {
+          const dir = resolve(root, module, folder);
+          if (!existsSync(dir)) return [];
+          return [
+            {
+              text: title,
+              collapsed: true,
+              items: readdirSync(dir)
+                .filter((file) => file.endsWith('.md'))
+                .sort()
+                .map((file) => ({
+                  text: file.replace(/\.md$/, ''),
+                  link: `/api/${module}/${folder}/${file.replace(/\.md$/, '')}`,
+                })),
+            },
+          ];
+        }),
+      ],
+    })),
+  ];
+}
 
 function projectSidebar() {
   return [

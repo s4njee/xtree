@@ -35,6 +35,7 @@ const helpers = [
   '#define xt_accent accent',
 ];
 
+/** A transition's fragment shader, uniforms and source map. */
 export interface CompiledTransition {
   readonly fragment: string;
   /** Source-string table for formatShaderError (xtree target only). */

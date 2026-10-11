@@ -1,3 +1,8 @@
+/**
+ * `@mk7s/xtree/core`: the composer, passes, material patching, transitions, inputs and debugging. The only entry that loads three.js.
+ *
+ * @module core
+ */
 export {
   EffectComposer,
   type ComposerStats,
@@ -39,7 +44,12 @@ export {
   compileTransition,
   type CompiledTransition,
 } from './transition-compile.js';
-export { trackAudio, trackPointer, trackScroll } from './interaction.js';
+export {
+  trackAudio,
+  trackPointer,
+  trackScroll,
+  type InputTarget,
+} from './interaction.js';
 export type { PassGeometry, PassInputs } from './pass.js';
 export { createDebugOverlay, type DebugOverlay } from './debug.js';
 export { GpuTimer } from './timing.js';

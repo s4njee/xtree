@@ -16,6 +16,7 @@ import {
   noiseBlueChunks,
 } from '../shaders/maps.js';
 
+/** Tone mappers the output stage can apply, matching three.js's. */
 export type ToneMapping =
   'none' | 'linear' | 'reinhard' | 'cineon' | 'aces' | 'agx' | 'neutral';
 
@@ -27,6 +28,7 @@ export interface OutputStage {
   readonly dither: boolean;
 }
 
+/** A merged effect pass: its fragment shader, uniforms and the files its lines map to. */
 export interface CompiledPass {
   readonly vertex: string;
   readonly fragment: string;

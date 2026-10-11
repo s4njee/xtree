@@ -16,6 +16,7 @@ import {
   compileTransition,
 } from './transition-compile.js';
 
+/** The images and accent for `createTransition`. */
 export interface TransitionOptions {
   /** The outgoing image. Mark sRGB images (photos, DOM captures) with `colorSpace = SRGBColorSpace`. */
   readonly from: Texture;
