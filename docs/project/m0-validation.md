@@ -1,6 +1,6 @@
 # M0 validation
 
-Milestone M0 (foundation) covers X0.1–X0.11, ADRs 0001–0006, shader chunks X2.1–X2.3, and the docs site X19.1–X19.2. Exit criteria: `pnpm check` green in CI, VitePress builds with HoloCSS tokens, ADRs accepted.
+Milestone M0 (foundation) covers X0.1–X0.11, ADRs 0001–0006, shader chunks X2.1–X2.3, and the docs site X19.1–X19.2. Exit criteria: `pnpm check` green in CI, VitePress builds with HoloCSS tokens, ADRs accepted. All three are met: [CI run 3](https://github.com/s4njee/xtree/actions/runs/38102798384) passed every job.
 
 Recorded 2026-10-11 in a Linux container: Node 22.22.0, pnpm 11.15.1, headless Chromium 141 (SwiftShader WebGL2), glslangValidator 15.1.0.
 
@@ -10,7 +10,8 @@ Recorded 2026-10-11 in a Linux container: Node 22.22.0, pnpm 11.15.1, headless C
 | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | `pnpm check` (with `XT_REQUIRE_GLSLANG=1`) | Pass: format, ESLint, GLSL lint (14 chunks compiled), credits (14 entries), typecheck, build, size, shader docs freshness, 38 unit tests |
 | `pnpm test:browser` (Chromium)             | 78 passed                                                                                                                                |
-| `pnpm test:browser` (Firefox, WebKit)      | Not run locally (browsers not installed in the container); runs in the CI matrix                                                         |
+| `pnpm test:browser` (Firefox, WebKit)      | 78 passed each in CI. Firefox runs headed under Xvfb, because headless Firefox on Linux exposes no WebGL2.                               |
+| CI (GitHub Actions)                        | `pnpm check` with glslang, release dry run, Chromium, Firefox and WebKit GPU tests, docs build: all pass                                 |
 | `pnpm docs:build`                          | Pass; pages checked in four HoloCSS palettes (auto/shadcn-dark, shadcn-light, md7-dracula, ceres) with no console errors                 |
 | `pnpm release:dry`                         | Pass: 25 files, every export target and declaration present, no sources                                                                  |
 
@@ -38,7 +39,7 @@ Recorded 2026-10-11 in a Linux container: Node 22.22.0, pnpm 11.15.1, headless C
 ## Known gaps
 
 - **HoloCSS build.** The pinned HoloCSS commit does not build: `src/glass/` is referenced but not committed. The docs read its source instead (ADR 0005), and the Glass palette is unstyled.
-- **Firefox and WebKit** GPU results come from CI only.
+- **Firefox and WebKit** run only in CI (their browsers aren't installed in the cloud container). The first CI runs found that headless Firefox has no WebGL2 (now headed under Xvfb) and that WebKit evaluates the Planckian locus about 2e-5 differently in xy (the white-point check now uses 4 digits).
 - **Blue-noise texture.** The sampling function ships, but the texture asset arrives with the first effect that needs it (X7.2).
 - **Docs typecheck.** The docs theme is not typechecked yet; `vue-tsc` arrives with the first Vue components (X19.3).
 - **Theme switcher.** The docs follow `auto` and stored HoloCSS choices; the switcher is X19.4.
