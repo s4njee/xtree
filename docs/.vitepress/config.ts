@@ -13,6 +13,11 @@ const holocss: string = ensureHolocss();
 
 /** Deploy path. Defaults to mk7s.dev/xtree/; override with XT_DOCS_BASE (for example "/" for local previews). */
 const base = process.env.XT_DOCS_BASE ?? '/xtree/';
+/** Site origin for the sitemap. The Pages workflow sets it to the GitHub Pages URL. */
+const origin = (process.env.XT_DOCS_ORIGIN ?? 'https://mk7s.dev').replace(
+  /\/$/,
+  '',
+);
 
 // HoloCSS's classic theme bootstrap restores the stored theme before first
 // paint. xtree defaults to `auto` and mirrors the resolved appearance onto the
@@ -45,7 +50,7 @@ export default defineConfig({
     ],
     ['script', {}, themeScript],
   ],
-  sitemap: { hostname: `https://mk7s.dev${base}` },
+  sitemap: { hostname: `${origin}${base}` },
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/', activeMatch: '^/guide/' },
