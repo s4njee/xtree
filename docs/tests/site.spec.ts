@@ -1,7 +1,18 @@
+import { resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
-// HoloCSS's built-in palettes, read from the pinned source the site is built with.
-import { builtinThemes } from '../../.cache/holocss/src/theme/registry.ts';
 import effectSidebar from '../.vitepress/effects.json' with { type: 'json' };
+
+// HoloCSS's built-in palettes, read at run time from the pinned source the
+// site was built with (scripts/holocss.mjs fetches it during the docs build).
+const holocss = process.env.HOLOCSS_DIR
+  ? resolve(process.env.HOLOCSS_DIR)
+  : fileURLToPath(new URL('../../.cache/holocss/', import.meta.url));
+const { builtinThemes } = (await import(
+  pathToFileURL(resolve(holocss, 'src/theme/registry.ts')).href
+)) as {
+  builtinThemes: readonly string[];
+};
 
 const base = '/xtree';
 const effectLinks = effectSidebar.flatMap((group) =>
