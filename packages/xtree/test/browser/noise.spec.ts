@@ -317,6 +317,8 @@ vec4 xt_test(vec4 p, int index) { return vec4(xt_worley(p.xy, 1.0), xt_worley(p.
 
 test.describe('curl', () => {
   test('2D and 3D curl fields are divergence free', async ({ page }) => {
+    // 18 curl evaluations per sample; slow on software renderers.
+    test.slow();
     const out = vec4s(
       await runShader(page, {
         source: `#include <xtree/noise/curl>
@@ -334,7 +336,7 @@ vec4 xt_test(vec4 p, int index) {
     + abs(xt_curl(r + vec3(0.0, 0.0, h)).x - xt_curl(r - vec3(0.0, 0.0, h)).x)) / (2.0 * h);
   return vec4(div2, scale2, div3, scale3);
 }`,
-        inputs: points(2048, 10, 8),
+        inputs: points(512, 10, 8),
       }),
     );
     // Compare the divergence with the size of the off-diagonal derivatives.

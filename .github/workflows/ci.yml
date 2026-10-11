@@ -54,9 +54,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
-      - run: pnpm test:browser
+      - run: xvfb-run -a pnpm test:browser
         env:
           XT_BROWSERS: ${{ matrix.browser }}
+          XT_HEADED: ${{ matrix.browser == 'firefox' && '1' || '' }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

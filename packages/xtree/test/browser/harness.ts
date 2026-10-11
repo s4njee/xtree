@@ -94,8 +94,16 @@ function gpuEvaluate(args: {
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
+  let creationError = '';
+  canvas.addEventListener('webglcontextcreationerror', (event) => {
+    creationError = (event as WebGLContextEvent).statusMessage;
+  });
   const gl = canvas.getContext('webgl2');
-  if (!gl) return { output: [], error: 'WebGL2 is unavailable' };
+  if (!gl)
+    return {
+      output: [],
+      error: `WebGL2 is unavailable${creationError ? `: ${creationError}` : ''}`,
+    };
   try {
     if (!gl.getExtension('EXT_color_buffer_float'))
       return { output: [], error: 'EXT_color_buffer_float is unavailable' };

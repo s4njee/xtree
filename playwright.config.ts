@@ -40,7 +40,9 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   retries: 0,
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
-  use: { trace: 'retain-on-failure' },
+  // XT_HEADED=1 runs browsers with a window (CI runs Firefox headed under Xvfb,
+  // because headless Firefox on Linux has no WebGL without a display).
+  use: { trace: 'retain-on-failure', headless: process.env.XT_HEADED !== '1' },
   projects: browsers.map((name) => {
     const use = projects[name as keyof typeof projects];
     if (!use) throw new Error(`Unknown browser in XT_BROWSERS: ${name}`);
