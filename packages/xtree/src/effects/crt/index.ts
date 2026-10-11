@@ -24,7 +24,7 @@ export const crt = defineEffect({
       step: 0.01,
       description: 'Bulge of the glass.',
     }),
-    mask: select({
+    phosphor: select({
       options: ['aperture', 'slot', 'shadow', 'none'],
       default: 'aperture',
       description:
@@ -98,15 +98,15 @@ export const crt = defineEffect({
     }),
   },
   presets: {
-    television: { curvature: 0.14, mask: 'shadow', maskStrength: 0.35 },
-    arcade: { curvature: 0.18, mask: 'slot', scanlines: 0.5, glow: 0.35 },
+    television: { curvature: 0.14, phosphor: 'shadow', maskStrength: 0.35 },
+    arcade: { curvature: 0.18, phosphor: 'slot', scanlines: 0.5, glow: 0.35 },
     monitor: {
       curvature: 0.04,
-      mask: 'aperture',
+      phosphor: 'aperture',
       scanlines: 0.2,
       vignette: 0.2,
     },
-    flat: { curvature: 0, mask: 'none', scanlines: 0.4, vignette: 0 },
+    flat: { curvature: 0, phosphor: 'none', scanlines: 0.4, vignette: 0 },
   },
   fragment,
 });

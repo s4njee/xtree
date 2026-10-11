@@ -55,8 +55,9 @@ Apply one with `halftone({ preset: 'name' })` or `effect.applyPreset('name')`; p
 
 - **Family:** Retro & display · tracked as story X8.2 in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).
 - **Passes:** samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass.
+- **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Static: nothing animates.
-- **Size:** 6.3 KB gzip budget for `@mk7s/xtree/effects/halftone`, including the shared effect runtime.
+- **Size:** 7.1 KB gzip budget for `@mk7s/xtree/effects/halftone`, including the shared effect runtime.
 
 ## Credits
 

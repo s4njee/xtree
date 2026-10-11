@@ -14,6 +14,7 @@ import colorSpaceSource from './color/space.glsl';
 import colorWhiteBalanceSource from './color/white-balance.glsl';
 import colorTonemapSource from './color/tonemap.glsl';
 import blendModesSource from './blend/modes.glsl';
+import depthReconstructSource from './depth/reconstruct.glsl';
 
 /** `xtree/noise/hash` and the chunks it includes. */
 export const noiseHashChunks: ChunkMap = {
@@ -97,4 +98,9 @@ export const colorTonemapChunks: ChunkMap = {
 /** `xtree/blend/modes` and the chunks it includes. */
 export const blendModesChunks: ChunkMap = {
   'xtree/blend/modes': blendModesSource,
+};
+
+/** `xtree/depth/reconstruct` and the chunks it includes. */
+export const depthReconstructChunks: ChunkMap = {
+  'xtree/depth/reconstruct': depthReconstructSource,
 };

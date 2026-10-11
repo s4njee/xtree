@@ -1,7 +1,8 @@
 // Measures what a consumer ships for each package export: the built entry is
 // bundled the way an application bundler would (tree-shaken and minified, with
 // the three.js peer external), then gzipped. Fails when an export has no
-// budget or goes over it. Writes artifacts/size.json.
+// budget or goes over it. Writes artifacts/size.json. `--add-missing` budgets new
+// exports; `--rebase` resets exceeded budgets after intentional growth (review the diff).
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { gzipSync } from 'node:zlib';
@@ -51,8 +52,13 @@ for (const [key, target] of Object.entries(pkg.exports)) {
     gzip,
     budget: budget ?? null,
   });
-  if (budget === undefined && process.argv.includes('--add-missing')) {
-    // New exports start with 12% headroom, rounded up to 64 bytes.
+  const rebase =
+    budget !== undefined && gzip > budget && process.argv.includes('--rebase');
+  if (
+    (budget === undefined && process.argv.includes('--add-missing')) ||
+    rebase
+  ) {
+    // New (or, with --rebase, intentionally grown) exports get 12% headroom, rounded up to 64 bytes.
     budgets[key] = Math.ceil((gzip * 1.12) / 64) * 64;
     results.at(-1).budget = budgets[key];
   } else if (budget === undefined)
@@ -67,7 +73,10 @@ for (const key of Object.keys(budgets)) {
     problems.push(`size-budgets.json: ${key} is not a package export`);
 }
 
-if (process.argv.includes('--add-missing')) {
+if (
+  process.argv.includes('--add-missing') ||
+  process.argv.includes('--rebase')
+) {
   writeFileSync(
     `${packageRoot}size-budgets.json`,
     `${JSON.stringify(budgets, null, 2)}\n`,

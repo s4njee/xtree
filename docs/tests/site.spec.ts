@@ -148,7 +148,10 @@ test('client-side navigation between effects keeps one WebGL context', async ({
     for (const link of links) {
       await page.locator(`.VPSidebar a[href="${base}${link}"]`).click();
       await expect(page).toHaveURL(new RegExp(`${link}$`));
-      await expect(page.locator('.xt-demo canvas')).toBeVisible();
+      // The first demo loads three.js and compiles in a software renderer, which can take a while under load.
+      await expect(page.locator('.xt-demo canvas')).toBeVisible({
+        timeout: 20_000,
+      });
       await expect(page.locator('.xt-demo-status')).toHaveCount(0);
     }
   }

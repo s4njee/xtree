@@ -6,6 +6,9 @@ import {
   ACESFilmicToneMapping,
   AgXToneMapping,
   CineonToneMapping,
+  DataTexture,
+  LinearFilter,
+  RGBAFormat,
   FloatType,
   WebGLRenderTarget,
   LinearSRGBColorSpace,
@@ -49,10 +52,24 @@ export interface EffectSpec {
   params?: Record<string, unknown>;
   blend?: string;
   opacity?: number;
+  /**
+   * A mask: studio objects by name, a depth range, a left-to-right gradient
+   * texture, or `demo` for the effect's `meta.demo.selection` (if any).
+   */
+  mask?: MaskSpec | 'demo' | 'shared';
+  enabled?: boolean;
 }
+
+export type MaskSpec =
+  | { selection: string[]; xray?: boolean; invert?: boolean }
+  | { layer: number; xray?: boolean; invert?: boolean }
+  | { depth: [number, number]; feather?: number; invert?: boolean }
+  | { texture: 'gradient'; channel?: 'r' | 'g' | 'b' | 'a'; invert?: boolean };
 
 export interface RenderSpec {
   effects?: EffectSpec[];
+  /** One mask object shared by every effect whose mask is `shared`. */
+  sharedMask?: MaskSpec;
   /** Clear to black instead of the studio's background color. */
   noBackground?: boolean;
   merge?: boolean;
@@ -97,7 +114,52 @@ function configure(spec: RenderSpec) {
     spec.colorSpace === 'linear' ? LinearSRGBColorSpace : SRGBColorSpace;
 }
 
-function createEffects(specs: EffectSpec[] = []): Effect[] {
+// A horizontal ramp from 0 (left) to 1 (right) in every channel.
+const gradient = (() => {
+  const data = new Uint8Array(256 * 4);
+  for (let x = 0; x < 256; x++) data.fill(x, x * 4, x * 4 + 4);
+  const texture = new DataTexture(data, 256, 1, RGBAFormat);
+  texture.magFilter = texture.minFilter = LinearFilter;
+  texture.needsUpdate = true;
+  return texture;
+})();
+
+function toMask(
+  spec: EffectSpec | { mask?: MaskSpec },
+  factory?: EffectFactory<ParamSchema>,
+) {
+  let mask = spec.mask;
+  if (mask === 'shared')
+    throw new Error('shared masks are resolved by createEffects');
+  if (mask === 'demo') {
+    const selection = factory?.definition.meta.demo?.selection;
+    if (!selection) return undefined;
+    mask = { selection: [...selection] };
+  }
+  if (!mask) return undefined;
+  if ('selection' in mask) {
+    return {
+      ...mask,
+      selection: mask.selection.map((name) => {
+        const object = studio.scene.getObjectByName(name);
+        if (!object) throw new Error(`no studio object named ${name}`);
+        return object;
+      }),
+    };
+  }
+  if ('layer' in mask) {
+    const { layer, ...rest } = mask;
+    return { ...rest, selection: { layer } };
+  }
+  if ('texture' in mask) return { ...mask, texture: gradient };
+  return mask;
+}
+
+function createEffects(
+  specs: EffectSpec[] = [],
+  sharedMask?: MaskSpec,
+): Effect[] {
+  const shared = sharedMask ? toMask({ mask: sharedMask }) : undefined;
   return specs.map((spec) => {
     const factory = factories[spec.id] as unknown as
       ((options: Record<string, unknown>) => Effect) | undefined;
@@ -107,6 +169,10 @@ function createEffects(specs: EffectSpec[] = []): Effect[] {
       ...(spec.params ?? {}),
       ...(spec.blend ? { blend: spec.blend } : {}),
       ...(spec.opacity !== undefined ? { opacity: spec.opacity } : {}),
+      ...(spec.enabled !== undefined ? { enabled: spec.enabled } : {}),
+      mask:
+        (spec.mask === 'shared' ? shared : toMask(spec, factories[spec.id]!)) ??
+        null,
     });
   });
 }
@@ -143,7 +209,7 @@ function withComposer<T>(
   studio.update(0);
   const composer = new EffectComposer(renderer, { merge: spec.merge ?? true });
   composer.setScene(studio.scene, studio.camera);
-  const effects = createEffects(spec.effects);
+  const effects = createEffects(spec.effects, spec.sharedMask);
   composer.setItems(effects);
   composer.time = spec.time ?? 0;
   composer.motion = spec.motion ?? true;
@@ -167,6 +233,8 @@ const xt = {
         ...snapshot(),
         passes: composer.passes.length,
         compiles: composer.stats.compiles,
+        prepasses: composer.stats.prepasses,
+        depth: composer.stats.depth,
       };
     });
   },
@@ -299,22 +367,35 @@ const xt = {
       geometries: renderer.info.memory.geometries,
       programs: renderer.info.programs?.length ?? 0,
     });
-    const cycle = () =>
-      withComposer(
-        {
-          effects: [
-            { id: 'bloom' },
-            { id: 'chromatic-aberration', params: { samples: 6 } },
-            { id: 'vignette' },
-            { id: 'rgb-split-glitch' },
-            { id: 'holographic-foil' },
-          ],
-        },
-        (composer) => {
+    const stacks: RenderSpec[] = [
+      {
+        effects: [
+          { id: 'bloom' },
+          { id: 'chromatic-aberration', params: { samples: 6 } },
+          { id: 'vignette' },
+          { id: 'rgb-split-glitch' },
+          { id: 'holographic-foil' },
+        ],
+      },
+      // Geometry buffers and selection prepasses, including x-ray.
+      {
+        effects: [
+          { id: 'depth-fog' },
+          { id: 'outline' },
+          { id: 'glow', mask: { selection: ['box'] } },
+          { id: 'selective-bloom', mask: { selection: ['knot'], xray: true } },
+        ],
+      },
+    ];
+    const cycle = () => {
+      let last = memory();
+      for (const stack of stacks)
+        last = withComposer(stack, (composer) => {
           composer.render(0);
           return memory();
-        },
-      );
+        });
+      return last;
+    };
     // Warm up once: rendering the scene into a buffer compiles the studio's own
     // materials in a second variant, which three.js keeps with those materials.
     cycle();

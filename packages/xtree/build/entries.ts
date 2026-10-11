@@ -8,6 +8,7 @@ const fixed = {
   'shaders/noise/index': 'src/shaders/noise/index.ts',
   'shaders/color/index': 'src/shaders/color/index.ts',
   'shaders/blend/index': 'src/shaders/blend/index.ts',
+  'shaders/depth/index': 'src/shaders/depth/index.ts',
   'effect/index': 'src/effect/index.ts',
   'core/index': 'src/core/index.ts',
 } as const;

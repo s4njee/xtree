@@ -2,6 +2,7 @@ import {
   ACESFilmicToneMapping,
   AgXToneMapping,
   CineonToneMapping,
+  DepthTexture,
   HalfFloatType,
   LinearToneMapping,
   NeutralToneMapping,
@@ -19,6 +20,8 @@ import type {
   WebGLRenderer,
 } from 'three';
 import type { Effect } from '../effect/define.js';
+import type { EffectMask, SelectionMask } from '../effect/mask.js';
+import { NormalPrepass, SelectionPrepass } from './buffers.js';
 import type { OutputStage, ToneMapping } from './compile.js';
 import { describePassError, EffectPass } from './pass.js';
 import {
@@ -50,6 +53,10 @@ export interface ComposerStats {
   compiles: number;
   /** Buffer allocations, which happen on the first render and on resize. */
   allocations: number;
+  /** Extra scene renders in the last frame: the normal prepass and one per distinct selection mask. */
+  prepasses: number;
+  /** Whether the last frame's scene render kept a depth texture. */
+  depth: boolean;
 }
 
 const toneMappings = new Map<ThreeToneMapping, ToneMapping>([
@@ -83,7 +90,12 @@ export class EffectComposer {
   readonly renderer: WebGLRenderer;
   scene: Object3D | null = null;
   camera: Camera | null = null;
-  readonly stats: ComposerStats = { compiles: 0, allocations: 0 };
+  readonly stats: ComposerStats = {
+    compiles: 0,
+    allocations: 0,
+    prepasses: 0,
+    depth: false,
+  };
   readonly #options: Required<
     Omit<EffectComposerOptions, 'merge' | 'motion' | 'dithering'>
   >;
@@ -96,6 +108,8 @@ export class EffectComposer {
   #outputPass: EffectPass | null = null;
   #sceneTarget: WebGLRenderTarget | null = null;
   #targets: [WebGLRenderTarget, WebGLRenderTarget] | null = null;
+  #normal: NormalPrepass | null = null;
+  readonly #selections = new Map<EffectMask, SelectionPrepass>();
   #width = 0;
   #height = 0;
   #lastTime: number | undefined;
@@ -264,10 +278,20 @@ export class EffectComposer {
         ? plan
         : [...plan, { kind: 'effects', pass: this.#ensureOutputPass() }];
 
+    const active = this.effects.filter((effect) => effect.enabled);
+    const buffers = new Set(active.flatMap((e) => e.requiredBuffers()));
+    this.#useDepthTexture(buffers.has('depth'));
+
     const previousTarget = renderer.getRenderTarget();
     const sceneTarget = this.#sceneTarget!;
     renderer.setRenderTarget(sceneTarget);
     renderer.render(this.scene, this.camera);
+    this.#renderPrepasses(active, buffers.has('normal'));
+    const geometry = {
+      depth: sceneTarget.depthTexture,
+      normal: this.#normal?.target.texture ?? null,
+      camera: this.camera,
+    };
 
     let read = sceneTarget;
     let [write, spare] = this.#targets!;
@@ -281,6 +305,7 @@ export class EffectComposer {
         pass.motion = this.#motion;
         // The pass adds `seconds` while motion is on, landing on the composer's time.
         pass.time = this.#motion ? this.#time - seconds : this.#frozenTime;
+        pass.setGeometry(geometry);
         pass.render(renderer, last ? target : write, read, seconds);
       } else {
         step.pass.renderToScreen = false;
@@ -305,6 +330,10 @@ export class EffectComposer {
     for (const item of this.#items) item.dispose?.();
     this.#sceneTarget?.dispose();
     this.#targets?.forEach((t) => t.dispose());
+    this.#normal?.dispose();
+    this.#normal = null;
+    for (const prepass of this.#selections.values()) prepass.dispose();
+    this.#selections.clear();
     this.#plan = [];
     this.#items = [];
     const canvas = this.renderer.domElement as HTMLCanvasElement | undefined;
@@ -354,7 +383,65 @@ export class EffectComposer {
     }
     for (const step of this.#plan) step.pass.setSize?.(width, height);
     this.#outputPass?.setSize(width, height);
+    this.#normal?.setSize(width, height);
+    for (const prepass of this.#selections.values())
+      prepass.setSize(width, height);
     this.stats.allocations++;
+  }
+
+  /** Gives the scene target a depth texture only while an effect reads depth. */
+  #useDepthTexture(needed: boolean): void {
+    const target = this.#sceneTarget!;
+    this.stats.depth = needed;
+    if (needed === Boolean(target.depthTexture)) return;
+    // A render target's depth attachment is fixed once it is set up, so swap the target.
+    target.dispose();
+    this.#sceneTarget = new WebGLRenderTarget(this.#width, this.#height, {
+      type: this.#options.frameBufferType,
+      samples: this.#options.multisampling,
+      ...(needed
+        ? { depthTexture: new DepthTexture(this.#width, this.#height) }
+        : {}),
+    });
+    if (!needed) target.depthTexture?.dispose();
+    this.stats.allocations++;
+  }
+
+  /** The normal prepass and selection masks the active effects need. */
+  #renderPrepasses(active: readonly Effect[], normals: boolean): void {
+    const { renderer, scene, camera } = this;
+    const samples = this.#options.multisampling;
+    let prepasses = 0;
+    if (normals) {
+      this.#normal ??= new NormalPrepass(this.#width, this.#height, samples);
+      this.#normal.render(renderer, scene!, camera!);
+      prepasses++;
+    } else if (this.#normal) {
+      this.#normal.dispose();
+      this.#normal = null;
+    }
+    const used = new Set<EffectMask>();
+    for (const effect of active) {
+      const mask = effect.mask;
+      if (!mask || effect.maskKind !== 'selection') continue;
+      let prepass = this.#selections.get(mask);
+      if (!prepass) {
+        prepass = new SelectionPrepass(this.#width, this.#height, samples);
+        this.#selections.set(mask, prepass);
+      }
+      if (!used.has(mask)) {
+        prepass.render(renderer, scene!, camera!, mask as SelectionMask);
+        used.add(mask);
+        prepasses++;
+      }
+      effect.uniforms.xtMask!.value = prepass.target.texture;
+    }
+    for (const [mask, prepass] of this.#selections) {
+      if (used.has(mask)) continue;
+      prepass.dispose();
+      this.#selections.delete(mask);
+    }
+    this.stats.prepasses = prepasses;
   }
 
   #updatePlan(): void {

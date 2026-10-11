@@ -30,6 +30,7 @@ export const families = [
     order: ['luminance', 'space', 'white-balance', 'tonemap'],
   },
   { id: 'blend', title: 'Blend', order: ['modes'] },
+  { id: 'depth', title: 'Depth', order: ['reconstruct'] },
 ];
 
 const rank = (order, file) => {

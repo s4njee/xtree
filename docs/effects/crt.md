@@ -31,7 +31,7 @@ Every parameter is also a property: `effect.curvature = 0.1`. Uniform changes ta
 | Parameter      | Type                                       | Default      | Range     | Description                                                        |
 | -------------- | ------------------------------------------ | ------------ | --------- | ------------------------------------------------------------------ |
 | `curvature`    | number                                     | `0.1`        | 0 – 0.5   | Bulge of the glass.                                                |
-| `mask`         | 'aperture' \| 'slot' \| 'shadow' \| 'none' | `'aperture'` |           | Phosphor layout: vertical stripes, staggered slots or a dot triad. |
+| `phosphor`     | 'aperture' \| 'slot' \| 'shadow' \| 'none' | `'aperture'` |           | Phosphor layout: vertical stripes, staggered slots or a dot triad. |
 | `maskStrength` | number                                     | `0.3`        | 0 – 1     | Visibility of the phosphor mask.                                   |
 | `maskScale`    | number                                     | `1`          | 1 – 4 px  | Size of a phosphor.                                                |
 | `scanlines`    | number                                     | `0.35`       | 0 – 1     | Darkness of the scanlines.                                         |
@@ -46,12 +46,12 @@ Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#mo
 
 ## Presets
 
-| Preset       | Settings                                                                 |
-| ------------ | ------------------------------------------------------------------------ |
-| `television` | `curvature: 0.14`, `mask: 'shadow'`, `maskStrength: 0.35`                |
-| `arcade`     | `curvature: 0.18`, `mask: 'slot'`, `scanlines: 0.5`, `glow: 0.35`        |
-| `monitor`    | `curvature: 0.04`, `mask: 'aperture'`, `scanlines: 0.2`, `vignette: 0.2` |
-| `flat`       | `curvature: 0`, `mask: 'none'`, `scanlines: 0.4`, `vignette: 0`          |
+| Preset       | Settings                                                                     |
+| ------------ | ---------------------------------------------------------------------------- |
+| `television` | `curvature: 0.14`, `phosphor: 'shadow'`, `maskStrength: 0.35`                |
+| `arcade`     | `curvature: 0.18`, `phosphor: 'slot'`, `scanlines: 0.5`, `glow: 0.35`        |
+| `monitor`    | `curvature: 0.04`, `phosphor: 'aperture'`, `scanlines: 0.2`, `vignette: 0.2` |
+| `flat`       | `curvature: 0`, `phosphor: 'none'`, `scanlines: 0.4`, `vignette: 0`          |
 
 Apply one with `crt({ preset: 'name' })` or `effect.applyPreset('name')`; presets start from the defaults.
 
@@ -59,8 +59,9 @@ Apply one with `crt({ preset: 'name' })` or `effect.applyPreset('name')`; preset
 
 - **Family:** Retro & display · tracked as story X7.4 in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).
 - **Passes:** samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass.
+- **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Settles: when motion is off it switches to still values (`flicker: 0`) without changing your settings.
-- **Size:** 5.3 KB gzip budget for `@mk7s/xtree/effects/crt`, including the shared effect runtime.
+- **Size:** 6.1 KB gzip budget for `@mk7s/xtree/effects/crt`, including the shared effect runtime.
 
 ## Credits
 

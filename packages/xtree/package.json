@@ -50,6 +50,10 @@
       "types": "./dist/effects/brightness-contrast/index.d.ts",
       "import": "./dist/effects/brightness-contrast/index.js"
     },
+    "./effects/buffer-view": {
+      "types": "./dist/effects/buffer-view/index.d.ts",
+      "import": "./dist/effects/buffer-view/index.js"
+    },
     "./effects/chromatic-aberration": {
       "types": "./dist/effects/chromatic-aberration/index.d.ts",
       "import": "./dist/effects/chromatic-aberration/index.js"
@@ -57,6 +61,14 @@
     "./effects/crt": {
       "types": "./dist/effects/crt/index.d.ts",
       "import": "./dist/effects/crt/index.js"
+    },
+    "./effects/depth-fog": {
+      "types": "./dist/effects/depth-fog/index.d.ts",
+      "import": "./dist/effects/depth-fog/index.js"
+    },
+    "./effects/depth-of-field": {
+      "types": "./dist/effects/depth-of-field/index.d.ts",
+      "import": "./dist/effects/depth-of-field/index.js"
     },
     "./effects/digital-noise": {
       "types": "./dist/effects/digital-noise/index.d.ts",
@@ -77,6 +89,10 @@
     "./effects/film-grain": {
       "types": "./dist/effects/film-grain/index.d.ts",
       "import": "./dist/effects/film-grain/index.js"
+    },
+    "./effects/glow": {
+      "types": "./dist/effects/glow/index.d.ts",
+      "import": "./dist/effects/glow/index.js"
     },
     "./effects/gradient-map": {
       "types": "./dist/effects/gradient-map/index.d.ts",
@@ -110,6 +126,10 @@
       "types": "./dist/effects/monochrome/index.d.ts",
       "import": "./dist/effects/monochrome/index.js"
     },
+    "./effects/outline": {
+      "types": "./dist/effects/outline/index.d.ts",
+      "import": "./dist/effects/outline/index.js"
+    },
     "./effects/pixelate": {
       "types": "./dist/effects/pixelate/index.d.ts",
       "import": "./dist/effects/pixelate/index.js"
@@ -130,6 +150,10 @@
       "types": "./dist/effects/scanlines/index.d.ts",
       "import": "./dist/effects/scanlines/index.js"
     },
+    "./effects/selective-bloom": {
+      "types": "./dist/effects/selective-bloom/index.d.ts",
+      "import": "./dist/effects/selective-bloom/index.js"
+    },
     "./effects/tilt-shift": {
       "types": "./dist/effects/tilt-shift/index.d.ts",
       "import": "./dist/effects/tilt-shift/index.js"
@@ -149,6 +173,10 @@
     "./shaders/color": {
       "types": "./dist/shaders/color/index.d.ts",
       "import": "./dist/shaders/color/index.js"
+    },
+    "./shaders/depth": {
+      "types": "./dist/shaders/depth/index.d.ts",
+      "import": "./dist/shaders/depth/index.js"
     },
     "./shaders": {
       "types": "./dist/shaders/index.d.ts",

@@ -31,6 +31,7 @@ test.describe('visual baselines', () => {
               id: id as never,
               ...(preset ? { preset } : {}),
               params: id === 'rgb-split-glitch' ? { trigger: 'always' } : {},
+              mask: 'demo',
             },
           ],
         };
@@ -42,6 +43,61 @@ test.describe('visual baselines', () => {
           .soft(png(image), `${id} ${preset ?? 'default'}`)
           .toMatchSnapshot(`${id}-${preset ?? 'default'}.png`, tolerance);
       }
+    });
+  }
+
+  const masked: Record<string, RenderSpec> = {
+    'mask-selection': {
+      effects: [
+        {
+          id: 'rgb-split-glitch',
+          params: { trigger: 'always', amount: 0.03 },
+          mask: { selection: ['knot'] },
+        },
+      ],
+    },
+    'mask-xray-outline': {
+      effects: [
+        {
+          id: 'outline',
+          params: { color: '#ffd166', thickness: 2 },
+          mask: { selection: ['ring'], xray: true },
+        },
+      ],
+    },
+    'mask-depth': {
+      effects: [
+        {
+          id: 'monochrome',
+          params: { mode: 'duotone' },
+          mask: { depth: [0, 8], invert: true, feather: 1 },
+        },
+      ],
+    },
+    'mask-texture': {
+      effects: [
+        {
+          id: 'hue-saturation',
+          params: { hue: 120 },
+          mask: { texture: 'gradient' },
+        },
+      ],
+    },
+    'depth-stack': {
+      effects: [
+        { id: 'depth-fog', preset: 'groundMist' },
+        { id: 'outline', params: { color: '#101018' } },
+        { id: 'vignette' },
+      ],
+    },
+  };
+  for (const [name, spec] of Object.entries(masked)) {
+    test(`masks and buffers: ${name}`, async ({ page }) => {
+      const { png: image } = await page.evaluate(
+        (s) => window.xt.render(s),
+        spec,
+      );
+      expect(png(image)).toMatchSnapshot(`${name}.png`, tolerance);
     });
   }
 

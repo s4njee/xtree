@@ -51,8 +51,9 @@ Apply one with `lut({ preset: 'name' })` or `effect.applyPreset('name')`; preset
 
 - **Family:** Color & tone · tracked as story X3.5 in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).
 - **Passes:** reads only its own pixel, so it merges into the pass before it.
+- **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Static: nothing animates.
-- **Size:** 6.9 KB gzip budget for `@mk7s/xtree/effects/lut`, including the shared effect runtime.
+- **Size:** 7.8 KB gzip budget for `@mk7s/xtree/effects/lut`, including the shared effect runtime.
 
 ## Credits
 

@@ -1,7 +1,7 @@
 import { expect, type Page } from '@playwright/test';
-import type { EffectSpec, RenderSpec } from '../fixtures/main.js';
+import type { EffectSpec, MaskSpec, RenderSpec } from '../fixtures/main.js';
 
-export type { EffectSpec, RenderSpec };
+export type { EffectSpec, MaskSpec, RenderSpec };
 
 /** Opens the GPU fixture page. */
 export async function openFixture(page: Page): Promise<void> {

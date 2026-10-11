@@ -51,6 +51,7 @@ function checkerTexture(): DataTexture {
  * A small studio: a lit torus knot, a glowing HDR orb and ring for bloom, a
  * checker floor with hard edges for lens and glitch effects, and saturated
  * shapes for color effects. Fully deterministic for a given `update` time.
+ * Objects are named (floor, knot, orb, box, gem, ring) so masks can select them.
  */
 export function createStudio(aspect = 16 / 9): SampleScene {
   const scene = new Scene();
@@ -81,6 +82,7 @@ export function createStudio(aspect = 16 / 9): SampleScene {
     ),
   );
   floor.rotation.x = -Math.PI / 2;
+  floor.name = 'floor';
   scene.add(floor);
 
   const knot = new Mesh(
@@ -94,6 +96,7 @@ export function createStudio(aspect = 16 / 9): SampleScene {
     ),
   );
   knot.position.set(0, 1.25, 0);
+  knot.name = 'knot';
   scene.add(knot);
 
   const orb = new Mesh(
@@ -107,6 +110,7 @@ export function createStudio(aspect = 16 / 9): SampleScene {
     ),
   );
   orb.position.set(-2.1, 0.75, 0.4);
+  orb.name = 'orb';
   scene.add(orb);
 
   const box = new Mesh(
@@ -115,6 +119,7 @@ export function createStudio(aspect = 16 / 9): SampleScene {
   );
   box.position.set(2.1, 0.45, 0.3);
   box.rotation.y = 0.6;
+  box.name = 'box';
   scene.add(box);
 
   const gem = new Mesh(
@@ -129,6 +134,7 @@ export function createStudio(aspect = 16 / 9): SampleScene {
     ),
   );
   gem.position.set(2.1, 1.25, 0.3);
+  gem.name = 'gem';
   scene.add(gem);
 
   const ring = new Mesh(
@@ -142,6 +148,7 @@ export function createStudio(aspect = 16 / 9): SampleScene {
     ),
   );
   ring.position.set(0, 1.25, -2.2);
+  ring.name = 'ring';
   scene.add(ring);
 
   const update = (seconds: number) => {

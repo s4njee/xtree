@@ -53,8 +53,9 @@ Apply one with `scanlines({ preset: 'name' })` or `effect.applyPreset('name')`; 
 
 - **Family:** Retro & display · tracked as story X7.3 in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).
 - **Passes:** reads only its own pixel, so it merges into the pass before it.
+- **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Freezes: when motion is off (reduced motion, high contrast or `composer.motion = false`) the effect holds its current frame.
-- **Size:** 4.0 KB gzip budget for `@mk7s/xtree/effects/scanlines`, including the shared effect runtime.
+- **Size:** 4.9 KB gzip budget for `@mk7s/xtree/effects/scanlines`, including the shared effect runtime.
 
 ## Credits
 

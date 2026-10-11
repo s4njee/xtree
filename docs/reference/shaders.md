@@ -356,3 +356,26 @@ Photoshop-style blend modes. Separable and non-separable formulas follow W3C Com
 | `XT_BLEND_LUMINOSITY`    | `25`  |
 
 **Credits:** Original implementation (MIT). References: W3C Compositing and Blending Level 1.
+
+## Depth
+
+Import from `@mk7s/xtree/shaders/depth` as `depth`, or every family at once as `chunks` from `@mk7s/xtree/shaders`.
+
+### reconstruct
+
+```glsl
+#include <xtree/depth/reconstruct>
+```
+
+Depth buffer helpers: stored depth to view-space Z and back, view positions from depth, and normals estimated from depth. The conventions match three.js (`perspectiveDepthToViewZ`, `orthographicDepthToViewZ`): the camera looks down -Z, so view Z is negative in front of it.
+
+| Function                                                                                       | Description                                                                                                                               |
+| ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `float xt_perspectiveDepthToViewZ(float depth, float near, float far)`                         | View-space Z (negative in front of the camera) from a perspective depth-buffer value in [0, 1].                                           |
+| `float xt_orthographicDepthToViewZ(float depth, float near, float far)`                        | View-space Z from an orthographic depth-buffer value in [0, 1].                                                                           |
+| `float xt_viewZToPerspectiveDepth(float viewZ, float near, float far)`                         | Perspective depth-buffer value for a view-space Z; the inverse of xt_perspectiveDepthToViewZ.                                             |
+| `float xt_viewZToLinearDepth(float viewZ, float near, float far)`                              | Linear depth in [0, 1] from the near plane to the far plane.                                                                              |
+| `vec3 xt_viewPositionFromDepth(vec2 uv, float depth, mat4 inverseProjection)`                  | View-space position of a screen UV and depth-buffer value, through the inverse projection matrix.                                         |
+| `vec3 xt_normalFromDepth(sampler2D depthTexture, vec2 uv, vec2 texel, mat4 inverseProjection)` | View-space normal estimated from a depth texture. Each axis differences toward the neighbour nearer in depth, so silhouettes don't smear. |
+
+**Credits:** Original implementation (MIT). References: three.js packing functions (perspectiveDepthToViewZ, orthographicDepthToViewZ), reimplemented and tested for equality; Normal reconstruction from depth choosing the smaller one-sided difference, after Bavoil and Sainz, Screen Space Ambient Occlusion, NVIDIA 2008.

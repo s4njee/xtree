@@ -124,6 +124,9 @@ for (const { id, factory } of effects) {
   const folder = `src/effects/${id}`;
   const known = new Set([
     'main',
+    'maskAt',
+    'has_mask',
+    'maskKind',
     ...Object.keys(definition.params),
     ...(definition.textures ?? []),
   ]);
@@ -163,6 +166,12 @@ for (const { id, factory } of effects) {
   }
   for (const preset of Object.keys(definition.presets ?? {}))
     settings.push({ preset });
+  // Every mask kind, which also adds the depth buffer for depth masks.
+  settings.push(
+    { mask: { texture: { isTexture: true }, channel: 'a' } },
+    { mask: { depth: [1, 10], feather: 1 } },
+    { mask: { selection: { layer: 1 } } },
+  );
   for (const setting of settings) {
     const pass = compilePass([factory(setting), factory(setting)], {
       toneMapping: 'aces',

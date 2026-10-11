@@ -51,8 +51,9 @@ Apply one with `pixelate({ preset: 'name' })` or `effect.applyPreset('name')`; p
 
 - **Family:** Retro & display · tracked as story X7.1 in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).
 - **Passes:** samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass.
+- **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Static: nothing animates.
-- **Size:** 4.0 KB gzip budget for `@mk7s/xtree/effects/pixelate`, including the shared effect runtime.
+- **Size:** 4.9 KB gzip budget for `@mk7s/xtree/effects/pixelate`, including the shared effect runtime.
 
 ## Credits
 

@@ -2,6 +2,14 @@ import type * as THREE from 'three';
 import type { ChunkMap } from '../glsl/index.js';
 import { blendModes, type BlendMode } from '../shaders/blend/constants.js';
 import {
+  maskKind,
+  validateMask,
+  type DepthMask,
+  type EffectMask,
+  type GeometryBuffer,
+  type MaskKind,
+} from './mask.js';
+import {
   toUniformValue,
   validateParam,
   type Param,
@@ -25,6 +33,7 @@ export const effectFamilies = {
   holographic: 'Holographic & iridescent',
   material: 'Materials',
   transition: 'Transitions',
+  utility: 'Utilities',
 } as const;
 export type EffectFamily = keyof typeof effectFamilies;
 
@@ -38,6 +47,11 @@ export interface EffectMeta {
   readonly description: string;
   /** Names of related effects. */
   readonly related?: readonly string[];
+  /** How the docs demo and the visual baselines show the effect. */
+  readonly demo?: {
+    /** Studio objects (by name) to select as the effect's mask. */
+    readonly selection?: readonly string[];
+  };
 }
 
 /**
@@ -101,6 +115,19 @@ export interface SetupContext<S extends ParamSchema> {
   ): void;
 }
 
+/** Picks buffers from an effect's current values. (The bivariance wrapper keeps specific effects assignable to the general `Effect` type.) */
+export type BufferSelector<S extends ParamSchema> = {
+  bivariance(effect: EffectInstance<S>): readonly GeometryBuffer[];
+}['bivariance'];
+
+/**
+ * How an effect's mask applies:
+ * - `opacity`: the mask scales the effect's opacity per pixel.
+ * - `custom`: the effect reads the mask itself through `$maskAt(uv)`, for
+ *   example to outline a selection or to bloom only selected objects.
+ */
+export type Masking = 'opacity' | 'custom';
+
 export interface EffectDefinition<S extends ParamSchema> {
   /** Kebab-case id, also the export path: `@mk7s/xtree/effects/<name>`. */
   readonly name: string;
@@ -110,6 +137,16 @@ export interface EffectDefinition<S extends ParamSchema> {
   readonly presets?: Readonly<Record<string, Partial<ParamValues<S>>>>;
   readonly sampling?: Sampling;
   readonly motion?: MotionBehavior<S>;
+  /**
+   * Geometry buffers the fragment reads, or a function of the effect that
+   * picks them (it may only depend on structural parameters). Depth gives
+   * `xt_depth`, `xt_viewDepth`, `xt_viewPosition` and `xt_worldPosition`;
+   * normal gives `xt_viewNormal`. The composer renders only the buffers an
+   * enabled effect needs.
+   */
+  readonly buffers?: readonly GeometryBuffer[] | BufferSelector<S>;
+  /** Defaults to `opacity`. */
+  readonly masking?: Masking;
   /** Chunk maps the fragment includes from. */
   readonly chunks?: readonly ChunkMap[];
   /** Extra sampler uniforms that `setup` fills, referenced as `$name`. */
@@ -134,6 +171,8 @@ export interface EffectOptions {
   readonly blend?: BlendMode;
   readonly opacity?: number;
   readonly enabled?: boolean;
+  /** Limits where the effect applies; see `Effect.mask`. */
+  readonly mask?: EffectMask | null;
 }
 
 export interface EffectJSON {
@@ -142,6 +181,8 @@ export interface EffectJSON {
   readonly blend?: BlendMode;
   readonly opacity?: number;
   readonly enabled?: boolean;
+  /** Depth masks only; texture and selection masks hold live objects. */
+  readonly mask?: DepthMask;
 }
 
 /** An effect instance with a typed property per parameter. */
@@ -175,6 +216,14 @@ const reserved = new Set([
   'onDispose',
   'dispose',
   'resolveSamples',
+  'mask',
+  'maskAt',
+  'requiredBuffers',
+  'maskKind',
+  'xtMask',
+  'xtMaskChannel',
+  'xtMaskRange',
+  'xtMaskInvert',
 ]);
 
 let nextId = 1;
@@ -196,6 +245,7 @@ export class Effect<S extends ParamSchema = ParamSchema> {
   #disposed = false;
   #disposers: (() => void)[] = [];
   #samples = new Map<string, TextureLike & { dispose(): void }>();
+  #mask: EffectMask | null = null;
 
   constructor(
     definition: EffectDefinition<S>,
@@ -212,12 +262,17 @@ export class Effect<S extends ParamSchema = ParamSchema> {
     for (const texture of definition.textures ?? [])
       this.uniforms[texture] = { value: null };
     this.uniforms.opacity = { value: 1 };
-    const { preset, blend, opacity, enabled, ...values } = options;
+    this.uniforms.xtMask = { value: null };
+    this.uniforms.xtMaskChannel = { value: 0 };
+    this.uniforms.xtMaskRange = { value: [0, 0, 0] };
+    this.uniforms.xtMaskInvert = { value: false };
+    const { preset, blend, opacity, enabled, mask, ...values } = options;
     if (preset !== undefined) this.applyPreset(preset);
     this.set(values as unknown as Partial<ParamValues<S>>);
     if (blend !== undefined) this.blend = blend;
     if (opacity !== undefined) this.opacity = opacity;
     if (enabled !== undefined) this.enabled = enabled;
+    if (mask !== undefined) this.mask = mask;
   }
 
   get name(): string {
@@ -268,6 +323,49 @@ export class Effect<S extends ParamSchema = ParamSchema> {
       this.#enabled = Boolean(value);
       this.#version++;
     }
+  }
+
+  /**
+   * Limits where the effect applies: one channel of a texture
+   * (`{ texture, channel }`), a range of distances from the camera
+   * (`{ depth: [near, far], feather }`) or a set of objects
+   * (`{ selection: [mesh, group] }` or `{ selection: { layer: 1 } }`). Every
+   * kind takes `invert`. Null applies everywhere.
+   */
+  get mask(): EffectMask | null {
+    return this.#mask;
+  }
+  set mask(mask: EffectMask | null) {
+    validateMask(this.name, mask);
+    const before = this.maskKind;
+    this.#mask = mask;
+    const u = this.uniforms;
+    u.xtMaskInvert!.value = mask?.invert ?? false;
+    u.xtMask!.value = mask && 'texture' in mask ? mask.texture : null;
+    u.xtMaskChannel!.value =
+      mask && 'texture' in mask ? 'rgba'.indexOf(mask.channel ?? 'r') : 0;
+    u.xtMaskRange!.value =
+      mask && 'depth' in mask
+        ? [mask.depth[0], mask.depth[1], mask.feather ?? 0]
+        : [0, 0, 0];
+    if (this.maskKind !== before) this.#version++;
+  }
+
+  /** The kind of the current mask, or null. */
+  get maskKind(): MaskKind | null {
+    return this.#mask ? maskKind(this.#mask) : null;
+  }
+
+  /** Geometry buffers this effect needs now: its own, plus depth for a depth mask. */
+  requiredBuffers(): readonly GeometryBuffer[] {
+    const { buffers } = this.definition;
+    const own =
+      typeof buffers === 'function'
+        ? buffers(this as unknown as EffectInstance<S>)
+        : (buffers ?? []);
+    return this.maskKind === 'depth' && !own.includes('depth')
+      ? [...own, 'depth']
+      : own;
   }
 
   get<K extends keyof S & string>(name: K): ParamValue<S[K]> {
@@ -368,6 +466,7 @@ export class Effect<S extends ParamSchema = ParamSchema> {
       ...(this.#blend !== 'normal' ? { blend: this.#blend } : {}),
       ...(this.opacity !== 1 ? { opacity: this.opacity } : {}),
       ...(!this.#enabled ? { enabled: false } : {}),
+      ...(this.#mask && 'depth' in this.#mask ? { mask: this.#mask } : {}),
     };
   }
 

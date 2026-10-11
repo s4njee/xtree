@@ -20,11 +20,11 @@ vec4 $main(vec4 color, vec2 uv) {
   float phase = fract(st.y * xt_resolution.y / $lineWidth);
   c *= 1.0 - $scanlines * (0.5 - 0.5 * cos(phase * 6.28318530718));
   // Phosphor mask in screen pixels.
-  if ($mask != $mask_none) {
+  if ($phosphor != $phosphor_none) {
     vec2 px = uv * xt_resolution / $maskScale;
     int column = int(mod(px.x, 3.0));
-    if ($mask == $mask_slot) column = int(mod(px.x + (mod(floor(px.y / 2.0), 2.0) * 1.5), 3.0));
-    if ($mask == $mask_shadow) column = int(mod(px.x + floor(px.y) * 1.5, 3.0));
+    if ($phosphor == $phosphor_slot) column = int(mod(px.x + (mod(floor(px.y / 2.0), 2.0) * 1.5), 3.0));
+    if ($phosphor == $phosphor_shadow) column = int(mod(px.x + floor(px.y) * 1.5, 3.0));
     vec3 phosphor = vec3(column == 0 ? 1.0 : 0.0, column == 1 ? 1.0 : 0.0, column == 2 ? 1.0 : 0.0);
     c *= mix(vec3(1.0), phosphor * 1.5 + 0.25, $maskStrength);
   }

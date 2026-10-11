@@ -69,6 +69,7 @@ export default defineConfig({
           items: [
             { text: 'Introduction', link: '/guide/' },
             { text: 'Getting started', link: '/guide/getting-started' },
+            { text: 'Masks and geometry buffers', link: '/guide/masks' },
           ],
         },
       ],
@@ -168,6 +169,10 @@ function projectSidebar() {
         {
           text: '0007 Effect authoring contract',
           link: '/adr/0007-effect-authoring',
+        },
+        {
+          text: '0008 Geometry buffers and masks',
+          link: '/adr/0008-geometry-buffers-and-masks',
         },
       ],
     },

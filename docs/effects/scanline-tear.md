@@ -54,8 +54,9 @@ Apply one with `scanlineTear({ preset: 'name' })` or `effect.applyPreset('name')
 
 - **Family:** Glitch & signal · tracked as story X6.3 in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).
 - **Passes:** samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass.
+- **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Settles: when motion is off it switches to still values (`frequency: 0`, `wave: 0`) without changing your settings.
-- **Size:** 4.6 KB gzip budget for `@mk7s/xtree/effects/scanline-tear`, including the shared effect runtime.
+- **Size:** 5.5 KB gzip budget for `@mk7s/xtree/effects/scanline-tear`, including the shared effect runtime.
 
 ## Credits
 

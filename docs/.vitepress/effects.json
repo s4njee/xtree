@@ -44,6 +44,10 @@
         "link": "/effects/chromatic-aberration"
       },
       {
+        "text": "Depth of field",
+        "link": "/effects/depth-of-field"
+      },
+      {
         "text": "Film grain",
         "link": "/effects/film-grain"
       },
@@ -67,6 +71,14 @@
       {
         "text": "Blur",
         "link": "/effects/blur"
+      },
+      {
+        "text": "Glow",
+        "link": "/effects/glow"
+      },
+      {
+        "text": "Selective bloom",
+        "link": "/effects/selective-bloom"
       }
     ]
   },
@@ -121,6 +133,15 @@
     ]
   },
   {
+    "text": "Stylization",
+    "items": [
+      {
+        "text": "Outline",
+        "link": "/effects/outline"
+      }
+    ]
+  },
+  {
     "text": "Distortion & warp",
     "items": [
       {
@@ -134,11 +155,29 @@
     ]
   },
   {
+    "text": "Atmosphere & lighting",
+    "items": [
+      {
+        "text": "Depth fog",
+        "link": "/effects/depth-fog"
+      }
+    ]
+  },
+  {
     "text": "Holographic & iridescent",
     "items": [
       {
         "text": "Holographic foil",
         "link": "/effects/holographic-foil"
+      }
+    ]
+  },
+  {
+    "text": "Utilities",
+    "items": [
+      {
+        "text": "Buffer view",
+        "link": "/effects/buffer-view"
       }
     ]
   }

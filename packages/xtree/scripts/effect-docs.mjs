@@ -74,7 +74,8 @@ function range(param) {
   return `${param.min} – ${param.max}${param.unit ? ` ${param.unit}` : ''}`;
 }
 
-function page(definition) {
+function page(factory) {
+  const { definition } = factory;
   const { name, meta, params } = definition;
   const factoryName = camel(name);
   const credit = credits.get(`effects/${name}`);
@@ -107,9 +108,11 @@ function page(definition) {
     '',
     'const composer = new EffectComposer(renderer);',
     'composer.setScene(scene, camera);',
-    exampleParams
-      ? `composer.add(${factoryName}({ preset: '${exampleParams[0]}' }));`
-      : `composer.add(${factoryName}());`,
+    meta.demo?.selection
+      ? `const hero = scene.getObjectByName('hero'); // the objects to select\ncomposer.add(${factoryName}({ mask: { selection: [hero] } }));`
+      : exampleParams
+        ? `composer.add(${factoryName}({ preset: '${exampleParams[0]}' }));`
+        : `composer.add(${factoryName}());`,
     'renderer.setAnimationLoop(() => composer.render());',
     '```',
     '',
@@ -155,6 +158,18 @@ function page(definition) {
           )
             .map(([k, v]) => `\`${k}: ${formatValue(params[k], v)}\``)
             .join(', ')}) without changing your settings.`;
+  const bufferNames = { depth: 'depth', normal: 'normals' };
+  const defaultBuffers = factory().requiredBuffers();
+  const buffersText =
+    typeof definition.buffers === 'function'
+      ? `depend on its settings; with the defaults it reads ${defaultBuffers.map((b) => bufferNames[b]).join(' and ') || 'none'}.`
+      : defaultBuffers.length
+        ? `reads ${defaultBuffers.map((b) => bufferNames[b]).join(' and ')}, which the composer renders only while an effect needs them.`
+        : null;
+  const maskText =
+    (definition.masking ?? 'opacity') === 'custom'
+      ? 'reads its `mask` itself rather than fading by it (see the description); any [mask kind](/guide/masks) works.'
+      : 'set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).';
   lines.push(
     '## Details',
     '',
@@ -164,6 +179,8 @@ function page(definition) {
         ? 'reads only its own pixel, so it merges into the pass before it.'
         : 'samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass.'
     }${definition.setup ? ' It also renders its own intermediate passes before the merged pass.' : ''}`,
+    ...(buffersText ? [`- **Geometry buffers:** ${buffersText}`] : []),
+    `- **Masks:** ${maskText}`,
     `- **Motion:** ${motionText}`,
     `- **Size:** ${(budgets[`./effects/${name}`] / 1024).toFixed(1)} KB gzip budget for \`@mk7s/xtree/effects/${name}\`, including the shared effect runtime.`,
     '',
@@ -257,7 +274,7 @@ const registry = [
 const outputs = new Map([
   ...effects.map(({ factory }) => [
     `${repoRoot}docs/effects/${factory.definition.name}.md`,
-    page(factory.definition),
+    page(factory),
   ]),
   [`${repoRoot}docs/effects/index.md`, index],
   [

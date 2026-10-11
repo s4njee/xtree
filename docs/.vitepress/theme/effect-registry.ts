@@ -26,6 +26,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/brightness-contrast').then(
       (m) => m.brightnessContrast as unknown as EffectFactory<ParamSchema>,
     ),
+  'buffer-view': () =>
+    import('@mk7s/xtree/effects/buffer-view').then(
+      (m) => m.bufferView as unknown as EffectFactory<ParamSchema>,
+    ),
   'chromatic-aberration': () =>
     import('@mk7s/xtree/effects/chromatic-aberration').then(
       (m) => m.chromaticAberration as unknown as EffectFactory<ParamSchema>,
@@ -33,6 +37,14 @@ export const effectLoaders: Record<
   crt: () =>
     import('@mk7s/xtree/effects/crt').then(
       (m) => m.crt as unknown as EffectFactory<ParamSchema>,
+    ),
+  'depth-fog': () =>
+    import('@mk7s/xtree/effects/depth-fog').then(
+      (m) => m.depthFog as unknown as EffectFactory<ParamSchema>,
+    ),
+  'depth-of-field': () =>
+    import('@mk7s/xtree/effects/depth-of-field').then(
+      (m) => m.depthOfField as unknown as EffectFactory<ParamSchema>,
     ),
   'digital-noise': () =>
     import('@mk7s/xtree/effects/digital-noise').then(
@@ -53,6 +65,10 @@ export const effectLoaders: Record<
   'film-grain': () =>
     import('@mk7s/xtree/effects/film-grain').then(
       (m) => m.filmGrain as unknown as EffectFactory<ParamSchema>,
+    ),
+  glow: () =>
+    import('@mk7s/xtree/effects/glow').then(
+      (m) => m.glow as unknown as EffectFactory<ParamSchema>,
     ),
   'gradient-map': () =>
     import('@mk7s/xtree/effects/gradient-map').then(
@@ -86,6 +102,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/monochrome').then(
       (m) => m.monochrome as unknown as EffectFactory<ParamSchema>,
     ),
+  outline: () =>
+    import('@mk7s/xtree/effects/outline').then(
+      (m) => m.outline as unknown as EffectFactory<ParamSchema>,
+    ),
   pixelate: () =>
     import('@mk7s/xtree/effects/pixelate').then(
       (m) => m.pixelate as unknown as EffectFactory<ParamSchema>,
@@ -105,6 +125,10 @@ export const effectLoaders: Record<
   scanlines: () =>
     import('@mk7s/xtree/effects/scanlines').then(
       (m) => m.scanlines as unknown as EffectFactory<ParamSchema>,
+    ),
+  'selective-bloom': () =>
+    import('@mk7s/xtree/effects/selective-bloom').then(
+      (m) => m.selectiveBloom as unknown as EffectFactory<ParamSchema>,
     ),
   'tilt-shift': () =>
     import('@mk7s/xtree/effects/tilt-shift').then(

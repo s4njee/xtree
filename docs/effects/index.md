@@ -6,7 +6,7 @@ title: Effects
 
 # Effects
 
-27 effects so far, out of the 141 planned. Each page has a live demo you can adjust, compare and copy.
+33 effects so far, out of the 141 planned. Each page has a live demo you can adjust, compare and copy.
 
 ## Color & tone
 
@@ -25,6 +25,7 @@ title: Effects
 
 <div class="xt-effect-grid">
 <a class="hcss-card xt-effect-card" href="./chromatic-aberration"><strong>Chromatic aberration</strong><span>Shifts red and blue (or a whole spectrum) apart, like a lens that focuses each wavelength at a slightly different place.</span></a>
+<a class="hcss-card xt-effect-card" href="./depth-of-field"><strong>Depth of field</strong><span>Blurs what is nearer or farther than the focus distance, as a wide-aperture lens does.</span></a>
 <a class="hcss-card xt-effect-card" href="./film-grain"><strong>Film grain</strong><span>Photographic grain: fine noise that sits mostly in shadows and midtones and changes at a film frame rate.</span></a>
 <a class="hcss-card xt-effect-card" href="./lens-distortion"><strong>Lens distortion</strong><span>Barrel, pincushion or mustache distortion from the Brown–Conrady radial lens model, with a choice of what fills the edges.</span></a>
 <a class="hcss-card xt-effect-card" href="./tilt-shift"><strong>Tilt-shift</strong><span>The miniature-model look of a tilted lens: a sharp band of focus, with blur growing smoothly on either side.</span></a>
@@ -35,6 +36,8 @@ title: Effects
 <div class="xt-effect-grid">
 <a class="hcss-card xt-effect-card" href="./bloom"><strong>Bloom</strong><span>Light bleeding around bright areas.</span></a>
 <a class="hcss-card xt-effect-card" href="./blur"><strong>Blur</strong><span>Blurs the whole frame with a separable Gaussian, a box filter, or iterated Kawase passes, optionally at reduced resolution for wide, cheap blurs.</span></a>
+<a class="hcss-card xt-effect-card" href="./glow"><strong>Glow</strong><span>A soft colored halo around selected objects, like an outer glow in an image editor.</span></a>
+<a class="hcss-card xt-effect-card" href="./selective-bloom"><strong>Selective bloom</strong><span>Bloom from selected objects only: give it a selection or texture mask and just those pixels feed the glow, which still spreads over everything around them.</span></a>
 </div>
 
 ## Glitch & signal
@@ -57,6 +60,12 @@ title: Effects
 <a class="hcss-card xt-effect-card" href="./scanlines"><strong>Scanlines</strong><span>Darkened horizontal or vertical lines across the frame, hard or soft, optionally scrolling slowly.</span></a>
 </div>
 
+## Stylization
+
+<div class="xt-effect-grid">
+<a class="hcss-card xt-effect-card" href="./outline"><strong>Outline</strong><span>Draws lines where the depth or the surface direction changes, for a toon or technical-drawing look.</span></a>
+</div>
+
 ## Distortion & warp
 
 <div class="xt-effect-grid">
@@ -64,8 +73,20 @@ title: Effects
 <a class="hcss-card xt-effect-card" href="./ripple"><strong>Ripple</strong><span>Concentric water ripples, or a shockwave ring that expands and fades, spreading from a point.</span></a>
 </div>
 
+## Atmosphere & lighting
+
+<div class="xt-effect-grid">
+<a class="hcss-card xt-effect-card" href="./depth-fog"><strong>Depth fog</strong><span>Screen-space fog from the depth buffer: linear or exponential with distance, optionally thinning above a height for ground mist.</span></a>
+</div>
+
 ## Holographic & iridescent
 
 <div class="xt-effect-grid">
 <a class="hcss-card xt-effect-card" href="./holographic-foil"><strong>Holographic foil</strong><span>An iridescent rainbow sheen, like a holographic trading card.</span></a>
+</div>
+
+## Utilities
+
+<div class="xt-effect-grid">
+<a class="hcss-card xt-effect-card" href="./buffer-view"><strong>Buffer view</strong><span>Shows a geometry buffer instead of the image: distance from the camera, view-space normals from the prepass or reconstructed from depth, world position, or the mask given to this effect.</span></a>
 </div>

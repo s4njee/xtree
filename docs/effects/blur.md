@@ -52,8 +52,9 @@ Apply one with `blur({ preset: 'name' })` or `effect.applyPreset('name')`; prese
 
 - **Family:** Blur & glow · tracked as story X5.1 in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).
 - **Passes:** samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass. It also renders its own intermediate passes before the merged pass.
+- **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Static: nothing animates.
-- **Size:** 5.1 KB gzip budget for `@mk7s/xtree/effects/blur`, including the shared effect runtime.
+- **Size:** 5.9 KB gzip budget for `@mk7s/xtree/effects/blur`, including the shared effect runtime.
 
 ## Credits
 

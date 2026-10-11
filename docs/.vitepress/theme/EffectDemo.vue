@@ -14,6 +14,7 @@ import {
   ref,
   shallowRef,
 } from 'vue';
+import { withBase } from 'vitepress';
 import { effectLoaders } from './effect-registry';
 
 const props = defineProps<{ effect: string }>();
@@ -35,8 +36,17 @@ const followPointer = ref(true);
 const pointerParams = ['tilt', 'center'];
 const passes = ref(0);
 const copied = ref(false);
+type MaskChoice = 'none' | 'selection' | 'xray' | 'distance';
+const maskChoice = ref<MaskChoice>('none');
+const maskOptions: Record<MaskChoice, string> = {
+  none: 'None',
+  selection: 'Selection',
+  xray: 'X-ray',
+  distance: 'Distance',
+};
 
 let effect: Effect | null = null;
+let findObject: (name: string) => unknown = () => undefined;
 let requestRender = () => {};
 let teardown: (() => void) | null = null;
 
@@ -46,6 +56,27 @@ const paramEntries = computed(
 const presetNames = computed(() =>
   Object.keys(definition.value?.presets ?? {}),
 );
+/** Studio objects the selection mask picks: the effect's demo selection, or the knot. */
+const selectionNames = computed(
+  () => definition.value?.meta.demo?.selection ?? ['knot'],
+);
+
+function maskFor(choice: MaskChoice) {
+  if (choice === 'distance') return { depth: [9, 1000], feather: 2 } as const;
+  if (choice === 'none') return null;
+  return {
+    selection: selectionNames.value.map(findObject),
+    ...(choice === 'xray' ? { xray: true } : {}),
+  };
+}
+
+function setMask(choice: MaskChoice) {
+  maskChoice.value = choice;
+  if (!effect) return;
+  effect.mask = maskFor(choice) as never;
+  requestRender();
+}
+
 const factoryName = computed(() =>
   props.effect.replace(/-(\w)/g, (_, c: string) => c.toUpperCase()),
 );
@@ -73,13 +104,29 @@ const code = computed(() => {
   const changed = paramEntries.value
     .filter(([name, param]) => !sameValue(values[name], param.default))
     .map(([name]) => `${name}: ${literal(values[name]!)}`);
-  const options = changed.length ? `{ ${changed.join(', ')} }` : '';
+  const mask = {
+    none: '',
+    selection: `mask: { selection: ${selectionNames.value.length === 1 ? '[hero]' : 'hero'} }`,
+    xray: `mask: { selection: ${selectionNames.value.length === 1 ? '[hero]' : 'hero'}, xray: true }`,
+    distance: 'mask: { depth: [9, 1000], feather: 2 }',
+  }[maskChoice.value];
+  const all = mask ? [...changed, mask] : changed;
+  const options = all.length ? `{ ${all.join(', ')} }` : '';
   return [
     "import { EffectComposer } from '@mk7s/xtree/core';",
     `import { ${factoryName.value} } from '@mk7s/xtree/effects/${props.effect}';`,
     '',
     'const composer = new EffectComposer(renderer);',
     'composer.setScene(scene, camera);',
+    ...(maskChoice.value === 'selection' || maskChoice.value === 'xray'
+      ? [
+          `const hero = ${
+            selectionNames.value.length === 1
+              ? `scene.getObjectByName('${selectionNames.value[0]}')`
+              : `[${selectionNames.value.map((n) => `scene.getObjectByName('${n}')`).join(', ')}]`
+          };`,
+        ]
+      : []),
     `composer.add(${factoryName.value}(${options}));`,
     'renderer.setAnimationLoop(() => composer.render());',
   ].join('\n');
@@ -205,9 +252,11 @@ onMounted(async () => {
   const studio = scenes.createStudio(16 / 9);
   const composer = new core.EffectComposer(renderer, { multisampling: 4 });
   composer.setScene(studio.scene, studio.camera);
+  findObject = (name) => studio.scene.getObjectByName(name);
   effect = factory();
   composer.add(effect);
   definition.value = factory.definition;
+  setMask(factory.definition.meta.demo?.selection ? 'selection' : 'none');
   syncValues();
 
   const resize = () => {
@@ -407,6 +456,26 @@ onBeforeUnmount(() => teardown?.());
     </div>
 
     <form v-if="definition" class="xt-demo-controls" @submit.prevent>
+      <div class="hcss-field xt-demo-mask">
+        <fieldset class="hcss-segmented">
+          <legend>Mask</legend>
+          <label v-for="(label, choice) in maskOptions" :key="choice">
+            <input
+              type="radio"
+              :name="fieldId('mask')"
+              :value="choice"
+              :checked="maskChoice === choice"
+              @change="setMask(choice)"
+            />
+            {{ label }}
+          </label>
+        </fieldset>
+        <p class="hcss-description">
+          Limit the effect to the {{ selectionNames.join(' and ') }} (through
+          other objects with x-ray), or to everything beyond 9 units.
+          <a :href="withBase('/guide/masks')">About masks</a>
+        </p>
+      </div>
       <template v-for="[name, param] in paramEntries" :key="name">
         <div
           v-if="param.kind === 'float' || param.kind === 'int'"

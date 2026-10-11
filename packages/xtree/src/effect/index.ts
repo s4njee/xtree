@@ -2,6 +2,7 @@ export {
   defineEffect,
   Effect,
   effectFamilies,
+  type BufferSelector,
   type EffectDefinition,
   type EffectFactory,
   type EffectFamily,
@@ -11,6 +12,7 @@ export {
   type EffectOptions,
   type EffectResources,
   type FrameInfo,
+  type Masking,
   type MotionBehavior,
   type Sampling,
   type SetupContext,
@@ -46,4 +48,15 @@ export {
   type Vec2Param,
   type Vec3Param,
 } from './params.js';
+export {
+  maskKind,
+  maskKinds,
+  validateMask,
+  type DepthMask,
+  type EffectMask,
+  type GeometryBuffer,
+  type MaskKind,
+  type SelectionMask,
+  type TextureMask,
+} from './mask.js';
 export { fullscreenVertex } from './fullscreen-vertex.js';

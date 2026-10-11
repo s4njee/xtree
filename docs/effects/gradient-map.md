@@ -53,8 +53,9 @@ Apply one with `gradientMap({ preset: 'name' })` or `effect.applyPreset('name')`
 
 - **Family:** Color & tone · tracked as story X3.7 in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).
 - **Passes:** reads only its own pixel, so it merges into the pass before it.
+- **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Static: nothing animates.
-- **Size:** 5.4 KB gzip budget for `@mk7s/xtree/effects/gradient-map`, including the shared effect runtime.
+- **Size:** 6.3 KB gzip budget for `@mk7s/xtree/effects/gradient-map`, including the shared effect runtime.
 
 ## Credits
 

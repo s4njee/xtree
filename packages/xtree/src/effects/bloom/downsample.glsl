@@ -4,6 +4,12 @@ uniform vec2 texel;
 uniform bool prefilter;
 uniform float threshold;
 uniform float knee;
+// Selective bloom: limits the first level to masked pixels.
+uniform bool useMask;
+uniform bool maskOnly;
+uniform sampler2D mask;
+uniform int maskChannel;
+uniform bool maskInvert;
 in vec2 vUv;
 out vec4 fragColor;
 
@@ -17,8 +23,15 @@ vec3 bloomPrefilter(vec3 c) {
 }
 
 vec3 tap(vec2 offset) {
-  vec3 c = min(texture(source, vUv + offset * texel).rgb, vec3(65000.0));
-  return prefilter ? bloomPrefilter(c) : c;
+  vec2 uv = vUv + offset * texel;
+  vec3 c = min(texture(source, uv).rgb, vec3(65000.0));
+  if (!prefilter) return c;
+  if (useMask) {
+    float m = texture(mask, uv)[maskChannel];
+    m = maskInvert ? 1.0 - m : m;
+    return maskOnly ? c * m : bloomPrefilter(c) * m;
+  }
+  return bloomPrefilter(c);
 }
 
 float karis(vec3 c) {

@@ -45,6 +45,14 @@
       ]
     },
     {
+      "id": "effects/buffer-view",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Debug views of depth, normal, world-position and mask buffers"
+      ]
+    },
+    {
       "id": "effects/chromatic-aberration",
       "kind": "original",
       "licence": "MIT",
@@ -59,6 +67,22 @@
       "licence": "MIT",
       "references": [
         "Barrel curvature, aperture-grille and shadow-mask phosphor masks, after common CRT shader techniques"
+      ]
+    },
+    {
+      "id": "effects/depth-fog",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Linear, exponential and exponential-squared distance fog with exponential height falloff, as in OpenGL fixed-function fog"
+      ]
+    },
+    {
+      "id": "effects/depth-of-field",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Gustafsson, Bokeh depth of field in a single pass, 2018 (golden-angle gather with background clamping)"
       ]
     },
     {
@@ -97,6 +121,14 @@
       "licence": "MIT",
       "references": [
         "Two-uniform approximation of Gaussian grain with a luminance response, after film stock grain curves"
+      ]
+    },
+    {
+      "id": "effects/glow",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Separable Gaussian blur of a selection mask, added as a colored halo"
       ]
     },
     {
@@ -161,6 +193,14 @@
       ]
     },
     {
+      "id": "effects/outline",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Edge detection from the second difference of inverse depth and of view-space normals; outer outline by dilating a selection mask"
+      ]
+    },
+    {
       "id": "effects/pixelate",
       "kind": "original",
       "licence": "MIT",
@@ -193,6 +233,14 @@
       "kind": "original",
       "licence": "MIT",
       "references": ["Raster scanline mask with adjustable spacing and roll"]
+    },
+    {
+      "id": "effects/selective-bloom",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Bloom mip chain (Jimenez, SIGGRAPH 2014) seeded from a selection mask"
+      ]
     },
     {
       "id": "effects/tilt-shift",
@@ -256,6 +304,15 @@
       "references": [
         "Kim et al., Design of advanced color temperature control system for HDTV applications, 2002",
         "Lam, Metamerism and Colour Constancy, 1985 (Bradford transform)"
+      ]
+    },
+    {
+      "id": "xtree/depth/reconstruct",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "three.js packing functions (perspectiveDepthToViewZ, orthographicDepthToViewZ), reimplemented and tested for equality",
+        "Normal reconstruction from depth choosing the smaller one-sided difference, after Bavoil and Sainz, Screen Space Ambient Occlusion, NVIDIA 2008"
       ]
     },
     {

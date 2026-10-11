@@ -3,11 +3,12 @@ import {
   GLSL3,
   HalfFloatType,
   LinearFilter,
+  Matrix4,
   RawShaderMaterial,
   Vector2,
   WebGLRenderTarget,
 } from 'three';
-import type { Texture, WebGLRenderer } from 'three';
+import type { Camera, Texture, WebGLRenderer } from 'three';
 import type {
   Effect,
   FrameInfo,
@@ -16,7 +17,13 @@ import type {
 } from '../effect/define.js';
 import type { ParamSchema } from '../effect/params.js';
 import { formatShaderError } from '../glsl/index.js';
-import { compilePass, passSignature, type OutputStage } from './compile.js';
+import {
+  compilePass,
+  passBuffers,
+  passSignature,
+  type OutputStage,
+} from './compile.js';
+import type { GeometryBuffer } from '../effect/mask.js';
 import { Fullscreen } from './fullscreen.js';
 import { createSampleTexture } from './textures.js';
 
@@ -34,6 +41,15 @@ export function describePassError(
 }
 
 let nextPassId = 1;
+
+/** Geometry buffers and the camera they were rendered with. */
+export interface PassGeometry {
+  /** The scene's depth texture. */
+  readonly depth?: Texture | null;
+  /** View-space normals packed to 0–1, alpha 0 where nothing was drawn. */
+  readonly normal?: Texture | null;
+  readonly camera?: Camera | null;
+}
 
 const threeKit: ThreeKit = {
   WebGLRenderTarget,
@@ -73,6 +89,14 @@ export class EffectPass {
     xt_delta: { value: 0 },
     xt_frame: { value: 0 },
     xt_exposure: { value: 1 },
+    xt_depthBuffer: { value: null as Texture | null },
+    xt_normalBuffer: { value: null as Texture | null },
+    xt_cameraNear: { value: 0.1 },
+    xt_cameraFar: { value: 100 },
+    xt_cameraOrtho: { value: false },
+    xt_projection: { value: new Matrix4() },
+    xt_inverseProjection: { value: new Matrix4() },
+    xt_cameraWorld: { value: new Matrix4() },
   };
   #material: RawShaderMaterial | null = null;
   #signature = '';
@@ -100,6 +124,38 @@ export class EffectPass {
   /** Tone-mapping exposure used by the output stage. */
   set exposure(value: number) {
     this.#globals.xt_exposure.value = value;
+  }
+
+  /** Geometry buffers the effects in this pass read (see `EffectDefinition.buffers`). */
+  get buffers(): ReadonlySet<GeometryBuffer> {
+    return passBuffers(this.effects);
+  }
+
+  /**
+   * Supplies the depth and normal buffers and the camera. The xtree composer
+   * calls this every frame; in three.js's composer, call it yourself before
+   * rendering if an effect reads depth or normals.
+   */
+  setGeometry(geometry: PassGeometry): void {
+    const g = this.#globals;
+    if (geometry.depth !== undefined) g.xt_depthBuffer.value = geometry.depth;
+    if (geometry.normal !== undefined)
+      g.xt_normalBuffer.value = geometry.normal;
+    const camera = geometry.camera as
+      | (Camera & {
+          near?: number;
+          far?: number;
+          isOrthographicCamera?: boolean;
+        })
+      | null
+      | undefined;
+    if (!camera) return;
+    g.xt_cameraNear.value = camera.near ?? 0.1;
+    g.xt_cameraFar.value = camera.far ?? 100;
+    g.xt_cameraOrtho.value = camera.isOrthographicCamera === true;
+    g.xt_projection.value.copy(camera.projectionMatrix);
+    g.xt_inverseProjection.value.copy(camera.projectionMatrixInverse);
+    g.xt_cameraWorld.value.copy(camera.matrixWorld);
   }
 
   setSize(width: number, height: number): void {

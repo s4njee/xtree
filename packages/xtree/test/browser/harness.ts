@@ -10,7 +10,7 @@ const shaderRoot = new URL('../../src/shaders/', import.meta.url);
 
 /** Every chunk, read from disk exactly as the library ships it (before minification). */
 export const chunks: ChunkMap = Object.fromEntries(
-  ['noise', 'color', 'blend'].flatMap((family) =>
+  ['noise', 'color', 'blend', 'depth'].flatMap((family) =>
     readdirSync(new URL(`${family}/`, shaderRoot))
       .filter((file) => file.endsWith('.glsl'))
       .map((file) => [
