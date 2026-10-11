@@ -11,10 +11,9 @@ vec4 $main(vec4 color, vec2 uv) {
 #elif $buffer == $buffer_reconstructedNormal
   shown = xt_depth(uv) >= 1.0 ? vec3(0.0) : xt_normalFromDepth(xt_depthBuffer, uv, xt_texel, xt_inverseProjection) * 0.5 + 0.5;
 #elif $buffer == $buffer_position
+  // A smooth ramp (no grid lines), so the view is stable across GPUs: ±range maps to 0–1.
   vec3 p = xt_worldPosition(uv);
-  vec3 grid = abs(fract(p - 0.5) - 0.5) / fwidth(p);
-  float line = 1.0 - clamp(min(grid.x, min(grid.y, grid.z)), 0.0, 1.0);
-  shown = xt_depth(uv) >= 1.0 ? vec3(0.0) : mix(fract(p * 0.25) * 0.6, vec3(1.0), line);
+  shown = xt_depth(uv) >= 1.0 ? vec3(0.0) : clamp(p / $range * 0.5 + 0.5, 0.0, 1.0);
 #else
   shown = vec3($maskAt(uv));
 #endif

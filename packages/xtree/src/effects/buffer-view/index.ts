@@ -36,7 +36,7 @@ export const bufferView = defineEffect({
       max: 200,
       step: 0.5,
       description:
-        'Depth: distance shown as white. Position: size of a grid cell is one unit.',
+        'Depth: distance shown as white. Position: world coordinates from -range to +range map to 0–1 per channel.',
     }),
   },
   presets: {

@@ -3,7 +3,9 @@
 #include <xtree/noise/hash>
 
 vec4 $main(vec4 color, vec2 uv) {
-  vec2 cell = floor(uv * xt_resolution / $size);
+  // Cells from integer pixel centers: a center on a cell boundary must land the same way on every GPU.
+  vec2 px = floor(uv * xt_resolution) + 0.5;
+  vec2 cell = floor(px / $size + 1e-3);
   float frame = $animated ? floor(xt_time * $speed) : 0.0;
   // The sum of two uniforms approximates the bell-shaped grain distribution.
   vec3 n = xt_hash3(vec3(cell, frame)) + xt_hash3(vec3(cell + 97.0, frame)) - 1.0;

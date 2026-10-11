@@ -316,39 +316,44 @@ vec4 xt_test(vec4 p, int index) { return vec4(xt_worley(p.xy, 1.0), xt_worley(p.
 });
 
 test.describe('curl', () => {
-  test('2D and 3D curl fields are divergence free', async ({ page }) => {
-    // 18 curl evaluations per sample; slow on software renderers.
-    test.slow();
-    const out = vec4s(
-      await runShader(page, {
-        source: `#include <xtree/noise/curl>
+  // The shader only evaluates the field (one call site, quick to compile on
+  // software renderers); central differences are taken here from offset points.
+  for (const axes of [2, 3] as const) {
+    test(`${axes}D curl fields are divergence free`, async ({ page }) => {
+      const h = 0.02;
+      const centers = vec4s(points(256, 10, 8));
+      const inputs = centers.flatMap((c) =>
+        Array.from({ length: axes }, (_, axis) =>
+          [h, -h].flatMap((d) => c.map((v, i) => (i === axis ? v + d : v))),
+        ).flat(),
+      );
+      const out = vec4s(
+        await runShader(page, {
+          source: `#include <xtree/noise/curl>
 vec4 xt_test(vec4 p, int index) {
-  const float h = 0.02;
-  vec2 q = p.xy;
-  float div2 = (xt_curl(q + vec2(h, 0.0)).x - xt_curl(q - vec2(h, 0.0)).x + xt_curl(q + vec2(0.0, h)).y - xt_curl(q - vec2(0.0, h)).y) / (2.0 * h);
-  float scale2 = (abs(xt_curl(q + vec2(h, 0.0)).y - xt_curl(q - vec2(h, 0.0)).y) + abs(xt_curl(q + vec2(0.0, h)).x - xt_curl(q - vec2(0.0, h)).x)) / (2.0 * h);
-  vec3 r = p.xyz;
-  float div3 = (xt_curl(r + vec3(h, 0.0, 0.0)).x - xt_curl(r - vec3(h, 0.0, 0.0)).x
-    + xt_curl(r + vec3(0.0, h, 0.0)).y - xt_curl(r - vec3(0.0, h, 0.0)).y
-    + xt_curl(r + vec3(0.0, 0.0, h)).z - xt_curl(r - vec3(0.0, 0.0, h)).z) / (2.0 * h);
-  float scale3 = (abs(xt_curl(r + vec3(h, 0.0, 0.0)).y - xt_curl(r - vec3(h, 0.0, 0.0)).y)
-    + abs(xt_curl(r + vec3(0.0, h, 0.0)).z - xt_curl(r - vec3(0.0, h, 0.0)).z)
-    + abs(xt_curl(r + vec3(0.0, 0.0, h)).x - xt_curl(r - vec3(0.0, 0.0, h)).x)) / (2.0 * h);
-  return vec4(div2, scale2, div3, scale3);
+  return vec4(xt_curl(p.${axes === 2 ? 'xy' : 'xyz'})${axes === 2 ? ', 0.0, 0.0' : ', 0.0'});
 }`,
-        inputs: points(512, 10, 8),
-      }),
-    );
-    // Compare the divergence with the size of the off-diagonal derivatives.
-    const div2 = mean(out.map((v) => Math.abs(v[0])));
-    const scale2 = mean(out.map((v) => v[1]));
-    const div3 = mean(out.map((v) => Math.abs(v[2])));
-    const scale3 = mean(out.map((v) => v[3]));
-    expect(scale2).toBeGreaterThan(1);
-    expect(scale3).toBeGreaterThan(1);
-    expect(div2 / scale2).toBeLessThan(0.02);
-    expect(div3 / scale3).toBeLessThan(0.02);
-  });
+          inputs,
+        }),
+      );
+      let div = 0;
+      let scale = 0;
+      centers.forEach((_, n) => {
+        let pointDiv = 0;
+        for (let axis = 0; axis < axes; axis++) {
+          const plus = out[(n * axes + axis) * 2]!;
+          const minus = out[(n * axes + axis) * 2 + 1]!;
+          pointDiv += (plus[axis]! - minus[axis]!) / (2 * h);
+          const other = (axis + 1) % axes;
+          scale += Math.abs(plus[other]! - minus[other]!) / (2 * h);
+        }
+        div += Math.abs(pointDiv);
+      });
+      // Compare the divergence with the size of the off-diagonal derivatives.
+      expect(scale / centers.length).toBeGreaterThan(1);
+      expect(div / scale).toBeLessThan(0.02);
+    });
+  }
 });
 
 test.describe('dither noise', () => {

@@ -28,10 +28,10 @@ Every parameter is also a property: `effect.buffer = 'depth'`. Uniform changes t
 
 ## Parameters
 
-| Parameter               | Type                                                                 | Default   | Range     | Description                                                                |
-| ----------------------- | -------------------------------------------------------------------- | --------- | --------- | -------------------------------------------------------------------------- |
-| `buffer` _(structural)_ | 'depth' \| 'normal' \| 'reconstructedNormal' \| 'position' \| 'mask' | `'depth'` |           | What to show. Only the buffer shown is rendered.                           |
-| `range`                 | number                                                               | `20`      | 0.5 – 200 | Depth: distance shown as white. Position: size of a grid cell is one unit. |
+| Parameter               | Type                                                                 | Default   | Range     | Description                                                                                               |
+| ----------------------- | -------------------------------------------------------------------- | --------- | --------- | --------------------------------------------------------------------------------------------------------- |
+| `buffer` _(structural)_ | 'depth' \| 'normal' \| 'reconstructedNormal' \| 'position' \| 'mask' | `'depth'` |           | What to show. Only the buffer shown is rendered.                                                          |
+| `range`                 | number                                                               | `20`      | 0.5 – 200 | Depth: distance shown as white. Position: world coordinates from -range to +range map to 0–1 per channel. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 
