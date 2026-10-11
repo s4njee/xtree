@@ -52,5 +52,12 @@
   "./shaders/dither": 384,
   "./shaders/sampling": 1408,
   "./shaders/sdf": 640,
-  "./holocss": 1600
+  "./holocss": 1600,
+  "./effects/bleach-bypass": 7040,
+  "./effects/channel-mixer": 5632,
+  "./effects/color-balance": 7104,
+  "./effects/curves": 7040,
+  "./effects/levels": 7104,
+  "./effects/split-toning": 6976,
+  "./effects/white-balance": 6336
 }

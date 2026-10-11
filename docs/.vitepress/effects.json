@@ -3,8 +3,24 @@
     "text": "Color & tone",
     "items": [
       {
+        "text": "Bleach bypass & cross process",
+        "link": "/effects/bleach-bypass"
+      },
+      {
         "text": "Brightness & contrast",
         "link": "/effects/brightness-contrast"
+      },
+      {
+        "text": "Channel mixer",
+        "link": "/effects/channel-mixer"
+      },
+      {
+        "text": "Color balance (lift, gamma, gain)",
+        "link": "/effects/color-balance"
+      },
+      {
+        "text": "Curves",
+        "link": "/effects/curves"
       },
       {
         "text": "Exposure & gamma",
@@ -23,6 +39,10 @@
         "link": "/effects/invert-threshold"
       },
       {
+        "text": "Levels",
+        "link": "/effects/levels"
+      },
+      {
         "text": "LUT color grading",
         "link": "/effects/lut"
       },
@@ -31,8 +51,16 @@
         "link": "/effects/monochrome"
       },
       {
+        "text": "Split toning",
+        "link": "/effects/split-toning"
+      },
+      {
         "text": "Vignette",
         "link": "/effects/vignette"
+      },
+      {
+        "text": "White balance",
+        "link": "/effects/white-balance"
       }
     ]
   },

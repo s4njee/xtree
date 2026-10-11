@@ -10,6 +10,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/ascii').then(
       (m) => m.ascii as unknown as EffectFactory<ParamSchema>,
     ),
+  'bleach-bypass': () =>
+    import('@mk7s/xtree/effects/bleach-bypass').then(
+      (m) => m.bleachBypass as unknown as EffectFactory<ParamSchema>,
+    ),
   'block-displacement': () =>
     import('@mk7s/xtree/effects/block-displacement').then(
       (m) => m.blockDisplacement as unknown as EffectFactory<ParamSchema>,
@@ -30,9 +34,17 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/buffer-view').then(
       (m) => m.bufferView as unknown as EffectFactory<ParamSchema>,
     ),
+  'channel-mixer': () =>
+    import('@mk7s/xtree/effects/channel-mixer').then(
+      (m) => m.channelMixer as unknown as EffectFactory<ParamSchema>,
+    ),
   'chromatic-aberration': () =>
     import('@mk7s/xtree/effects/chromatic-aberration').then(
       (m) => m.chromaticAberration as unknown as EffectFactory<ParamSchema>,
+    ),
+  'color-balance': () =>
+    import('@mk7s/xtree/effects/color-balance').then(
+      (m) => m.colorBalance as unknown as EffectFactory<ParamSchema>,
     ),
   crossfade: () =>
     import('@mk7s/xtree/effects/crossfade').then(
@@ -41,6 +53,10 @@ export const effectLoaders: Record<
   crt: () =>
     import('@mk7s/xtree/effects/crt').then(
       (m) => m.crt as unknown as EffectFactory<ParamSchema>,
+    ),
+  curves: () =>
+    import('@mk7s/xtree/effects/curves').then(
+      (m) => m.curves as unknown as EffectFactory<ParamSchema>,
     ),
   'depth-fog': () =>
     import('@mk7s/xtree/effects/depth-fog').then(
@@ -114,6 +130,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/lens-distortion').then(
       (m) => m.lensDistortion as unknown as EffectFactory<ParamSchema>,
     ),
+  levels: () =>
+    import('@mk7s/xtree/effects/levels').then(
+      (m) => m.levels as unknown as EffectFactory<ParamSchema>,
+    ),
   lut: () =>
     import('@mk7s/xtree/effects/lut').then(
       (m) => m.lut as unknown as EffectFactory<ParamSchema>,
@@ -150,6 +170,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/selective-bloom').then(
       (m) => m.selectiveBloom as unknown as EffectFactory<ParamSchema>,
     ),
+  'split-toning': () =>
+    import('@mk7s/xtree/effects/split-toning').then(
+      (m) => m.splitToning as unknown as EffectFactory<ParamSchema>,
+    ),
   'thin-film': () =>
     import('@mk7s/xtree/effects/thin-film').then(
       (m) => m.thinFilm as unknown as EffectFactory<ParamSchema>,
@@ -161,6 +185,10 @@ export const effectLoaders: Record<
   vignette: () =>
     import('@mk7s/xtree/effects/vignette').then(
       (m) => m.vignette as unknown as EffectFactory<ParamSchema>,
+    ),
+  'white-balance': () =>
+    import('@mk7s/xtree/effects/white-balance').then(
+      (m) => m.whiteBalance as unknown as EffectFactory<ParamSchema>,
     ),
 };
 

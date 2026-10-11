@@ -10,6 +10,15 @@
       ]
     },
     {
+      "id": "effects/bleach-bypass",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Bleach bypass as an overlay of luma with partial desaturation",
+        "Cross processing as per-channel S-curves and a lifted, compressed blue"
+      ]
+    },
+    {
       "id": "effects/block-displacement",
       "kind": "original",
       "licence": "MIT",
@@ -53,6 +62,14 @@
       ]
     },
     {
+      "id": "effects/channel-mixer",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "A 3×3 channel matrix with optional luminance preservation"
+      ]
+    },
+    {
       "id": "effects/chromatic-aberration",
       "kind": "original",
       "licence": "MIT",
@@ -60,6 +77,12 @@
         "Lateral chromatic aberration, radial model",
         "Spectral sampling with triangle RGB weights"
       ]
+    },
+    {
+      "id": "effects/color-balance",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Lift, gamma and gain as in common color grading tools"]
     },
     {
       "id": "effects/crossfade",
@@ -75,6 +98,14 @@
       "licence": "MIT",
       "references": [
         "Barrel curvature, aperture-grille and shadow-mask phosphor masks, after common CRT shader techniques"
+      ]
+    },
+    {
+      "id": "effects/curves",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Per-channel tone curves through monotone cubic control points (Fritsch and Carlson, 1980), baked to textures"
       ]
     },
     {
@@ -215,6 +246,14 @@
       ]
     },
     {
+      "id": "effects/levels",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Photoshop-style levels: input range, midtone gamma and output range"
+      ]
+    },
+    {
       "id": "effects/lut",
       "kind": "original",
       "licence": "MIT",
@@ -283,6 +322,12 @@
       ]
     },
     {
+      "id": "effects/split-toning",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Two-color split toning with a soft-light style blend"]
+    },
+    {
       "id": "effects/thin-film",
       "kind": "original",
       "licence": "MIT",
@@ -306,6 +351,14 @@
       "references": [
         "three.js VignetteShader (Eskil mode formula)",
         "Smoothstep vignette: original"
+      ]
+    },
+    {
+      "id": "effects/white-balance",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Bradford chromatic adaptation from a Planckian white point (Kim et al., 2002) to D65, using the xtree/color/white-balance chunk"
       ]
     },
     {

@@ -1,5 +1,18 @@
 [
   {
+    "id": "bleach-bypass",
+    "title": "Bleach bypass & cross process",
+    "family": "color",
+    "familyTitle": "Color & tone",
+    "summary": "Two film-lab looks: bleach bypass (silver left in, so a muted, harsh, high-contrast image) and cross processing (slide film in negative chemistry, with skewed colors and yellow highlights).",
+    "kind": "post",
+    "cost": "merged",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": ["mode", "amount"]
+  },
+  {
     "id": "brightness-contrast",
     "title": "Brightness & contrast",
     "family": "color",
@@ -11,6 +24,52 @@
     "motion": "static",
     "presets": 4,
     "params": ["brightness", "contrast", "saturation", "vibrance"]
+  },
+  {
+    "id": "channel-mixer",
+    "title": "Channel mixer",
+    "family": "color",
+    "familyTitle": "Color & tone",
+    "summary": "Builds each output channel from a weighted mix of the input red, green and blue: swap channels, fake infrared, or make a custom black and white.",
+    "kind": "post",
+    "cost": "merged",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": [
+      "red",
+      "green",
+      "blue",
+      "monochrome",
+      "preserveLuminance",
+      "amount"
+    ]
+  },
+  {
+    "id": "color-balance",
+    "title": "Color balance (lift, gamma, gain)",
+    "family": "color",
+    "familyTitle": "Color & tone",
+    "summary": "The three wheels of a grading tool: lift tints the shadows, gamma the midtones and gain the highlights, per channel.",
+    "kind": "post",
+    "cost": "merged",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": ["lift", "gamma", "gain", "preserveLuminance", "amount"]
+  },
+  {
+    "id": "curves",
+    "title": "Curves",
+    "family": "color",
+    "familyTitle": "Color & tone",
+    "summary": "Tone curves like a photo editor’s: a master curve for contrast and one curve per channel for color, through smooth points that never overshoot.",
+    "kind": "post",
+    "cost": "merged",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": ["master", "red", "green", "blue", "amount"]
   },
   {
     "id": "exposure-gamma",
@@ -72,6 +131,26 @@
     "params": ["mode", "amount", "level", "smoothness", "perChannel"]
   },
   {
+    "id": "levels",
+    "title": "Levels",
+    "family": "color",
+    "familyTitle": "Color & tone",
+    "summary": "Photo-editor levels: stretch the tones between an input black and white point, bend the midtones with gamma, and remap to an output range, for all channels or one.",
+    "kind": "post",
+    "cost": "merged",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": [
+      "inputBlack",
+      "inputWhite",
+      "gamma",
+      "outputBlack",
+      "outputWhite",
+      "channel"
+    ]
+  },
+  {
     "id": "lut",
     "title": "LUT color grading",
     "family": "color",
@@ -98,6 +177,19 @@
     "params": ["mode", "amount", "shadows", "highlights"]
   },
   {
+    "id": "split-toning",
+    "title": "Split toning",
+    "family": "color",
+    "familyTitle": "Color & tone",
+    "summary": "Tints the shadows with one color and the highlights with another, keeping brightness, like a darkroom split tone or a modern teal-and-orange grade.",
+    "kind": "post",
+    "cost": "merged",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": ["shadows", "highlights", "balance", "amount"]
+  },
+  {
     "id": "vignette",
     "title": "Vignette",
     "family": "color",
@@ -109,6 +201,19 @@
     "motion": "static",
     "presets": 4,
     "params": ["darkness", "offset", "smoothness", "roundness", "color", "mode"]
+  },
+  {
+    "id": "white-balance",
+    "title": "White balance",
+    "family": "color",
+    "familyTitle": "Color & tone",
+    "summary": "Camera-style white balance: tell it the color temperature of the light and it neutralizes it (a Bradford adaptation in linear light), with a green–magenta tint.",
+    "kind": "post",
+    "cost": "merged",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": ["temperature", "tint", "amount"]
   },
   {
     "id": "chromatic-aberration",
