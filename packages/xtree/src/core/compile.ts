@@ -191,6 +191,14 @@ const normalHeader = [
   '}',
 ];
 
+const velocityHeader = [
+  'uniform sampler2D xt_velocityBuffer;',
+  '/// Screen-space motion at uv since the previous frame, in UV units (current minus previous); zero where nothing moved or was drawn.',
+  'vec2 xt_velocity(vec2 uv) {',
+  '  return texture(xt_velocityBuffer, uv).xy;',
+  '}',
+];
+
 /** GLSL for an effect's mask: uniforms and `<prefix>maskAt(uv)`. */
 function maskSource(effect: Effect, prefix: string): string[] {
   const kind = effect.maskKind;
@@ -262,6 +270,7 @@ export function compilePass(
     'out vec4 xt_fragColor;',
     ...(buffers.has('depth') ? depthHeader : []),
     ...(buffers.has('normal') ? normalHeader : []),
+    ...(buffers.has('velocity') ? velocityHeader : []),
     '/// Reads the pass input.',
     'vec4 xt_sample(vec2 uv) {',
     '  return texture(xt_inputBuffer, uv);',

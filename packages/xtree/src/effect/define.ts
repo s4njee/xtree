@@ -81,6 +81,12 @@ export interface FrameInfo {
   readonly frame: number;
   readonly width: number;
   readonly height: number;
+  /** The geometry buffers this frame, for effects whose own passes read them (null when not rendered). */
+  readonly buffers: {
+    readonly depth: THREE.Texture | null;
+    readonly normal: THREE.Texture | null;
+    readonly velocity: THREE.Texture | null;
+  };
 }
 
 /** GPU resources an `input` effect renders before its pass, such as bloom's mip chain. */

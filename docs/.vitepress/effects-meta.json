@@ -216,6 +216,19 @@
     "params": ["temperature", "tint", "amount"]
   },
   {
+    "id": "anamorphic",
+    "title": "Anamorphic streaks",
+    "family": "lens",
+    "familyTitle": "Lens & camera",
+    "summary": "Stretches bright lights into long horizontal lines, the blue flares of anamorphic cinema lenses.",
+    "kind": "post",
+    "cost": "multipass",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": ["intensity", "threshold", "length", "tint", "direction"]
+  },
+  {
     "id": "chromatic-aberration",
     "title": "Chromatic aberration",
     "family": "lens",
@@ -272,6 +285,53 @@
     ]
   },
   {
+    "id": "fisheye",
+    "title": "Fisheye & Panini",
+    "family": "lens",
+    "familyTitle": "Lens & camera",
+    "summary": "Re-projects the perspective frame: an equidistant fisheye that bulges the center, or a Panini projection that keeps verticals straight and widens the view without stretching the edges.",
+    "kind": "post",
+    "cost": "pass",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": ["projection", "strength", "fov", "zoom", "edges"]
+  },
+  {
+    "id": "halation",
+    "title": "Halation",
+    "family": "lens",
+    "familyTitle": "Lens & camera",
+    "summary": "The red-orange glow around bright lights on film, where light bounced off the film base and exposed the red layer again.",
+    "kind": "post",
+    "cost": "multipass",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": ["intensity", "threshold", "knee", "radius", "levels", "tint"]
+  },
+  {
+    "id": "lens-dirt",
+    "title": "Lens dirt",
+    "family": "lens",
+    "familyTitle": "Lens & camera",
+    "summary": "Smudges, dust and rings on the lens that only show where bright light spreads across them, like a dirty camera pointed at the sun.",
+    "kind": "post",
+    "cost": "multipass",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": [
+      "intensity",
+      "threshold",
+      "knee",
+      "radius",
+      "levels",
+      "scale",
+      "seed"
+    ]
+  },
+  {
     "id": "lens-distortion",
     "title": "Lens distortion",
     "family": "lens",
@@ -283,6 +343,42 @@
     "motion": "static",
     "presets": 4,
     "params": ["k1", "k2", "scale", "edges"]
+  },
+  {
+    "id": "lens-flare",
+    "title": "Lens flare",
+    "family": "lens",
+    "familyTitle": "Lens & camera",
+    "summary": "Ghost reflections and a halo mirrored through the frame center from every bright spot, with color fringes, a starburst and lens dirt, as light bounces inside a camera lens.",
+    "kind": "post",
+    "cost": "multipass",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": [
+      "intensity",
+      "threshold",
+      "ghosts",
+      "spacing",
+      "halo",
+      "haloWidth",
+      "chromatic",
+      "starburst",
+      "dirtAmount"
+    ]
+  },
+  {
+    "id": "motion-blur",
+    "title": "Motion blur",
+    "family": "lens",
+    "familyTitle": "Lens & camera",
+    "summary": "Blurs moving objects and camera motion along their path, as a camera shutter does.",
+    "kind": "post",
+    "cost": "pass",
+    "buffers": ["velocity"],
+    "motion": "static",
+    "presets": 4,
+    "params": ["intensity", "samples", "maxBlur"]
   },
   {
     "id": "tilt-shift",
@@ -324,6 +420,52 @@
     "params": ["mode", "radius", "iterations", "resolution"]
   },
   {
+    "id": "bokeh-blur",
+    "title": "Bokeh blur",
+    "family": "glow",
+    "familyTitle": "Blur & glow",
+    "summary": "Blurs the whole frame through a round or hexagonal aperture, so highlights turn into soft discs or hexagons.",
+    "kind": "post",
+    "cost": "pass",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": ["radius", "shape", "highlights", "samples"]
+  },
+  {
+    "id": "directional-blur",
+    "title": "Directional blur",
+    "family": "glow",
+    "familyTitle": "Blur & glow",
+    "summary": "Smears the image along one direction, like a fast camera pan or a streak of speed.",
+    "kind": "post",
+    "cost": "pass",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": ["angle", "length", "samples"]
+  },
+  {
+    "id": "frosted-glass",
+    "title": "Frosted glass",
+    "family": "glow",
+    "familyTitle": "Blur & glow",
+    "summary": "Looks through a pane of frosted glass: a backdrop blur with ripples, a tint and fine grain, matching HoloCSS’s Glass theme.",
+    "kind": "post",
+    "cost": "multipass",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": [
+      "blur",
+      "distortion",
+      "frostScale",
+      "tint",
+      "tintAmount",
+      "grain"
+    ]
+  },
+  {
     "id": "glow",
     "title": "Glow",
     "family": "glow",
@@ -335,6 +477,19 @@
     "motion": "static",
     "presets": 4,
     "params": ["color", "intensity", "radius", "mode", "threshold"]
+  },
+  {
+    "id": "radial-blur",
+    "title": "Radial & zoom blur",
+    "family": "glow",
+    "familyTitle": "Blur & glow",
+    "summary": "Blurs toward or around a center point: a zoom burst that rushes at the viewer, or a spin like a rotating camera.",
+    "kind": "post",
+    "cost": "pass",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": ["mode", "center", "strength", "samples"]
   },
   {
     "id": "selective-bloom",
@@ -356,6 +511,19 @@
       "tint",
       "luminance"
     ]
+  },
+  {
+    "id": "star-streaks",
+    "title": "Star filter",
+    "family": "glow",
+    "familyTitle": "Blur & glow",
+    "summary": "Turns highlights into stars with two, three or more crossing streaks, like a star filter screwed onto a lens.",
+    "kind": "post",
+    "cost": "multipass",
+    "buffers": [],
+    "motion": "static",
+    "presets": 4,
+    "params": ["intensity", "threshold", "lines", "angle", "length"]
   },
   {
     "id": "block-displacement",
@@ -768,7 +936,7 @@
     "title": "Buffer view",
     "family": "utility",
     "familyTitle": "Utilities",
-    "summary": "Shows a geometry buffer instead of the image: distance from the camera, view-space normals from the prepass or reconstructed from depth, world position, or the mask given to this effect.",
+    "summary": "Shows a geometry buffer instead of the image: distance from the camera, view-space normals from the prepass or reconstructed from depth, world position, screen-space motion, or the mask given to this effect.",
     "kind": "post",
     "cost": "merged",
     "buffers": ["depth"],

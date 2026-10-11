@@ -59,5 +59,16 @@
   "./effects/curves": 7040,
   "./effects/levels": 7104,
   "./effects/split-toning": 6976,
-  "./effects/white-balance": 6336
+  "./effects/white-balance": 6336,
+  "./effects/anamorphic": 6656,
+  "./effects/bokeh-blur": 6208,
+  "./effects/directional-blur": 5952,
+  "./effects/fisheye": 6016,
+  "./effects/frosted-glass": 7744,
+  "./effects/halation": 7552,
+  "./effects/lens-dirt": 8576,
+  "./effects/lens-flare": 8576,
+  "./effects/motion-blur": 6208,
+  "./effects/radial-blur": 6208,
+  "./effects/star-streaks": 6912
 }

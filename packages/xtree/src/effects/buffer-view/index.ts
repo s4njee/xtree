@@ -10,21 +10,30 @@ export const bufferView = defineEffect({
     family: 'utility',
     story: 'X1.6',
     description:
-      'Shows a geometry buffer instead of the image: distance from the camera, view-space normals from the prepass or reconstructed from depth, world position, or the mask given to this effect. Set the renderer to no tone mapping to see exact values.',
+      'Shows a geometry buffer instead of the image: distance from the camera, view-space normals from the prepass or reconstructed from depth, world position, screen-space motion, or the mask given to this effect. Set the renderer to no tone mapping to see exact values.',
     related: ['outline', 'depth-fog', 'depth-of-field'],
   },
   buffers: (effect) =>
     effect.buffer === 'normal'
       ? ['normal']
-      : effect.buffer === 'mask'
-        ? []
-        : ['depth'],
+      : effect.buffer === 'velocity'
+        ? ['velocity']
+        : effect.buffer === 'mask'
+          ? []
+          : ['depth'],
   // It shows the mask rather than being limited by it.
   masking: 'custom',
   chunks: [colorSpaceChunks],
   params: {
     buffer: select({
-      options: ['depth', 'normal', 'reconstructedNormal', 'position', 'mask'],
+      options: [
+        'depth',
+        'normal',
+        'reconstructedNormal',
+        'position',
+        'velocity',
+        'mask',
+      ],
       default: 'depth',
       structural: true,
       description: 'What to show. Only the buffer shown is rendered.',
@@ -36,7 +45,7 @@ export const bufferView = defineEffect({
       max: 200,
       step: 0.5,
       description:
-        'Depth: distance shown as white. Position: world coordinates from -range to +range map to 0–1 per channel.',
+        'Depth: distance shown as white. Position: world coordinates from -range to +range map to 0–1 per channel. Velocity: motion of 1/range of the frame per frame is full color.',
     }),
   },
   presets: {

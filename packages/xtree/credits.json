@@ -2,6 +2,14 @@
   "$comment": "Provenance for every shipped chunk, effect, material and transition. Checked by scripts/credits.mjs; see docs/adr/0006-licensing-and-credits.md.",
   "entries": [
     {
+      "id": "effects/anamorphic",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Separable streak blur with geometrically growing steps of a thresholded bright pass"
+      ]
+    },
+    {
       "id": "effects/ascii",
       "kind": "original",
       "licence": "MIT",
@@ -42,6 +50,14 @@
       "references": [
         "Separable Gaussian and box filters",
         "Kawase, Frame buffer postprocessing effects in DOUBLE-S.T.E.A.L, GDC 2003 (Kawase blur)"
+      ]
+    },
+    {
+      "id": "effects/bokeh-blur",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Golden-angle spiral disk sampling with highlight weighting; hexagonal aperture by radial rescaling"
       ]
     },
     {
@@ -131,6 +147,12 @@
       "references": ["Hashed per-pixel luminance and chroma noise"]
     },
     {
+      "id": "effects/directional-blur",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Linear box blur along an angle, with per-pixel jitter"]
+    },
+    {
       "id": "effects/displacement-map",
       "kind": "original",
       "licence": "MIT",
@@ -171,6 +193,15 @@
       ]
     },
     {
+      "id": "effects/fisheye",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Equidistant fisheye projection",
+        "Sharpless, Postle and German, Pannini: A New Projection for Rendering Wide Angle Perspective Images, CAe 2010 (inverse Panini mapping)"
+      ]
+    },
+    {
       "id": "effects/foil-material",
       "kind": "original",
       "licence": "MIT",
@@ -187,6 +218,14 @@
       ]
     },
     {
+      "id": "effects/frosted-glass",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Kawase blur seen through value-noise refraction, with tint and grain"
+      ]
+    },
+    {
       "id": "effects/glow",
       "kind": "original",
       "licence": "MIT",
@@ -199,6 +238,14 @@
       "kind": "original",
       "licence": "MIT",
       "references": ["Three-stop gradient indexed by Rec. 709 luma"]
+    },
+    {
+      "id": "effects/halation",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Film halation as a tight, red-tinted bloom of luminance, using the bloom chain"
+      ]
     },
     {
       "id": "effects/halftone",
@@ -238,11 +285,27 @@
       "references": ["Photographic negative and smoothstep threshold"]
     },
     {
+      "id": "effects/lens-dirt",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Procedural lens dirt lit by the bloom chain, as in common lens-dirt bloom techniques"
+      ]
+    },
+    {
       "id": "effects/lens-distortion",
       "kind": "original",
       "licence": "MIT",
       "references": [
         "Brown, Decentering distortion of lenses, Photogrammetric Engineering, 1966 (Brown–Conrady radial model)"
+      ]
+    },
+    {
+      "id": "effects/lens-flare",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "John Chapman, Pseudo Lens Flare (2013): ghosts mirrored through the center, halo and chromatic distortion"
       ]
     },
     {
@@ -272,6 +335,14 @@
       ]
     },
     {
+      "id": "effects/motion-blur",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "McGuire et al., A Reconstruction Filter for Plausible Motion Blur, I3D 2012 (centered velocity sampling and background weighting, simplified)"
+      ]
+    },
+    {
       "id": "effects/outline",
       "kind": "original",
       "licence": "MIT",
@@ -284,6 +355,14 @@
       "kind": "original",
       "licence": "MIT",
       "references": ["Cell-center sampling on square and hexagonal grids"]
+    },
+    {
+      "id": "effects/radial-blur",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Zoom and spin blur by averaging samples toward or around a center, with per-pixel jitter"
+      ]
     },
     {
       "id": "effects/rgb-split-glitch",
@@ -326,6 +405,14 @@
       "kind": "original",
       "licence": "MIT",
       "references": ["Two-color split toning with a soft-light style blend"]
+    },
+    {
+      "id": "effects/star-streaks",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Kawase, Frame buffer postprocessing effects in DOUBLE-S.T.E.A.L, GDC 2003 (star filter with growing steps)"
+      ]
     },
     {
       "id": "effects/thin-film",

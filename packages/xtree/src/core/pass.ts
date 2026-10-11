@@ -57,6 +57,8 @@ export interface PassGeometry {
   readonly depth?: Texture | null;
   /** View-space normals packed to 0–1, alpha 0 where nothing was drawn. */
   readonly normal?: Texture | null;
+  /** Screen-space motion since the previous frame in UV units (red, green). */
+  readonly velocity?: Texture | null;
   readonly camera?: Camera | null;
 }
 
@@ -105,6 +107,7 @@ export class EffectPass {
     xt_audio: { value: [0, 0, 0, 0] as number[] },
     xt_depthBuffer: { value: null as Texture | null },
     xt_normalBuffer: { value: null as Texture | null },
+    xt_velocityBuffer: { value: null as Texture | null },
     xt_cameraNear: { value: 0.1 },
     xt_cameraFar: { value: 100 },
     xt_cameraOrtho: { value: false },
@@ -165,7 +168,7 @@ export class EffectPass {
   }
 
   /**
-   * Supplies the depth and normal buffers and the camera. The xtree composer
+   * Supplies the depth, normal and velocity buffers and the camera. The xtree composer
    * calls this every frame; in three.js's composer, call it yourself before
    * rendering if an effect reads depth or normals.
    */
@@ -174,6 +177,8 @@ export class EffectPass {
     if (geometry.depth !== undefined) g.xt_depthBuffer.value = geometry.depth;
     if (geometry.normal !== undefined)
       g.xt_normalBuffer.value = geometry.normal;
+    if (geometry.velocity !== undefined)
+      g.xt_velocityBuffer.value = geometry.velocity;
     const camera = geometry.camera as
       | (Camera & {
           near?: number;
@@ -220,6 +225,11 @@ export class EffectPass {
       frame: this.frame,
       width: this.#width,
       height: this.#height,
+      buffers: {
+        depth: this.#globals.xt_depthBuffer.value,
+        normal: this.#globals.xt_normalBuffer.value,
+        velocity: this.#globals.xt_velocityBuffer.value,
+      },
     };
     for (const effect of this.effects) {
       effect.resolveSamples(createSampleTexture);

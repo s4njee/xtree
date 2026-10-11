@@ -8,8 +8,11 @@ import {
   DoubleSide,
   FrontSide,
   HalfFloatType,
+  Matrix4,
   MeshBasicMaterial,
   MeshNormalMaterial,
+  NearestFilter,
+  ShaderMaterial,
   WebGLRenderTarget,
 } from 'three';
 import type { Camera, Material, Object3D, Side, WebGLRenderer } from 'three';
@@ -107,6 +110,131 @@ export class NormalPrepass {
   dispose(): void {
     this.target.dispose();
     for (const material of this.#materials.values()) material.dispose();
+  }
+}
+
+const velocityVertex = /* glsl */ `
+uniform mat4 xtPreviousModel;
+uniform mat4 xtPreviousViewProjection;
+varying vec4 vCurrent;
+varying vec4 vPrevious;
+void main() {
+  vCurrent = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  vPrevious = xtPreviousViewProjection * xtPreviousModel * vec4(position, 1.0);
+  gl_Position = vCurrent;
+}`;
+
+const velocityFragment = /* glsl */ `
+varying vec4 vCurrent;
+varying vec4 vPrevious;
+void main() {
+  // Clip space to UV: half the difference of the normalized device coordinates.
+  vec2 velocity = (vCurrent.xy / vCurrent.w - vPrevious.xy / vPrevious.w) * 0.5;
+  gl_FragColor = vec4(velocity, 0.0, 1.0);
+}`;
+
+/**
+ * Screen-space motion for the `velocity` buffer: where each visible point
+ * was in the previous frame (its object's previous world matrix and the
+ * camera's previous view and projection), as a UV offset in red and green.
+ * The first frame, and objects seen for the first time, have no motion.
+ * Skinned and morphing geometry and instances move as their object does.
+ */
+export class VelocityPrepass {
+  readonly target: WebGLRenderTarget;
+  /** One material per face side; per-object matrices are set as each object draws. */
+  readonly #materials = new Map<Side, ShaderMaterial>();
+  #previous = new Map<Object3D, Matrix4>();
+  #previousViewProjection: Matrix4 | null = null;
+  readonly #viewProjection = new Matrix4();
+
+  constructor(width: number, height: number) {
+    this.target = new WebGLRenderTarget(width, height, {
+      type: HalfFloatType,
+      minFilter: NearestFilter,
+      magFilter: NearestFilter,
+    });
+    this.target.texture.name = 'xtree:velocity';
+  }
+
+  setSize(width: number, height: number): void {
+    this.target.setSize(width, height);
+  }
+
+  #material(side: Side): ShaderMaterial {
+    let material = this.#materials.get(side);
+    if (material) return material;
+    material = new ShaderMaterial({
+      vertexShader: velocityVertex,
+      fragmentShader: velocityFragment,
+      uniforms: {
+        xtPreviousModel: { value: new Matrix4() },
+        xtPreviousViewProjection: { value: new Matrix4() },
+      },
+      side,
+    });
+    const previousModel = (object: Object3D) => this.#previous.get(object);
+    const viewProjection = () =>
+      this.#previousViewProjection ?? this.#viewProjection;
+    // The material is shared, so each object's previous matrix is set as it draws.
+    material.onBeforeRender = (
+      _renderer,
+      _scene,
+      _camera,
+      _geometry,
+      object,
+    ) => {
+      const uniforms = material!.uniforms;
+      (uniforms.xtPreviousModel!.value as Matrix4).copy(
+        previousModel(object) ?? object.matrixWorld,
+      );
+      (uniforms.xtPreviousViewProjection!.value as Matrix4).copy(
+        viewProjection(),
+      );
+      material!.uniformsNeedUpdate = true;
+    };
+    this.#materials.set(side, material);
+    return material;
+  }
+
+  render(renderer: WebGLRenderer, root: Object3D, camera: Camera): void {
+    camera.updateMatrixWorld();
+    this.#viewProjection.multiplyMatrices(
+      camera.projectionMatrix,
+      camera.matrixWorldInverse,
+    );
+    const drawn: Object3D[] = [];
+    renderReplaced(renderer, root, camera, this.target, (object) => {
+      drawn.push(object);
+      const original = object.material as Material | Material[];
+      return this.#material(
+        (Array.isArray(original) ? original[0]?.side : original.side) ??
+          FrontSide,
+      );
+    });
+    // Remember this frame for the next one; forget objects no longer drawn.
+    const next = new Map<Object3D, Matrix4>();
+    for (const object of drawn)
+      next.set(
+        object,
+        (this.#previous.get(object) ?? new Matrix4()).copy(object.matrixWorld),
+      );
+    this.#previous = next;
+    this.#previousViewProjection = (
+      this.#previousViewProjection ?? new Matrix4()
+    ).copy(this.#viewProjection);
+  }
+
+  /** Forgets the previous frame, so the next render reports no motion (after a cut or a resize). */
+  reset(): void {
+    this.#previous.clear();
+    this.#previousViewProjection = null;
+  }
+
+  dispose(): void {
+    this.target.dispose();
+    for (const material of this.#materials.values()) material.dispose();
+    this.#previous.clear();
   }
 }
 

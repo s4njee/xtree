@@ -31,6 +31,10 @@
       "types": "./dist/effect/index.d.ts",
       "import": "./dist/effect/index.js"
     },
+    "./effects/anamorphic": {
+      "types": "./dist/effects/anamorphic/index.d.ts",
+      "import": "./dist/effects/anamorphic/index.js"
+    },
     "./effects/ascii": {
       "types": "./dist/effects/ascii/index.d.ts",
       "import": "./dist/effects/ascii/index.js"
@@ -50,6 +54,10 @@
     "./effects/blur": {
       "types": "./dist/effects/blur/index.d.ts",
       "import": "./dist/effects/blur/index.js"
+    },
+    "./effects/bokeh-blur": {
+      "types": "./dist/effects/bokeh-blur/index.d.ts",
+      "import": "./dist/effects/bokeh-blur/index.js"
     },
     "./effects/brightness-contrast": {
       "types": "./dist/effects/brightness-contrast/index.d.ts",
@@ -95,6 +103,10 @@
       "types": "./dist/effects/digital-noise/index.d.ts",
       "import": "./dist/effects/digital-noise/index.js"
     },
+    "./effects/directional-blur": {
+      "types": "./dist/effects/directional-blur/index.d.ts",
+      "import": "./dist/effects/directional-blur/index.js"
+    },
     "./effects/displacement-map": {
       "types": "./dist/effects/displacement-map/index.d.ts",
       "import": "./dist/effects/displacement-map/index.js"
@@ -115,6 +127,10 @@
       "types": "./dist/effects/film-grain/index.d.ts",
       "import": "./dist/effects/film-grain/index.js"
     },
+    "./effects/fisheye": {
+      "types": "./dist/effects/fisheye/index.d.ts",
+      "import": "./dist/effects/fisheye/index.js"
+    },
     "./effects/foil-material": {
       "types": "./dist/effects/foil-material/index.d.ts",
       "import": "./dist/effects/foil-material/index.js"
@@ -123,6 +139,10 @@
       "types": "./dist/effects/fresnel-glow/index.d.ts",
       "import": "./dist/effects/fresnel-glow/index.js"
     },
+    "./effects/frosted-glass": {
+      "types": "./dist/effects/frosted-glass/index.d.ts",
+      "import": "./dist/effects/frosted-glass/index.js"
+    },
     "./effects/glow": {
       "types": "./dist/effects/glow/index.d.ts",
       "import": "./dist/effects/glow/index.js"
@@ -130,6 +150,10 @@
     "./effects/gradient-map": {
       "types": "./dist/effects/gradient-map/index.d.ts",
       "import": "./dist/effects/gradient-map/index.js"
+    },
+    "./effects/halation": {
+      "types": "./dist/effects/halation/index.d.ts",
+      "import": "./dist/effects/halation/index.js"
     },
     "./effects/halftone": {
       "types": "./dist/effects/halftone/index.d.ts",
@@ -151,9 +175,17 @@
       "types": "./dist/effects/invert-threshold/index.d.ts",
       "import": "./dist/effects/invert-threshold/index.js"
     },
+    "./effects/lens-dirt": {
+      "types": "./dist/effects/lens-dirt/index.d.ts",
+      "import": "./dist/effects/lens-dirt/index.js"
+    },
     "./effects/lens-distortion": {
       "types": "./dist/effects/lens-distortion/index.d.ts",
       "import": "./dist/effects/lens-distortion/index.js"
+    },
+    "./effects/lens-flare": {
+      "types": "./dist/effects/lens-flare/index.d.ts",
+      "import": "./dist/effects/lens-flare/index.js"
     },
     "./effects/levels": {
       "types": "./dist/effects/levels/index.d.ts",
@@ -167,6 +199,10 @@
       "types": "./dist/effects/monochrome/index.d.ts",
       "import": "./dist/effects/monochrome/index.js"
     },
+    "./effects/motion-blur": {
+      "types": "./dist/effects/motion-blur/index.d.ts",
+      "import": "./dist/effects/motion-blur/index.js"
+    },
     "./effects/outline": {
       "types": "./dist/effects/outline/index.d.ts",
       "import": "./dist/effects/outline/index.js"
@@ -174,6 +210,10 @@
     "./effects/pixelate": {
       "types": "./dist/effects/pixelate/index.d.ts",
       "import": "./dist/effects/pixelate/index.js"
+    },
+    "./effects/radial-blur": {
+      "types": "./dist/effects/radial-blur/index.d.ts",
+      "import": "./dist/effects/radial-blur/index.js"
     },
     "./effects/rgb-split-glitch": {
       "types": "./dist/effects/rgb-split-glitch/index.d.ts",
@@ -198,6 +238,10 @@
     "./effects/split-toning": {
       "types": "./dist/effects/split-toning/index.d.ts",
       "import": "./dist/effects/split-toning/index.js"
+    },
+    "./effects/star-streaks": {
+      "types": "./dist/effects/star-streaks/index.d.ts",
+      "import": "./dist/effects/star-streaks/index.js"
     },
     "./effects/thin-film": {
       "types": "./dist/effects/thin-film/index.d.ts",

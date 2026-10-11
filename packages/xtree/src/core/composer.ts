@@ -21,7 +21,7 @@ import type {
 } from 'three';
 import type { Effect } from '../effect/define.js';
 import type { EffectMask, SelectionMask } from '../effect/mask.js';
-import { NormalPrepass, SelectionPrepass } from './buffers.js';
+import { NormalPrepass, SelectionPrepass, VelocityPrepass } from './buffers.js';
 import { GpuTimer } from './timing.js';
 import type { OutputStage, ToneMapping } from './compile.js';
 import { describePassError, EffectPass } from './pass.js';
@@ -64,7 +64,7 @@ export interface ComposerStats {
   compiles: number;
   /** Buffer allocations, which happen on the first render and on resize. */
   allocations: number;
-  /** Extra scene renders in the last frame: the normal prepass and one per distinct selection mask. */
+  /** Extra scene renders in the last frame: the normal and velocity prepasses and one per distinct selection mask. */
   prepasses: number;
   /** Whether the last frame's scene render kept a depth texture. */
   depth: boolean;
@@ -123,6 +123,7 @@ export class EffectComposer {
   #sceneTarget: WebGLRenderTarget | null = null;
   #targets: [WebGLRenderTarget, WebGLRenderTarget] | null = null;
   #normal: NormalPrepass | null = null;
+  #velocity: VelocityPrepass | null = null;
   readonly #selections = new Map<EffectMask, SelectionPrepass>();
   #width = 0;
   #height = 0;
@@ -434,11 +435,16 @@ export class EffectComposer {
       timer ? timer.measure(label, run) : run();
     measure('scene', () => renderer.render(this.scene!, this.camera!));
     measure('prepasses', () =>
-      this.#renderPrepasses(active, buffers.has('normal')),
+      this.#renderPrepasses(
+        active,
+        buffers.has('normal'),
+        buffers.has('velocity'),
+      ),
     );
     const geometry = {
       depth: sceneTarget.depthTexture,
       normal: this.#normal?.target.texture ?? null,
+      velocity: this.#velocity?.target.texture ?? null,
       camera: this.camera,
     };
 
@@ -488,6 +494,8 @@ export class EffectComposer {
     this.#targets?.forEach((t) => t.dispose());
     this.#normal?.dispose();
     this.#normal = null;
+    this.#velocity?.dispose();
+    this.#velocity = null;
     for (const prepass of this.#selections.values()) prepass.dispose();
     this.#selections.clear();
     this.#plan = [];
@@ -540,6 +548,7 @@ export class EffectComposer {
     for (const step of this.#plan) step.pass.setSize?.(width, height);
     this.#outputPass?.setSize(width, height);
     this.#normal?.setSize(width, height);
+    this.#velocity?.setSize(width, height);
     for (const prepass of this.#selections.values())
       prepass.setSize(width, height);
     this.stats.allocations++;
@@ -572,7 +581,11 @@ export class EffectComposer {
   }
 
   /** The normal prepass and selection masks the active effects need. */
-  #renderPrepasses(active: readonly Effect[], normals: boolean): void {
+  #renderPrepasses(
+    active: readonly Effect[],
+    normals: boolean,
+    velocity: boolean,
+  ): void {
     const { renderer, scene, camera } = this;
     const samples = this.#options.multisampling;
     let prepasses = 0;
@@ -583,6 +596,14 @@ export class EffectComposer {
     } else if (this.#normal) {
       this.#normal.dispose();
       this.#normal = null;
+    }
+    if (velocity) {
+      this.#velocity ??= new VelocityPrepass(this.#width, this.#height);
+      this.#velocity.render(renderer, scene!, camera!);
+      prepasses++;
+    } else if (this.#velocity) {
+      this.#velocity.dispose();
+      this.#velocity = null;
     }
     const used = new Set<EffectMask>();
     for (const effect of active) {

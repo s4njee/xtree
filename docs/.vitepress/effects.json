@@ -68,6 +68,10 @@
     "text": "Lens & camera",
     "items": [
       {
+        "text": "Anamorphic streaks",
+        "link": "/effects/anamorphic"
+      },
+      {
         "text": "Chromatic aberration",
         "link": "/effects/chromatic-aberration"
       },
@@ -80,8 +84,28 @@
         "link": "/effects/film-grain"
       },
       {
+        "text": "Fisheye & Panini",
+        "link": "/effects/fisheye"
+      },
+      {
+        "text": "Halation",
+        "link": "/effects/halation"
+      },
+      {
+        "text": "Lens dirt",
+        "link": "/effects/lens-dirt"
+      },
+      {
         "text": "Lens distortion",
         "link": "/effects/lens-distortion"
+      },
+      {
+        "text": "Lens flare",
+        "link": "/effects/lens-flare"
+      },
+      {
+        "text": "Motion blur",
+        "link": "/effects/motion-blur"
       },
       {
         "text": "Tilt-shift",
@@ -101,12 +125,32 @@
         "link": "/effects/blur"
       },
       {
+        "text": "Bokeh blur",
+        "link": "/effects/bokeh-blur"
+      },
+      {
+        "text": "Directional blur",
+        "link": "/effects/directional-blur"
+      },
+      {
+        "text": "Frosted glass",
+        "link": "/effects/frosted-glass"
+      },
+      {
         "text": "Glow",
         "link": "/effects/glow"
       },
       {
+        "text": "Radial & zoom blur",
+        "link": "/effects/radial-blur"
+      },
+      {
         "text": "Selective bloom",
         "link": "/effects/selective-bloom"
+      },
+      {
+        "text": "Star filter",
+        "link": "/effects/star-streaks"
       }
     ]
   },

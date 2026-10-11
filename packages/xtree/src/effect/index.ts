@@ -75,6 +75,7 @@ export {
   type TextureMask,
 } from './mask.js';
 export { fullscreenVertex } from './fullscreen-vertex.js';
+export { createPassKit, type KitTarget, type PassKit } from './kit.js';
 export {
   defineMaterialEffect,
   isMaterialDefinition,

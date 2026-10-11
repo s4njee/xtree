@@ -6,6 +6,10 @@ export const effectLoaders: Record<
   string,
   () => Promise<EffectFactory<ParamSchema>>
 > = {
+  anamorphic: () =>
+    import('@mk7s/xtree/effects/anamorphic').then(
+      (m) => m.anamorphic as unknown as EffectFactory<ParamSchema>,
+    ),
   ascii: () =>
     import('@mk7s/xtree/effects/ascii').then(
       (m) => m.ascii as unknown as EffectFactory<ParamSchema>,
@@ -25,6 +29,10 @@ export const effectLoaders: Record<
   blur: () =>
     import('@mk7s/xtree/effects/blur').then(
       (m) => m.blur as unknown as EffectFactory<ParamSchema>,
+    ),
+  'bokeh-blur': () =>
+    import('@mk7s/xtree/effects/bokeh-blur').then(
+      (m) => m.bokehBlur as unknown as EffectFactory<ParamSchema>,
     ),
   'brightness-contrast': () =>
     import('@mk7s/xtree/effects/brightness-contrast').then(
@@ -70,6 +78,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/digital-noise').then(
       (m) => m.digitalNoise as unknown as EffectFactory<ParamSchema>,
     ),
+  'directional-blur': () =>
+    import('@mk7s/xtree/effects/directional-blur').then(
+      (m) => m.directionalBlur as unknown as EffectFactory<ParamSchema>,
+    ),
   'displacement-map': () =>
     import('@mk7s/xtree/effects/displacement-map').then(
       (m) => m.displacementMap as unknown as EffectFactory<ParamSchema>,
@@ -90,6 +102,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/film-grain').then(
       (m) => m.filmGrain as unknown as EffectFactory<ParamSchema>,
     ),
+  fisheye: () =>
+    import('@mk7s/xtree/effects/fisheye').then(
+      (m) => m.fisheye as unknown as EffectFactory<ParamSchema>,
+    ),
   'foil-material': () =>
     import('@mk7s/xtree/effects/foil-material').then(
       (m) => m.foilMaterial as unknown as EffectFactory<ParamSchema>,
@@ -98,6 +114,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/fresnel-glow').then(
       (m) => m.fresnelGlow as unknown as EffectFactory<ParamSchema>,
     ),
+  'frosted-glass': () =>
+    import('@mk7s/xtree/effects/frosted-glass').then(
+      (m) => m.frostedGlass as unknown as EffectFactory<ParamSchema>,
+    ),
   glow: () =>
     import('@mk7s/xtree/effects/glow').then(
       (m) => m.glow as unknown as EffectFactory<ParamSchema>,
@@ -105,6 +125,10 @@ export const effectLoaders: Record<
   'gradient-map': () =>
     import('@mk7s/xtree/effects/gradient-map').then(
       (m) => m.gradientMap as unknown as EffectFactory<ParamSchema>,
+    ),
+  halation: () =>
+    import('@mk7s/xtree/effects/halation').then(
+      (m) => m.halation as unknown as EffectFactory<ParamSchema>,
     ),
   halftone: () =>
     import('@mk7s/xtree/effects/halftone').then(
@@ -126,9 +150,17 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/invert-threshold').then(
       (m) => m.invertThreshold as unknown as EffectFactory<ParamSchema>,
     ),
+  'lens-dirt': () =>
+    import('@mk7s/xtree/effects/lens-dirt').then(
+      (m) => m.lensDirt as unknown as EffectFactory<ParamSchema>,
+    ),
   'lens-distortion': () =>
     import('@mk7s/xtree/effects/lens-distortion').then(
       (m) => m.lensDistortion as unknown as EffectFactory<ParamSchema>,
+    ),
+  'lens-flare': () =>
+    import('@mk7s/xtree/effects/lens-flare').then(
+      (m) => m.lensFlare as unknown as EffectFactory<ParamSchema>,
     ),
   levels: () =>
     import('@mk7s/xtree/effects/levels').then(
@@ -142,6 +174,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/monochrome').then(
       (m) => m.monochrome as unknown as EffectFactory<ParamSchema>,
     ),
+  'motion-blur': () =>
+    import('@mk7s/xtree/effects/motion-blur').then(
+      (m) => m.motionBlur as unknown as EffectFactory<ParamSchema>,
+    ),
   outline: () =>
     import('@mk7s/xtree/effects/outline').then(
       (m) => m.outline as unknown as EffectFactory<ParamSchema>,
@@ -149,6 +185,10 @@ export const effectLoaders: Record<
   pixelate: () =>
     import('@mk7s/xtree/effects/pixelate').then(
       (m) => m.pixelate as unknown as EffectFactory<ParamSchema>,
+    ),
+  'radial-blur': () =>
+    import('@mk7s/xtree/effects/radial-blur').then(
+      (m) => m.radialBlur as unknown as EffectFactory<ParamSchema>,
     ),
   'rgb-split-glitch': () =>
     import('@mk7s/xtree/effects/rgb-split-glitch').then(
@@ -173,6 +213,10 @@ export const effectLoaders: Record<
   'split-toning': () =>
     import('@mk7s/xtree/effects/split-toning').then(
       (m) => m.splitToning as unknown as EffectFactory<ParamSchema>,
+    ),
+  'star-streaks': () =>
+    import('@mk7s/xtree/effects/star-streaks').then(
+      (m) => m.starStreaks as unknown as EffectFactory<ParamSchema>,
     ),
   'thin-film': () =>
     import('@mk7s/xtree/effects/thin-film').then(

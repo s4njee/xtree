@@ -7,7 +7,7 @@ import type * as THREE from 'three';
 import type { TextureLike } from './params.js';
 
 /** A geometry buffer an effect reads: `depth` (the scene's depth texture) or `normal` (a view-space normal prepass). */
-export type GeometryBuffer = 'depth' | 'normal';
+export type GeometryBuffer = 'depth' | 'normal' | 'velocity';
 
 /** Mask from one channel of a texture covering the screen. */
 export interface TextureMask {

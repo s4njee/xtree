@@ -1,6 +1,6 @@
 ---
 title: Buffer view
-description: 'Shows a geometry buffer instead of the image: distance from the camera, view-space normals from the prepass or reconstructed from depth, world position, or the mask given to this effect. Set the renderer to no tone mapping to see exact values.'
+description: 'Shows a geometry buffer instead of the image: distance from the camera, view-space normals from the prepass or reconstructed from depth, world position, screen-space motion, or the mask given to this effect. Set the renderer to no tone mapping to see exact values.'
 outline: [2, 3]
 ---
 
@@ -8,7 +8,7 @@ outline: [2, 3]
 
 # Buffer view
 
-Shows a geometry buffer instead of the image: distance from the camera, view-space normals from the prepass or reconstructed from depth, world position, or the mask given to this effect. Set the renderer to no tone mapping to see exact values.
+Shows a geometry buffer instead of the image: distance from the camera, view-space normals from the prepass or reconstructed from depth, world position, screen-space motion, or the mask given to this effect. Set the renderer to no tone mapping to see exact values.
 
 <EffectDemo effect="buffer-view" />
 
@@ -28,10 +28,10 @@ Every parameter is also a property: `effect.buffer = 'depth'`. Uniform changes t
 
 ## Parameters
 
-| Parameter               | Type                                                                 | Default   | Range     | Description                                                                                               |
-| ----------------------- | -------------------------------------------------------------------- | --------- | --------- | --------------------------------------------------------------------------------------------------------- |
-| `buffer` _(structural)_ | 'depth' \| 'normal' \| 'reconstructedNormal' \| 'position' \| 'mask' | `'depth'` |           | What to show. Only the buffer shown is rendered.                                                          |
-| `range`                 | number                                                               | `20`      | 0.5 – 200 | Depth: distance shown as white. Position: world coordinates from -range to +range map to 0–1 per channel. |
+| Parameter               | Type                                                                               | Default   | Range     | Description                                                                                                                                                                 |
+| ----------------------- | ---------------------------------------------------------------------------------- | --------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `buffer` _(structural)_ | 'depth' \| 'normal' \| 'reconstructedNormal' \| 'position' \| 'velocity' \| 'mask' | `'depth'` |           | What to show. Only the buffer shown is rendered.                                                                                                                            |
+| `range`                 | number                                                                             | `20`      | 0.5 – 200 | Depth: distance shown as white. Position: world coordinates from -range to +range map to 0–1 per channel. Velocity: motion of 1/range of the frame per frame is full color. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

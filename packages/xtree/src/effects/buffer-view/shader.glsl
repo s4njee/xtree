@@ -14,6 +14,9 @@ vec4 $main(vec4 color, vec2 uv) {
   // A smooth ramp (no grid lines), so the view is stable across GPUs: ±range maps to 0–1.
   vec3 p = xt_worldPosition(uv);
   shown = xt_depth(uv) >= 1.0 ? vec3(0.0) : clamp(p / $range * 0.5 + 0.5, 0.0, 1.0);
+#elif $buffer == $buffer_velocity
+  // Red and green for motion right and up (left and down are dimmer), mid-grey for none.
+  shown = vec3(clamp(xt_velocity(uv) * $range * 0.5 + 0.5, 0.0, 1.0), 0.5);
 #else
   shown = vec3($maskAt(uv));
 #endif

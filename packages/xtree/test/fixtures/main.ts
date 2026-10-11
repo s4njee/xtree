@@ -31,6 +31,7 @@ import {
   HemisphereLight,
   PerspectiveCamera,
   TorusKnotGeometry,
+  Vector3,
   OrthographicCamera,
   PlaneGeometry,
   Scene,
@@ -1395,6 +1396,96 @@ const xt = {
       missing,
       removed,
     };
+  },
+  /**
+   * The velocity buffer (X1.6): renders a frame, moves the knot (and
+   * optionally the camera), renders again, and returns the decoded motion
+   * at the knot's center and at a still floor point, with the motion the
+   * projection predicts. With `effect`, renders that effect on the moved
+   * frame instead and returns its pixels.
+   */
+  velocityProbe(
+    options: {
+      move?: [number, number, number];
+      cameraMove?: [number, number, number];
+      effect?: EffectSpec;
+    } = {},
+  ) {
+    const range = 20;
+    const knot = studio.scene.getObjectByName('knot') as Mesh;
+    const start = knot.position.clone();
+    const cameraStart = studio.camera.position.clone();
+    const project = (p: { x: number; y: number; z: number }) => {
+      const v = new Vector3(p.x, p.y, p.z).project(studio.camera);
+      return [v.x * 0.5 + 0.5, v.y * 0.5 + 0.5] as [number, number];
+    };
+    const spec: RenderSpec = {
+      toneMapping: 'none',
+      effects: [
+        options.effect ?? {
+          id: 'buffer-view',
+          params: { buffer: 'velocity', range },
+        },
+      ],
+    };
+    try {
+      return withComposer(spec, (composer) => {
+        const target = new WebGLRenderTarget(width, height, {
+          type: FloatType,
+          depthBuffer: false,
+        });
+        const read = () => {
+          composer.render(0, target);
+          const data = new Float32Array(width * height * 4);
+          renderer.readRenderTargetPixels(target, 0, 0, width, height, data);
+          return data;
+        };
+        const at = (data: Float32Array, [u, v]: [number, number]) => {
+          const i =
+            (Math.floor(v * height) * width + Math.floor(u * width)) * 4;
+          return [
+            ((data[i]! - 0.5) * 2) / range,
+            ((data[i + 1]! - 0.5) * 2) / range,
+          ];
+        };
+        const floorPoint: [number, number] = [0.1, 0.12];
+        const first = read();
+        const before = project(knot.position);
+        if (options.move) knot.position.add(new Vector3(...options.move));
+        if (options.cameraMove) {
+          studio.camera.position.add(new Vector3(...options.cameraMove));
+          studio.camera.updateMatrixWorld();
+        }
+        knot.updateMatrixWorld();
+        const after = project(knot.position);
+        const second = read();
+        target.dispose();
+        if (options.effect) return { pixels: Array.from(second) };
+        // The knot's projected center is the hole in the knot, so take the
+        // strongest motion in a window around it.
+        const strongest = (data: Float32Array) => {
+          let best = [0, 0];
+          for (let dy = -0.12; dy <= 0.12; dy += 0.01)
+            for (let dx = -0.08; dx <= 0.08; dx += 0.005) {
+              const v = at(data, [after[0] + dx, after[1] + dy]);
+              if (Math.hypot(v[0]!, v[1]!) > Math.hypot(best[0]!, best[1]!))
+                best = v;
+            }
+          return best;
+        };
+        return {
+          firstKnot: strongest(first),
+          knot: strongest(second),
+          floor: at(second, floorPoint),
+          expected: [after[0] - before[0], after[1] - before[1]],
+        };
+      });
+    } finally {
+      knot.position.copy(start);
+      knot.updateMatrixWorld();
+      studio.camera.position.copy(cameraStart);
+      studio.camera.updateMatrixWorld();
+    }
   },
   /** Transition player textures, material patch errors and prepasses across a resize. */
   async edgeCases() {
