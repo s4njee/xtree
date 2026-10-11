@@ -9,3 +9,4 @@ export { noise } from './noise/index.js';
 
 /** Every built-in chunk. Import a family entry instead to ship less GLSL. */
 export const chunks: ChunkMap = { ...noise, ...color, ...blend };
+export * from './maps.js';

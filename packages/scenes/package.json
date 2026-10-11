@@ -1,0 +1,21 @@
+{
+  "name": "@xtree/scenes",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Deterministic sample scenes shared by the xtree visual tests and documentation demos.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "three": ">=0.180.0 <0.187.0"
+  },
+  "devDependencies": {
+    "@types/three": "0.186.0",
+    "three": "0.186.1",
+    "typescript": "6.0.3"
+  }
+}

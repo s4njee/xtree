@@ -1,8 +1,15 @@
 {
-  ".": 1152,
+  ".": 1088,
   "./glsl": 1088,
-  "./shaders": 8192,
-  "./shaders/noise": 3072,
-  "./shaders/color": 3584,
-  "./shaders/blend": 2048
+  "./shaders": 8384,
+  "./shaders/noise": 2944,
+  "./shaders/color": 3520,
+  "./shaders/blend": 1984,
+  "./effect": 3584,
+  "./core": 12544,
+  "./effects/vignette": 3904,
+  "./effects/chromatic-aberration": 4160,
+  "./effects/bloom": 5376,
+  "./effects/rgb-split-glitch": 4608,
+  "./effects/holographic-foil": 7616
 }

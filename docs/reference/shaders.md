@@ -10,17 +10,19 @@ xtree ships its GLSL building blocks as chunks: plain GLSL ES 3.00 strings that 
 
 ```ts
 import { resolveIncludes, formatShaderError } from '@mk7s/xtree/glsl';
-import { noise } from '@mk7s/xtree/shaders/noise';
+import { noiseSimplexChunks } from '@mk7s/xtree/shaders';
 
 const { code, files } = resolveIncludes(
   `#include <xtree/noise/simplex>
   void main() { gl_FragColor = vec4(vec3(xt_simplex(vUv * 8.0) * 0.5 + 0.5), 1.0); }`,
-  noise,
+  noiseSimplexChunks,
   { name: 'my-effect.glsl' },
 );
 // Pass `code` to a ShaderMaterial. On a compile error:
 // console.error(formatShaderError(gl.getShaderInfoLog(shader), files));
 ```
+
+Every chunk has a map that also contains the chunks it includes, named after it: `noiseSimplexChunks`, `colorSpaceChunks`, `blendModesChunks` and so on. Import those from `@mk7s/xtree/shaders` and bundlers keep only the GLSL you use; the family maps (`noise`, `color`, `blend`) contain every chunk of a family.
 
 Conventions: every name starts with `xt_` (functions and globals) or `XT_` (macros). Chunks never declare `#version` or `precision`, so the host shader decides those; the functions assume `highp`. Hues are in turns, [0, 1). Includes that are not xtree chunks, such as three.js’s `<common>`, are left for three.js to resolve.
 
@@ -287,7 +289,7 @@ Import from `@mk7s/xtree/shaders/blend` as `blend`, or every family at once as `
 #include <xtree/blend/modes>
 ```
 
-Photoshop-style blend modes. Separable and non-separable formulas follow W3C Compositing and Blending Level 1 where it defines them. `base` is the backdrop and `blend` is the source. Modes defined only for [0, 1] (the dodges, burns, light modes, hard mix and divide) clamp their result to [0, 1]. Normal, multiply, add, lighten, darken, difference and the non-separable modes pass HDR values through.
+Photoshop-style blend modes. Separable and non-separable formulas follow W3C Compositing and Blending Level 1 where it defines them. `base` is the backdrop and `blend` is the source. Modes defined only for [0, 1] (the dodges, burns, light modes, hard mix and divide) clamp their result to [0, 1]. Normal, multiply, add, lighten, darken, difference and the non-separable modes pass HDR values through, and screen is extended so it never darkens values above 1.
 
 | Function                                                        | Description                                                                                 |
 | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
@@ -296,7 +298,7 @@ Photoshop-style blend modes. Separable and non-separable formulas follow W3C Com
 | `vec3 xt_blendColorBurn(vec3 base, vec3 blend)`                 | Color burn (W3C).                                                                           |
 | `vec3 xt_blendLinearBurn(vec3 base, vec3 blend)`                | Linear burn: base + blend - 1, clamped.                                                     |
 | `vec3 xt_blendLighten(vec3 base, vec3 blend)`                   | Lighten: the larger of each channel.                                                        |
-| `vec3 xt_blendScreen(vec3 base, vec3 blend)`                    | Screen.                                                                                     |
+| `vec3 xt_blendScreen(vec3 base, vec3 blend)`                    | Screen. The product term is clamped to [0, 1] per input, so HDR values never darken.        |
 | `vec3 xt_blendColorDodge(vec3 base, vec3 blend)`                | Color dodge (W3C).                                                                          |
 | `vec3 xt_blendAdd(vec3 base, vec3 blend)`                       | Add (linear dodge). Not clamped, so it is safe for HDR glow.                                |
 | `vec3 xt_blendHardLight(vec3 base, vec3 blend)`                 | Hard light (W3C).                                                                           |

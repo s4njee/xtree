@@ -1,11 +1,14 @@
 import { buildSync } from 'esbuild';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'vitepress';
+import { defineConfig, type DefaultTheme } from 'vitepress';
+import { glsl } from '../../packages/xtree/build/glsl-plugin.ts';
+import effectSidebar from './effects.json' with { type: 'json' };
 // @ts-expect-error The setup script is plain JavaScript.
 import { ensureHolocss } from '../../scripts/holocss.mjs';
 
 const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
+const xtreeSource = resolve(repoRoot, 'packages/xtree/src');
 const holocss: string = ensureHolocss();
 
 /** Deploy path. Defaults to mk7s.dev/xtree/; override with XT_DOCS_BASE (for example "/" for local previews). */
@@ -46,6 +49,7 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/', activeMatch: '^/guide/' },
+      { text: 'Effects', link: '/effects/', activeMatch: '^/effects/' },
       {
         text: 'Shaders',
         link: '/reference/shaders',
@@ -63,6 +67,13 @@ export default defineConfig({
           ],
         },
       ],
+      '/effects/': [
+        {
+          text: 'Effects',
+          items: [{ text: 'All effects', link: '/effects/' }],
+        },
+        ...(effectSidebar as DefaultTheme.SidebarItem[]),
+      ],
       '/reference/': [
         {
           text: 'Reference',
@@ -78,8 +89,25 @@ export default defineConfig({
     footer: { message: 'MIT Licensed. Styled with HoloCSS.' },
   },
   vite: {
+    // The docs run the library from source: effects compile with the same GLSL plugin as the build.
+    plugins: [glsl({ minify: false }) as never],
+    define: { __XTREE_VERSION__: JSON.stringify('docs') },
+    // three.js is one lazily loaded chunk (about 700 kB minified) that only demo pages fetch.
+    build: { chunkSizeWarningLimit: 900 },
     resolve: {
       alias: [
+        {
+          find: /^@mk7s\/xtree$/,
+          replacement: resolve(xtreeSource, 'index.ts'),
+        },
+        {
+          find: /^@mk7s\/xtree\/(.+)$/,
+          replacement: `${xtreeSource}/$1/index.ts`,
+        },
+        {
+          find: /^@mk7s\/holocss\/runtime$/,
+          replacement: resolve(holocss, 'src/runtime/index.ts'),
+        },
         {
           find: /^@mk7s\/holocss\/components\.css$/,
           replacement: resolve(holocss, 'src/components/index.css'),
@@ -101,6 +129,7 @@ function projectSidebar() {
       items: [
         { text: 'Overview and roadmap', link: '/project/' },
         { text: 'M0 validation', link: '/project/m0-validation' },
+        { text: 'M1 validation', link: '/project/m1-validation' },
       ],
     },
     {
@@ -130,6 +159,10 @@ function projectSidebar() {
         {
           text: '0006 Licensing and credits',
           link: '/adr/0006-licensing-and-credits',
+        },
+        {
+          text: '0007 Effect authoring contract',
+          link: '/adr/0007-effect-authoring',
         },
       ],
     },

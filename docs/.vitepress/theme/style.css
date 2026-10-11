@@ -67,3 +67,169 @@
 .VPFeature {
   border-color: var(--hcss-subtle-border) !important;
 }
+
+/* Typography and shape follow the HoloCSS scale. */
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3 {
+  font-weight: var(--hcss-weight-heading);
+}
+
+/* Effect catalogue */
+.xt-effect-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--hcss-space-large);
+  margin: var(--hcss-space-large) 0;
+}
+
+.vp-doc a.xt-effect-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hcss-space-xsmall);
+  padding: var(--hcss-space-large);
+  color: var(--hcss-text);
+  text-decoration: none;
+}
+
+.xt-effect-card span {
+  color: var(--hcss-text-muted);
+  font-size: var(--hcss-type-body);
+  line-height: 1.45;
+}
+
+/* Effect demo */
+.xt-demo {
+  margin: var(--hcss-space-xlarge) 0;
+  padding: var(--hcss-space-large);
+  border: var(--hcss-stroke-hairline) solid var(--hcss-border);
+  border-radius: var(--hcss-radius-large);
+  background: var(--hcss-surface);
+  display: grid;
+  gap: var(--hcss-space-large);
+}
+
+.xt-demo-stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--hcss-radius-medium);
+  overflow: hidden;
+  background: #0b0d14;
+}
+
+.xt-demo-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+}
+
+.xt-demo-status {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: var(--hcss-space-large);
+  color: #e5e7eb;
+  text-align: center;
+}
+
+.xt-demo-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: rgb(255 255 255 / 80%);
+  pointer-events: none;
+}
+
+.xt-demo-divider span {
+  position: absolute;
+  top: var(--hcss-space-small);
+  padding: 2px 6px;
+  border-radius: var(--hcss-radius-small);
+  background: rgb(0 0 0 / 60%);
+  color: #fff;
+  font-size: var(--hcss-type-caption);
+  white-space: nowrap;
+}
+
+.xt-demo-divider span:first-child {
+  right: var(--hcss-space-small);
+}
+
+.xt-demo-divider span:last-child {
+  left: var(--hcss-space-small);
+}
+
+.xt-demo-toolbar,
+.xt-demo-presets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--hcss-space-small) var(--hcss-space-medium);
+}
+
+.xt-demo-divider-input {
+  flex: 1 1 160px;
+  max-width: 280px;
+}
+
+.xt-demo-meta,
+.xt-demo-label {
+  color: var(--hcss-text-muted);
+  font-size: var(--hcss-type-caption);
+}
+
+.xt-demo-meta {
+  margin-left: auto;
+}
+
+.xt-demo-meta + .xt-demo-meta {
+  margin-left: 0;
+}
+
+.xt-demo-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: var(--hcss-space-large) var(--hcss-space-xlarge);
+  align-items: start;
+}
+
+.xt-demo-controls .hcss-description {
+  margin: 0;
+}
+
+.xt-demo-vector {
+  display: grid;
+  gap: var(--hcss-space-small);
+}
+
+.xt-demo-color {
+  inline-size: 56px;
+  block-size: var(--hcss-control-small);
+  padding: 2px;
+  border: var(--hcss-stroke-hairline) solid var(--hcss-input-border);
+  border-radius: var(--hcss-radius-small);
+  background: var(--hcss-background);
+}
+
+.xt-demo-code pre {
+  margin: 0;
+  overflow-x: auto;
+}
+
+.xt-demo-code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--hcss-space-small);
+}
+
+@media (max-width: 640px) {
+  .xt-demo {
+    padding: var(--hcss-space-medium);
+  }
+}

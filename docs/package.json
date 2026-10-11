@@ -8,8 +8,14 @@
     "preview": "vitepress preview"
   },
   "devDependencies": {
+    "@types/three": "0.186.0",
     "esbuild": "0.28.2",
     "vitepress": "1.6.4",
     "vue": "3.5.43"
+  },
+  "dependencies": {
+    "@mk7s/xtree": "workspace:*",
+    "@xtree/scenes": "workspace:*",
+    "three": "0.186.1"
   }
 }

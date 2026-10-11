@@ -36,6 +36,15 @@ const projects = {
 
 export default defineConfig({
   testDir: 'packages/xtree/test/browser',
+  // One set of visual baselines for every browser: effects must render the
+  // same everywhere, within the tolerance each comparison allows.
+  snapshotPathTemplate: '{testDir}/__baselines__/{arg}{ext}',
+  webServer: {
+    command: 'pnpm --filter @mk7s/xtree fixtures',
+    url: 'http://localhost:5179/',
+    reuseExistingServer: !process.env.CI,
+    timeout: 60_000,
+  },
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: 0,

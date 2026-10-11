@@ -2,7 +2,7 @@
 // allow-list, and every derived or ported entry has a notice in
 // THIRD_PARTY_NOTICES.md. See docs/adr/0006-licensing-and-credits.md.
 import { readFileSync } from 'node:fs';
-import { packageRoot, readChunks, repoRoot } from './lib.mjs';
+import { packageRoot, readChunks, readEffectIds, repoRoot } from './lib.mjs';
 
 /** SPDX ids whose terms allow redistribution inside an MIT package. */
 const allowed = new Set([
@@ -26,6 +26,7 @@ const headings = new Set(
   [...notices.matchAll(/^## (.+)$/gm)].map((m) => m[1].trim()),
 );
 const chunkIds = new Set(readChunks().map((chunk) => chunk.id));
+const effectIds = new Set(readEffectIds().map((id) => `effects/${id}`));
 const problems = [];
 const seen = new Set();
 
@@ -60,8 +61,10 @@ for (const entry of entries) {
   }
   if (entry.id?.startsWith('xtree/') && !chunkIds.has(entry.id))
     problems.push(`${where}: no such chunk`);
+  if (entry.id?.startsWith('effects/') && !effectIds.has(entry.id))
+    problems.push(`${where}: no such effect`);
 }
-for (const id of chunkIds)
+for (const id of [...chunkIds, ...effectIds])
   if (!seen.has(id)) problems.push(`credits.json: missing entry for ${id}`);
 
 if (problems.length) {

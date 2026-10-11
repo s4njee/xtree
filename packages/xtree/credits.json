@@ -116,6 +116,49 @@
       "kind": "original",
       "licence": "MIT",
       "references": ["W3C Compositing and Blending Level 1"]
+    },
+    {
+      "id": "effects/vignette",
+      "kind": "derived",
+      "licence": "MIT",
+      "notice": "three.js",
+      "references": [
+        "three.js VignetteShader (Eskil mode formula)",
+        "Smoothstep vignette: original"
+      ]
+    },
+    {
+      "id": "effects/chromatic-aberration",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Lateral chromatic aberration, radial model",
+        "Spectral sampling with triangle RGB weights"
+      ]
+    },
+    {
+      "id": "effects/bloom",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Jimenez, Next Generation Post Processing in Call of Duty: Advanced Warfare, SIGGRAPH 2014 (13-tap downsample, tent upsample, Karis average)",
+        "Unity soft-knee threshold curve, as described in its documentation"
+      ]
+    },
+    {
+      "id": "effects/rgb-split-glitch",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Channel-offset glitch, seeded PCG jitter"]
+    },
+    {
+      "id": "effects/holographic-foil",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Thin-foil iridescence approximated with hue bands over view angle",
+        "HoloCSS design language (s4njee/holocss)"
+      ]
     }
   ]
 }

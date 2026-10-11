@@ -1,7 +1,16 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "types": ["node"]
+    "types": ["node"],
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true
   },
-  "include": ["playwright.config.ts", "packages/xtree/test/browser/**/*.ts"]
+  "include": [
+    "playwright.config.ts",
+    "packages/xtree/test/browser/**/*.ts",
+    "packages/xtree/test/fixtures/**/*.ts",
+    "packages/xtree/src/glsl-modules.d.ts",
+    "playwright.docs.config.ts",
+    "docs/tests/**/*.ts"
+  ]
 }

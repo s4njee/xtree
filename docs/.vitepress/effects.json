@@ -1,0 +1,47 @@
+[
+  {
+    "text": "Color & tone",
+    "items": [
+      {
+        "text": "Vignette",
+        "link": "/effects/vignette"
+      }
+    ]
+  },
+  {
+    "text": "Lens & camera",
+    "items": [
+      {
+        "text": "Chromatic aberration",
+        "link": "/effects/chromatic-aberration"
+      }
+    ]
+  },
+  {
+    "text": "Blur & glow",
+    "items": [
+      {
+        "text": "Bloom",
+        "link": "/effects/bloom"
+      }
+    ]
+  },
+  {
+    "text": "Glitch & signal",
+    "items": [
+      {
+        "text": "RGB split glitch",
+        "link": "/effects/rgb-split-glitch"
+      }
+    ]
+  },
+  {
+    "text": "Holographic & iridescent",
+    "items": [
+      {
+        "text": "Holographic foil",
+        "link": "/effects/holographic-foil"
+      }
+    ]
+  }
+]

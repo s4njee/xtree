@@ -199,7 +199,7 @@ const separable: Record<string, Separable> = {
   colorBurn: (b, s) => clamp(burn(b, s)),
   linearBurn: (b, s) => clamp(b + s - 1),
   lighten: Math.max,
-  screen: (b, s) => b + s - b * s,
+  screen: (b, s) => b + s - Math.min(b, 1) * Math.min(s, 1),
   colorDodge: (b, s) => clamp(dodge(b, s)),
   add: (b, s) => b + s,
   overlay: (b, s) => hardLight(s, b),

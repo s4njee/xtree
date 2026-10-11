@@ -1,29 +1,33 @@
-// Measures the gzip size of each package export, including the local modules
-// it imports (its dependency closure) and excluding the three.js peer. Fails
-// when an export has no budget or goes over it. Writes artifacts/size.json.
+// Measures what a consumer ships for each package export: the built entry is
+// bundled the way an application bundler would (tree-shaken and minified, with
+// the three.js peer external), then gzipped. Fails when an export has no
+// budget or goes over it. Writes artifacts/size.json.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { resolve } from 'node:path';
 import { gzipSync } from 'node:zlib';
+import { build } from 'vite';
 import { packageRoot, repoRoot } from './lib.mjs';
 
 const pkg = JSON.parse(readFileSync(`${packageRoot}package.json`, 'utf8'));
 const budgets = JSON.parse(
   readFileSync(`${packageRoot}size-budgets.json`, 'utf8'),
 );
-const importPattern =
-  /(?:\bfrom\s*|\bimport\s*\(?\s*)["'](\.{1,2}\/[^"']+)["']/g;
-
-function closure(entry) {
-  const files = new Set();
-  const visit = (file) => {
-    if (files.has(file)) return;
-    files.add(file);
-    const code = readFileSync(file, 'utf8');
-    for (const [, specifier] of code.matchAll(importPattern))
-      visit(resolve(dirname(file), specifier));
-  };
-  visit(entry);
-  return [...files];
+async function bundle(entry) {
+  const result = await build({
+    configFile: false,
+    logLevel: 'silent',
+    build: {
+      write: false,
+      minify: true,
+      target: 'es2022',
+      lib: { entry, formats: ['es'], fileName: 'entry' },
+      rolldownOptions: { external: [/^three(\/.*)?$/] },
+    },
+  });
+  const outputs = (Array.isArray(result) ? result : [result]).flatMap(
+    (r) => r.output,
+  );
+  return outputs.filter((o) => o.type === 'chunk').map((o) => o.code);
 }
 
 const results = [];
@@ -38,17 +42,11 @@ for (const [key, target] of Object.entries(pkg.exports)) {
     problems.push(`${key}: ${file} is missing; run pnpm build first`);
     continue;
   }
-  const files = closure(file);
-  const source = files
-    .map((f) =>
-      readFileSync(f, 'utf8').replace(/\n\/\/# sourceMappingURL=.*$/m, ''),
-    )
-    .join('\n');
+  const source = (await bundle(file)).join('\n');
   const gzip = gzipSync(source, { level: 9 }).length;
   const budget = budgets[key];
   results.push({
     export: key,
-    files: files.length,
     raw: Buffer.byteLength(source),
     gzip,
     budget: budget ?? null,
@@ -71,7 +69,7 @@ writeFileSync(
 const width = Math.max(...results.map((r) => r.export.length));
 for (const r of results) {
   console.log(
-    `${r.export.padEnd(width)}  ${String(r.gzip).padStart(6)} B gzip / ${r.budget ?? '—'} B budget  (${r.files} file${r.files === 1 ? '' : 's'})`,
+    `${r.export.padEnd(width)}  ${String(r.gzip).padStart(6)} B gzip / ${r.budget ?? '—'} B budget`,
   );
 }
 if (problems.length) {

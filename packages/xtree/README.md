@@ -2,7 +2,17 @@
 
 A comprehensive, tree-shakeable effects library for three.js: post-processing, materials and transitions.
 
-**Status: M0 (foundation).** This release candidate contains the GLSL utilities and the tested shader chunk library. The composer and effects arrive in M1. Not yet published to npm.
+**Status: M1 (vertical slice).** The effect API, the composer and five effects. Not yet published to npm.
+
+```ts
+import { EffectComposer } from '@mk7s/xtree/core';
+import { bloom } from '@mk7s/xtree/effects/bloom';
+
+const composer = new EffectComposer(renderer);
+composer.setScene(scene, camera);
+composer.add(bloom());
+renderer.setAnimationLoop(() => composer.render());
+```
 
 ```ts
 import { resolveIncludes, formatShaderError } from '@mk7s/xtree/glsl';

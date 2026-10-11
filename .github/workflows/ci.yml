@@ -82,6 +82,16 @@ jobs:
           key: holocss-${{ hashFiles('holocss.json') }}
       - run: pnpm install --frozen-lockfile
       - run: pnpm docs:build
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Site tests (contrast in every theme, demos, navigation)
+        run: pnpm test:docs
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-docs
+          path: |
+            playwright-report-docs/
+            test-results/
       - name: Upload the built site as a preview artifact
         uses: actions/upload-artifact@v4
         with:

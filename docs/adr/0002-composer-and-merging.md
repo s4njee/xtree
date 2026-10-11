@@ -1,6 +1,6 @@
 # 0002 — Composer and effect merging
 
-Status: accepted, 2026-10-11. The merge-equivalence proof (X1.4c) is an M1 exit criterion; if it fails, this record is revisited before M2.
+Status: accepted, 2026-10-11. M1 confirmed it: merged and unmerged stacks match within ΔE 1 for 99.9% of pixels, and no pixel exceeds ΔE 3. The rare larger differences are at extreme HDR edges, where the same math in different programs rounds differently (see the [M1 validation](/project/m1-validation)).
 
 ## Context
 

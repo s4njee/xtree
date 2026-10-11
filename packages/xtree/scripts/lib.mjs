@@ -52,6 +52,53 @@ export function readChunks() {
   );
 }
 
+/** Effect folders under src/effects, sorted. */
+export function readEffectIds() {
+  return readdirSync(`${packageRoot}src/effects`, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+}
+
+/** Loads a TypeScript module from source, with `.glsl` imports. */
+export async function loadSource(path) {
+  const { module: pluginModule } = await runnerImport(
+    `${packageRoot}build/glsl-plugin.ts`,
+    {
+      root: packageRoot,
+      configFile: false,
+      logLevel: 'silent',
+    },
+  );
+  const { module } = await runnerImport(`${packageRoot}${path}`, {
+    root: packageRoot,
+    configFile: false,
+    logLevel: 'silent',
+    plugins: [pluginModule.glsl({ minify: false })],
+    define: { __XTREE_VERSION__: JSON.stringify('0.0.0-tools') },
+  });
+  return module;
+}
+
+/** Loads every effect factory: [{ id, factory }]. */
+export async function loadEffects() {
+  const effects = [];
+  for (const id of readEffectIds()) {
+    const module = await loadSource(`src/effects/${id}/index.ts`);
+    const factory = Object.values(module).find(
+      (value) => typeof value === 'function' && value.definition,
+    );
+    if (!factory)
+      throw new Error(`src/effects/${id}/index.ts exports no effect factory`);
+    if (factory.definition.name !== id)
+      throw new Error(
+        `src/effects/${id} defines "${factory.definition.name}"; the folder and name must match`,
+      );
+    effects.push({ id, factory });
+  }
+  return effects;
+}
+
 /** Loads the TypeScript GLSL utilities from source. */
 export async function loadGlslTools() {
   const { module } = await runnerImport(`${packageRoot}src/glsl/index.ts`, {

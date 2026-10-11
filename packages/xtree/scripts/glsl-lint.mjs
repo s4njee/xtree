@@ -1,8 +1,20 @@
-// Lints the GLSL chunk library: conventions, documentation, includes and, when
-// glslangValidator is installed, a real GLSL ES 3.00 compile of every chunk.
+// Lints the GLSL in the package:
+// - chunks: conventions, documentation, includes;
+// - effects: every $name is declared, helpers are namespaced;
+// and, when glslangValidator is installed, compiles every chunk, every
+// effect's merged pass (each structural variant and preset, two copies merged
+// to catch name clashes) and every standalone shader as GLSL ES 3.00.
 // Set XT_REQUIRE_GLSLANG=1 (CI does) to fail when the validator is missing.
 import { execFileSync, spawnSync } from 'node:child_process';
-import { loadGlslTools, parseChunk, readChunks } from './lib.mjs';
+import { readdirSync, readFileSync } from 'node:fs';
+import {
+  loadEffects,
+  loadGlslTools,
+  loadSource,
+  packageRoot,
+  parseChunk,
+  readChunks,
+} from './lib.mjs';
 
 const chunks = readChunks();
 const ids = new Set(chunks.map((chunk) => chunk.id));
@@ -11,6 +23,29 @@ const { resolveIncludes, formatShaderError } = await loadGlslTools();
 const problems = [];
 const report = (chunk, line, message) =>
   problems.push(`${chunk.file}:${line}: ${message}`);
+
+const hasValidator =
+  spawnSync('glslangValidator', ['--version'], { encoding: 'utf8' }).status ===
+  0;
+if (!hasValidator && process.env.XT_REQUIRE_GLSLANG === '1') {
+  problems.push(
+    'glslangValidator is required (XT_REQUIRE_GLSLANG=1) but was not found on PATH',
+  );
+}
+/** Returns the validator log on failure, null on success or when the validator is missing. */
+const validate = (source) => {
+  if (!hasValidator) return null;
+  try {
+    execFileSync('glslangValidator', ['--stdin', '-S', 'frag'], {
+      input: source,
+      encoding: 'utf8',
+      stdio: 'pipe',
+    });
+    return null;
+  } catch (error) {
+    return `${error.stdout ?? ''}${error.stderr ?? ''}`;
+  }
+};
 
 const typeWords =
   /^(?:const\s+)?(?:(?:highp|mediump|lowp)\s+)?(void|bool|int|uint|float|[biu]?vec[234]|mat[234](?:x[234])?|sampler\w+|struct)\s+([A-Za-z_]\w*)/;
@@ -59,14 +94,7 @@ for (const chunk of chunks) {
       );
     seen.add(fn.name);
   }
-}
-
-const validator = spawnSync('glslangValidator', ['--version'], {
-  encoding: 'utf8',
-});
-const hasValidator = validator.status === 0;
-if (hasValidator) {
-  for (const chunk of chunks) {
+  {
     let resolved;
     try {
       resolved = resolveIncludes(`#include <${chunk.id}>`, map, {
@@ -78,25 +106,82 @@ if (hasValidator) {
     }
     const prelude =
       '#version 300 es\nprecision highp float;\nprecision highp int;\nprecision highp sampler2D;';
-    const unit = `${prelude}\n${resolved.code}\nout vec4 xt_lintOutput;\nvoid main() { xt_lintOutput = vec4(0.0); }\n`;
-    try {
-      execFileSync('glslangValidator', ['--stdin', '-S', 'frag'], {
-        input: unit,
-        encoding: 'utf8',
-        stdio: 'pipe',
-      });
-    } catch (error) {
-      const log = formatShaderError(
-        `${error.stdout ?? ''}${error.stderr ?? ''}`,
-        resolved.files,
+    const log = validate(
+      `${prelude}\n${resolved.code}\nout vec4 xt_lintOutput;\nvoid main() { xt_lintOutput = vec4(0.0); }\n`,
+    );
+    if (log)
+      problems.push(
+        `${chunk.file}: glslangValidator failed\n${formatShaderError(log, resolved.files).trim()}`,
       );
-      problems.push(`${chunk.file}: glslangValidator failed\n${log.trim()}`);
-    }
   }
-} else if (process.env.XT_REQUIRE_GLSLANG === '1') {
-  problems.push(
-    'glslangValidator is required (XT_REQUIRE_GLSLANG=1) but was not found on PATH',
-  );
+}
+
+const effects = await loadEffects();
+const { compilePass } = await loadSource('src/core/compile.ts');
+let variants = 0;
+for (const { id, factory } of effects) {
+  const { definition } = factory;
+  const folder = `src/effects/${id}`;
+  const known = new Set([
+    'main',
+    ...Object.keys(definition.params),
+    ...(definition.textures ?? []),
+  ]);
+  for (const [name, param] of Object.entries(definition.params)) {
+    if (param.kind === 'select')
+      for (const option of param.options)
+        known.add(`${name}_${option.replace(/\W+/g, '_')}`);
+  }
+  for (const [, fn] of definition.fragment.matchAll(/\b\w+\s+\$(\w+)\s*\(/g))
+    known.add(fn);
+  for (const [, used] of definition.fragment.matchAll(/\$(\w+)/g)) {
+    if (!known.has(used))
+      problems.push(
+        `${folder}: $${used} is not a parameter, texture, option constant or $function`,
+      );
+  }
+  if (/^\s*\w+\s+xt_\w+\s*\(/m.test(definition.fragment)) {
+    problems.push(
+      `${folder}: helper functions in effects must use $names so merged copies don't clash`,
+    );
+  }
+  const settings = [{}];
+  for (const [name, param] of Object.entries(definition.params)) {
+    if (!param.structural) continue;
+    const values =
+      param.kind === 'select'
+        ? param.options
+        : param.kind === 'bool'
+          ? [true, false]
+          : [param.min, param.max];
+    for (const value of values) settings.push({ [name]: value });
+  }
+  for (const preset of Object.keys(definition.presets ?? {}))
+    settings.push({ preset });
+  for (const setting of settings) {
+    const pass = compilePass([factory(setting), factory(setting)], {
+      toneMapping: 'aces',
+      colorSpace: 'srgb',
+      dither: true,
+    });
+    variants++;
+    const log = validate(`#version 300 es\n${pass.fragment}`);
+    if (log)
+      problems.push(
+        `${folder} ${JSON.stringify(setting)}: glslangValidator failed\n${formatShaderError(log, pass.files).trim()}`,
+      );
+  }
+  for (const file of readdirSync(`${packageRoot}${folder}`).filter((f) =>
+    f.endsWith('.glsl'),
+  )) {
+    const source = readFileSync(`${packageRoot}${folder}/${file}`, 'utf8');
+    if (!/void\s+main\s*\(/.test(source)) continue;
+    const log = validate(`#version 300 es\n${source}`);
+    if (log)
+      problems.push(
+        `${folder}/${file}: glslangValidator failed\n${log.trim()}`,
+      );
+  }
 }
 
 if (problems.length) {
@@ -104,5 +189,9 @@ if (problems.length) {
   process.exit(1);
 }
 console.log(
-  `GLSL lint: ${chunks.length} chunks pass${hasValidator ? ' (compiled with glslangValidator)' : ' (glslangValidator not installed; compile step skipped)'}.`,
+  `GLSL lint: ${chunks.length} chunks and ${effects.length} effects (${variants} merged variants) pass${
+    hasValidator
+      ? ', compiled with glslangValidator'
+      : '; glslangValidator is not installed, so nothing was compiled'
+  }.`,
 );

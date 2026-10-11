@@ -9,6 +9,10 @@ const pkg = JSON.parse(
   exports: Record<string, string | { import: string }>;
 };
 
+// Only the composer entry may load the three.js peer; effects and shader
+// entries must stay importable without it (ADR 0004).
+const mayLoadThree = new Set(['./core']);
+
 // A resolve hook that fails any attempt to load the three.js peer.
 const hook = `data:text/javascript,${encodeURIComponent(`
 export async function resolve(specifier, context, next) {
@@ -27,10 +31,11 @@ describe('Node imports', () => {
 
   for (const [key, target] of entries) {
     const file = typeof target === 'string' ? target : target.import;
-    it(`imports ${key} without a DOM or the three peer`, () => {
+    const allowThree = mayLoadThree.has(key);
+    it(`imports ${key} without a DOM${allowThree ? '' : ' or the three peer'}`, () => {
       const script = `
         import { register } from 'node:module';
-        register(${JSON.stringify(hook)});
+        ${allowThree ? '' : `register(${JSON.stringify(hook)});`}
         await import(${JSON.stringify(new URL(file, packageRoot).href)});
         if (typeof document !== 'undefined' || typeof window !== 'undefined') throw new Error('touched a DOM global');
       `;

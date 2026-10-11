@@ -11,3 +11,4 @@ docs/.vitepress/dist/
 .DS_Store
 packages/xtree/LICENSE
 packages/xtree/THIRD_PARTY_NOTICES.md
+playwright-report-docs/

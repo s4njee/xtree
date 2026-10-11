@@ -4,7 +4,8 @@
  * backdrop and `blend` is the source. Modes defined only for [0, 1] (the
  * dodges, burns, light modes, hard mix and divide) clamp their result to
  * [0, 1]. Normal, multiply, add, lighten, darken, difference and the
- * non-separable modes pass HDR values through.
+ * non-separable modes pass HDR values through, and screen is extended so it
+ * never darkens values above 1.
  */
 
 #define XT_BLEND_NORMAL 0
@@ -61,9 +62,9 @@ vec3 xt_blendLighten(vec3 base, vec3 blend) {
   return max(base, blend);
 }
 
-/// Screen.
+/// Screen. The product term is clamped to [0, 1] per input, so HDR values never darken.
 vec3 xt_blendScreen(vec3 base, vec3 blend) {
-  return base + blend - base * blend;
+  return base + blend - min(base, 1.0) * min(blend, 1.0);
 }
 
 /// Color dodge (W3C).
