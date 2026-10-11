@@ -19,3 +19,4 @@ export {
   type StackItem,
 } from './plan.js';
 export { Fullscreen } from './fullscreen.js';
+export { createSampleTexture } from './textures.js';

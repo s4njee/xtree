@@ -3,6 +3,34 @@
     "text": "Color & tone",
     "items": [
       {
+        "text": "Brightness & contrast",
+        "link": "/effects/brightness-contrast"
+      },
+      {
+        "text": "Exposure & gamma",
+        "link": "/effects/exposure-gamma"
+      },
+      {
+        "text": "Gradient map",
+        "link": "/effects/gradient-map"
+      },
+      {
+        "text": "Hue / saturation",
+        "link": "/effects/hue-saturation"
+      },
+      {
+        "text": "Invert / threshold",
+        "link": "/effects/invert-threshold"
+      },
+      {
+        "text": "LUT color grading",
+        "link": "/effects/lut"
+      },
+      {
+        "text": "Monochrome",
+        "link": "/effects/monochrome"
+      },
+      {
         "text": "Vignette",
         "link": "/effects/vignette"
       }

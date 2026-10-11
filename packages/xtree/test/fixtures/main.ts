@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 // GPU fixture page. Tests call window.xt to render effect stacks into a fixed
 // 320x180 canvas and read the pixels back.
 import { createStudio } from '@xtree/scenes';
@@ -20,22 +21,30 @@ import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { EffectComposer, EffectPass } from '../../src/core/index.js';
 import { defineEffect, type Effect } from '../../src/effect/index.js';
-import { bloom } from '../../src/effects/bloom/index.js';
-import { chromaticAberration } from '../../src/effects/chromatic-aberration/index.js';
-import { holographicFoil } from '../../src/effects/holographic-foil/index.js';
-import { rgbSplitGlitch } from '../../src/effects/rgb-split-glitch/index.js';
-import { vignette } from '../../src/effects/vignette/index.js';
+import { createSampleTexture } from '../../src/core/index.js';
+import type { EffectFactory, ParamSchema } from '../../src/effect/index.js';
 
-export const factories = {
-  vignette,
-  'chromatic-aberration': chromaticAberration,
-  bloom,
-  'rgb-split-glitch': rgbSplitGlitch,
-  'holographic-foil': holographicFoil,
-} as const;
+// Every effect folder, discovered at build time.
+const modules = import.meta.glob<Record<string, unknown>>(
+  '../../src/effects/*/index.ts',
+  { eager: true },
+);
+export const factories: Record<
+  string,
+  EffectFactory<ParamSchema>
+> = Object.fromEntries(
+  Object.values(modules).flatMap((module) =>
+    Object.values(module)
+      .filter(
+        (value): value is EffectFactory<ParamSchema> =>
+          typeof value === 'function' && 'definition' in value,
+      )
+      .map((factory) => [factory.definition.name, factory]),
+  ),
+);
 
 export interface EffectSpec {
-  id: keyof typeof factories;
+  id: string;
   preset?: string;
   params?: Record<string, unknown>;
   blend?: string;
@@ -90,9 +99,9 @@ function configure(spec: RenderSpec) {
 
 function createEffects(specs: EffectSpec[] = []): Effect[] {
   return specs.map((spec) => {
-    const factory = factories[spec.id] as unknown as (
-      options: Record<string, unknown>,
-    ) => Effect;
+    const factory = factories[spec.id] as unknown as
+      ((options: Record<string, unknown>) => Effect) | undefined;
+    if (!factory) throw new Error(`unknown effect ${spec.id}`);
     return factory({
       ...(spec.preset ? { preset: spec.preset } : {}),
       ...(spec.params ?? {}),
@@ -147,8 +156,8 @@ function withComposer<T>(
 
 const xt = {
   factories: Object.keys(factories),
-  presets(id: keyof typeof factories) {
-    return Object.keys(factories[id].definition.presets ?? {});
+  presets(id: string) {
+    return Object.keys(factories[id]?.definition.presets ?? {});
   },
   /** Renders a stack with the xtree composer. */
   render(spec: RenderSpec) {
@@ -174,6 +183,28 @@ const xt = {
       target.dispose();
       return { pixels: Array.from(data), passes: composer.passes.length };
     });
+  },
+  /** Renders an effect whose texture parameter is a texture built from `lut` data (for checking LUT layout). */
+  renderLutData(spec: RenderSpec & { size: number; data: number[] }) {
+    const texture = createSampleTexture({
+      kind: 'data3d',
+      size: spec.size,
+      data: new Float32Array(spec.data),
+    });
+    try {
+      return withComposer(
+        {
+          ...spec,
+          effects: [{ id: 'lut', params: { lut: texture as never } }],
+        },
+        (composer) => {
+          composer.render(0);
+          return snapshot();
+        },
+      );
+    } finally {
+      texture.dispose();
+    }
   },
   /** Renders the scene straight to the canvas, without a composer. */
   renderPlain(spec: RenderSpec) {

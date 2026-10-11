@@ -25,6 +25,8 @@ export {
   int,
   labelFor,
   select,
+  samplerType,
+  texture,
   validateParam,
   vec2,
   vec3,
@@ -38,6 +40,9 @@ export {
   type ParamValue,
   type ParamValues,
   type SelectParam,
+  type SampleTexture,
+  type TextureLike,
+  type TextureParam,
   type Vec2Param,
   type Vec3Param,
 } from './params.js';

@@ -159,6 +159,57 @@
         "Thin-foil iridescence approximated with hue bands over view angle",
         "HoloCSS design language (s4njee/holocss)"
       ]
+    },
+    {
+      "id": "effects/brightness-contrast",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Standard brightness, contrast and saturation adjustments on display-encoded values",
+        "Vibrance as saturation weighted by inverse chroma"
+      ]
+    },
+    {
+      "id": "effects/hue-saturation",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Ottosson, OKLab/OKLCH (via xtree/color/space)"]
+    },
+    {
+      "id": "effects/exposure-gamma",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Photographic exposure in stops; power-law gamma"]
+    },
+    {
+      "id": "effects/monochrome",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Rec. 709 luma",
+        "Widely published sepia tone matrix (0.393/0.769/0.189 \u2026)"
+      ]
+    },
+    {
+      "id": "effects/gradient-map",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Three-stop gradient indexed by Rec. 709 luma"]
+    },
+    {
+      "id": "effects/invert-threshold",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Photographic negative and smoothstep threshold"]
+    },
+    {
+      "id": "effects/lut",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Adobe Cube LUT Specification 1.0",
+        "Kasson, Nin, Plouffe and Hafner, Performing color space conversions with three-dimensional linear interpolation, J. Electronic Imaging, 1995 (tetrahedral interpolation)"
+      ]
     }
   ]
 }

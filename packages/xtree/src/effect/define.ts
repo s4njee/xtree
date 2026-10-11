@@ -8,6 +8,8 @@ import {
   type ParamSchema,
   type ParamValue,
   type ParamValues,
+  type SampleTexture,
+  type TextureLike,
 } from './params.js';
 
 /** Effect families, matching the catalogue in plan.md. */
@@ -172,6 +174,7 @@ const reserved = new Set([
   'structuralValues',
   'onDispose',
   'dispose',
+  'resolveSamples',
 ]);
 
 let nextId = 1;
@@ -192,6 +195,7 @@ export class Effect<S extends ParamSchema = ParamSchema> {
   #motion = true;
   #disposed = false;
   #disposers: (() => void)[] = [];
+  #samples = new Map<string, TextureLike & { dispose(): void }>();
 
   constructor(
     definition: EffectDefinition<S>,
@@ -288,10 +292,38 @@ export class Effect<S extends ParamSchema = ParamSchema> {
         ? Object.freeze([...value])
         : value;
       if (param.structural && !sameValue(previous, value)) this.#version++;
+      // A texture parameter's presence ($has_<name>) is compiled in.
+      if (param.kind === 'texture' && (previous === null) !== (value === null))
+        this.#version++;
       if (!this.#settled(name))
         this.uniforms[name]!.value = toUniformValue(param, value);
     }
     return this;
+  }
+
+  /**
+   * Fills texture uniforms whose value is a sample name, creating each sample
+   * once with `create` (the composer passes a three.js factory). Created
+   * textures belong to the effect and are disposed with it.
+   */
+  resolveSamples(
+    create: (sample: SampleTexture) => TextureLike & { dispose(): void },
+  ): void {
+    for (const [name, param] of Object.entries(this.definition.params) as [
+      string,
+      Param,
+    ][]) {
+      if (param.kind !== 'texture') continue;
+      const value = this.#values[name];
+      if (typeof value !== 'string') continue;
+      const key = `${name}:${value}`;
+      let texture = this.#samples.get(key);
+      if (!texture) {
+        texture = create(param.samples![value]!());
+        this.#samples.set(key, texture);
+      }
+      this.uniforms[name]!.value = texture;
+    }
   }
 
   /** Restores every parameter to its default. */
@@ -322,8 +354,14 @@ export class Effect<S extends ParamSchema = ParamSchema> {
     return out as Partial<ParamValues<S>>;
   }
 
+  /** Serializable state. Texture objects are left out; sample names are kept. */
   toJSON(): EffectJSON {
-    const params = this.changed();
+    const params = Object.fromEntries(
+      Object.entries(this.changed()).filter(
+        ([, value]) =>
+          typeof value !== 'object' || value === null || Array.isArray(value),
+      ),
+    );
     return {
       effect: this.name,
       ...(Object.keys(params).length ? { params } : {}),
@@ -362,11 +400,15 @@ export class Effect<S extends ParamSchema = ParamSchema> {
       string,
       Param,
     ][]) {
+      if (param.kind === 'texture') {
+        out[`has_${name}`] = this.#values[name] !== null;
+        continue;
+      }
       if (!param.structural) continue;
       const settle = this.#settled(name)
         ? (this.#settleValues() as Record<string, unknown>)[name]
         : this.#values[name];
-      out[name] = toUniformValue(param, settle);
+      out[name] = toUniformValue(param, settle) as number | boolean | number[];
     }
     return out;
   }
@@ -382,6 +424,8 @@ export class Effect<S extends ParamSchema = ParamSchema> {
     this.#disposed = true;
     this.resources?.dispose();
     this.resources = null;
+    for (const texture of this.#samples.values()) texture.dispose();
+    this.#samples.clear();
     for (const dispose of this.#disposers.splice(0)) dispose();
   }
 

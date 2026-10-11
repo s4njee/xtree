@@ -51,8 +51,14 @@ for (const [key, target] of Object.entries(pkg.exports)) {
     gzip,
     budget: budget ?? null,
   });
-  if (budget === undefined)
-    problems.push(`${key}: no budget in size-budgets.json`);
+  if (budget === undefined && process.argv.includes('--add-missing')) {
+    // New exports start with 12% headroom, rounded up to 64 bytes.
+    budgets[key] = Math.ceil((gzip * 1.12) / 64) * 64;
+    results.at(-1).budget = budgets[key];
+  } else if (budget === undefined)
+    problems.push(
+      `${key}: no budget in size-budgets.json (run \`pnpm size --add-missing\`)`,
+    );
   else if (gzip > budget)
     problems.push(`${key}: ${gzip} B gzip is over its ${budget} B budget`);
 }
@@ -61,6 +67,12 @@ for (const key of Object.keys(budgets)) {
     problems.push(`size-budgets.json: ${key} is not a package export`);
 }
 
+if (process.argv.includes('--add-missing')) {
+  writeFileSync(
+    `${packageRoot}size-budgets.json`,
+    `${JSON.stringify(budgets, null, 2)}\n`,
+  );
+}
 mkdirSync(`${repoRoot}artifacts`, { recursive: true });
 writeFileSync(
   `${repoRoot}artifacts/size.json`,

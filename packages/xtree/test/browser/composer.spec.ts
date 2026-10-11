@@ -209,3 +209,44 @@ test('the composer recovers from a lost WebGL context', async ({ page }) => {
   test.skip(!result.supported, 'WEBGL_lose_context is unavailable');
   expect(result.lit).toBeGreaterThan(1000);
 });
+
+test.describe('LUT', () => {
+  test('an identity LUT changes nothing', async ({ page }) => {
+    const plain = await page.evaluate(() =>
+      window.xt.render({ toneMapping: 'none' }),
+    );
+    const identity = await page.evaluate(() =>
+      window.xt.render({
+        toneMapping: 'none',
+        effects: [{ id: 'lut', params: { lut: 'identity' } }],
+      }),
+    );
+    expect(diff(identity.pixels, plain.pixels).over2).toBeLessThan(0.001);
+  });
+
+  test('texels are red-fastest and interpolation is exact for linear maps', async ({
+    page,
+  }) => {
+    // A LUT that maps (r, g, b) to (g, b, r) must permute the output channels.
+    const size = 17;
+    const data: number[] = [];
+    for (let b = 0; b < size; b++)
+      for (let g = 0; g < size; g++)
+        for (let r = 0; r < size; r++)
+          data.push(g / (size - 1), b / (size - 1), r / (size - 1), 1);
+    const plain = await page.evaluate(() =>
+      window.xt.render({ toneMapping: 'none' }),
+    );
+    const swapped = await page.evaluate(
+      (args) => window.xt.renderLutData({ toneMapping: 'none', ...args }),
+      { size, data },
+    );
+    const expected = plain.pixels.map((_, i) => {
+      const channel = i % 4;
+      return channel === 3
+        ? plain.pixels[i]!
+        : plain.pixels[i - channel + ((channel + 1) % 3)]!;
+    });
+    expect(diff(swapped.pixels, expected).over2).toBeLessThan(0.001);
+  });
+});

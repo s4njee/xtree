@@ -18,6 +18,7 @@ import type { ParamSchema } from '../effect/params.js';
 import { formatShaderError } from '../glsl/index.js';
 import { compilePass, passSignature, type OutputStage } from './compile.js';
 import { Fullscreen } from './fullscreen.js';
+import { createSampleTexture } from './textures.js';
 
 /** Source-string tables of live passes, for mapping compile errors (see EffectComposer). */
 export const passFiles = new Map<number, readonly string[]>();
@@ -129,8 +130,10 @@ export class EffectPass {
       width: this.#width,
       height: this.#height,
     };
-    for (const effect of this.effects)
+    for (const effect of this.effects) {
+      effect.resolveSamples(createSampleTexture);
       this.#prepare(effect, renderer, readBuffer.texture, frame);
+    }
     const globals = this.#globals;
     globals.xt_inputBuffer.value = readBuffer.texture;
     globals.xt_time.value = this.time;

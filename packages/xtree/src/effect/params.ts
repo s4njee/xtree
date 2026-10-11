@@ -47,6 +47,44 @@ export interface SelectParam<O extends string = string> extends BaseParam<
   readonly optionLabels?: Partial<Record<O, string>>;
 }
 
+/**
+ * Plain data for a texture an effect can build on demand, so effect modules
+ * can ship sample textures without importing three.js. The composer turns it
+ * into a `DataTexture` or `Data3DTexture`.
+ */
+export type SampleTexture =
+  | {
+      readonly kind: 'data2d';
+      readonly width: number;
+      readonly height: number;
+      /** RGBA, rows from the bottom. Float data makes a float texture. */
+      readonly data: Float32Array | Uint8Array;
+      readonly filter?: 'linear' | 'nearest';
+      readonly wrap?: 'repeat' | 'clamp';
+    }
+  | {
+      readonly kind: 'data3d';
+      /** Edge length: the texture is size³ texels, RGBA, red varying fastest. */
+      readonly size: number;
+      readonly data: Float32Array;
+    };
+
+/** Anything three.js treats as a texture (checked by its `isTexture` flag). */
+export interface TextureLike {
+  readonly isTexture: true;
+}
+
+/**
+ * A texture parameter. Its value is a three.js texture, `null`, or the name
+ * of one of the effect's built-in samples. The compiler also defines
+ * `$has_<name>` (true when a texture is set).
+ */
+export interface TextureParam extends BaseParam<'texture', string | null> {
+  readonly dimension: '2d' | '3d';
+  /** Built-in samples by name, created on first use. */
+  readonly samples?: Readonly<Record<string, () => SampleTexture>>;
+}
+
 export type Param =
   | FloatParam
   | IntParam
@@ -54,7 +92,8 @@ export type Param =
   | ColorParam
   | Vec2Param
   | Vec3Param
-  | SelectParam;
+  | SelectParam
+  | TextureParam;
 export type ParamSchema = Readonly<Record<string, Param>>;
 export type ParamKind = Param['kind'];
 
@@ -62,15 +101,17 @@ export type ParamKind = Param['kind'];
 export type ParamValue<P extends Param> =
   P extends SelectParam<infer O>
     ? O
-    : P extends BoolParam
-      ? boolean
-      : P extends ColorParam
-        ? string
-        : P extends Vec2Param
-          ? readonly [number, number]
-          : P extends Vec3Param
-            ? readonly [number, number, number]
-            : number;
+    : P extends TextureParam
+      ? TextureLike | string | null
+      : P extends BoolParam
+        ? boolean
+        : P extends ColorParam
+          ? string
+          : P extends Vec2Param
+            ? readonly [number, number]
+            : P extends Vec3Param
+              ? readonly [number, number, number]
+              : number;
 
 /** Values for a whole schema. */
 export type ParamValues<S extends ParamSchema> = {
@@ -103,6 +144,15 @@ export const vec3 = (options: Options<Vec3Param>): Vec3Param => ({
   kind: 'vec3',
   ...options,
 });
+export const texture = (
+  options: Omit<TextureParam, 'kind' | 'default'> & {
+    readonly default?: string | null;
+  },
+): TextureParam => ({
+  kind: 'texture',
+  ...options,
+  default: options.default ?? null,
+});
 export const select = <const O extends string>(
   options: Omit<SelectParam<O>, 'kind' | 'default'> & {
     readonly default: NoInfer<O>;
@@ -118,7 +168,12 @@ export const glslTypes: Readonly<Record<ParamKind, string>> = {
   vec2: 'vec2',
   vec3: 'vec3',
   select: 'int',
+  texture: 'sampler2D',
 };
+
+/** GLSL sampler type of a texture parameter. */
+export const samplerType = (param: TextureParam): string =>
+  param.dimension === '3d' ? 'sampler3D' : 'sampler2D';
 
 const hexPattern = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
@@ -191,6 +246,23 @@ export function validateParam(
           `expected one of ${param.options.join(', ')}, got ${String(value)}`,
         );
       return;
+    case 'texture':
+      if (value === null) return;
+      if (typeof value === 'string') {
+        if (!param.samples || !(value in param.samples)) {
+          fail(
+            `unknown sample "${value}"${param.samples ? `; samples are ${Object.keys(param.samples).join(', ')}` : ''}`,
+          );
+        }
+        return;
+      }
+      if (
+        typeof value !== 'object' ||
+        (value as Partial<TextureLike>).isTexture !== true
+      ) {
+        fail('expected a three.js texture, a sample name or null');
+      }
+      return;
   }
 }
 
@@ -198,8 +270,11 @@ export function validateParam(
 export function toUniformValue(
   param: Param,
   value: unknown,
-): number | boolean | number[] {
+): number | boolean | number[] | TextureLike | null {
   switch (param.kind) {
+    case 'texture':
+      // Sample names resolve later, in the composer.
+      return typeof value === 'object' ? (value as TextureLike | null) : null;
     case 'color':
       return hexToLinear(value as string);
     case 'vec2':

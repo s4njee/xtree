@@ -1,5 +1,7 @@
-/** Library entry points: output name (without .js) to source file. Keep in sync with package.json "exports". */
-export const entries = {
+import { readdirSync } from 'node:fs';
+
+/** Fixed library entry points: output name (without .js) to source file. */
+const fixed = {
   index: 'src/index.ts',
   'glsl/index': 'src/glsl/index.ts',
   'shaders/index': 'src/shaders/index.ts',
@@ -8,10 +10,19 @@ export const entries = {
   'shaders/blend/index': 'src/shaders/blend/index.ts',
   'effect/index': 'src/effect/index.ts',
   'core/index': 'src/core/index.ts',
-  'effects/vignette/index': 'src/effects/vignette/index.ts',
-  'effects/chromatic-aberration/index':
-    'src/effects/chromatic-aberration/index.ts',
-  'effects/bloom/index': 'src/effects/bloom/index.ts',
-  'effects/rgb-split-glitch/index': 'src/effects/rgb-split-glitch/index.ts',
-  'effects/holographic-foil/index': 'src/effects/holographic-foil/index.ts',
 } as const;
+
+/** Every folder in src/effects is an entry, `@mk7s/xtree/effects/<id>`. */
+const effects = Object.fromEntries(
+  readdirSync(new URL('../src/effects/', import.meta.url), {
+    withFileTypes: true,
+  })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => [
+      `effects/${entry.name}/index`,
+      `src/effects/${entry.name}/index.ts`,
+    ]),
+);
+
+/** Keep package.json "exports" in sync with `pnpm exports`. */
+export const entries: Record<string, string> = { ...fixed, ...effects };

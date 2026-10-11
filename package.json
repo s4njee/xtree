@@ -24,10 +24,11 @@
     "docs:preview": "pnpm --filter xtree-docs preview",
     "changeset": "changeset",
     "release:dry": "node scripts/release-dry.mjs",
-    "check": "pnpm format:check && pnpm lint && pnpm glsl:lint && pnpm credits && pnpm typecheck && pnpm build && pnpm size && pnpm chunks --check && pnpm shaders:docs --check && pnpm effects:docs --check && pnpm test",
+    "check": "pnpm format:check && pnpm lint && pnpm glsl:lint && pnpm credits && pnpm exports --check && pnpm typecheck && pnpm build && pnpm size && pnpm chunks --check && pnpm shaders:docs --check && pnpm effects:docs --check && pnpm test",
     "chunks": "pnpm --filter @mk7s/xtree chunks",
     "effects:docs": "pnpm --filter @mk7s/xtree effects:docs",
-    "test:docs": "playwright test --config playwright.docs.config.ts"
+    "test:docs": "playwright test --config playwright.docs.config.ts",
+    "exports": "pnpm --filter @mk7s/xtree exports"
   },
   "devDependencies": {
     "@changesets/cli": "3.0.3",

@@ -11,5 +11,12 @@
   "./effects/chromatic-aberration": 4160,
   "./effects/bloom": 5376,
   "./effects/rgb-split-glitch": 4608,
-  "./effects/holographic-foil": 7616
+  "./effects/holographic-foil": 7616,
+  "./effects/brightness-contrast": 5568,
+  "./effects/exposure-gamma": 3904,
+  "./effects/gradient-map": 5568,
+  "./effects/hue-saturation": 5632,
+  "./effects/invert-threshold": 5568,
+  "./effects/lut": 7040,
+  "./effects/monochrome": 5504
 }

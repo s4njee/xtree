@@ -131,6 +131,7 @@ for (const { id, factory } of effects) {
     if (param.kind === 'select')
       for (const option of param.options)
         known.add(`${name}_${option.replace(/\W+/g, '_')}`);
+    if (param.kind === 'texture') known.add(`has_${name}`);
   }
   for (const [, fn] of definition.fragment.matchAll(/\b\w+\s+\$(\w+)\s*\(/g))
     known.add(fn);
@@ -147,6 +148,10 @@ for (const { id, factory } of effects) {
   }
   const settings = [{}];
   for (const [name, param] of Object.entries(definition.params)) {
+    if (param.kind === 'texture') {
+      settings.push({ [name]: null });
+      continue;
+    }
     if (!param.structural) continue;
     const values =
       param.kind === 'select'

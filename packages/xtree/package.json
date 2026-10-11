@@ -22,9 +22,73 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js"
+    },
+    "./effect": {
+      "types": "./dist/effect/index.d.ts",
+      "import": "./dist/effect/index.js"
+    },
+    "./effects/bloom": {
+      "types": "./dist/effects/bloom/index.d.ts",
+      "import": "./dist/effects/bloom/index.js"
+    },
+    "./effects/brightness-contrast": {
+      "types": "./dist/effects/brightness-contrast/index.d.ts",
+      "import": "./dist/effects/brightness-contrast/index.js"
+    },
+    "./effects/chromatic-aberration": {
+      "types": "./dist/effects/chromatic-aberration/index.d.ts",
+      "import": "./dist/effects/chromatic-aberration/index.js"
+    },
+    "./effects/exposure-gamma": {
+      "types": "./dist/effects/exposure-gamma/index.d.ts",
+      "import": "./dist/effects/exposure-gamma/index.js"
+    },
+    "./effects/gradient-map": {
+      "types": "./dist/effects/gradient-map/index.d.ts",
+      "import": "./dist/effects/gradient-map/index.js"
+    },
+    "./effects/holographic-foil": {
+      "types": "./dist/effects/holographic-foil/index.d.ts",
+      "import": "./dist/effects/holographic-foil/index.js"
+    },
+    "./effects/hue-saturation": {
+      "types": "./dist/effects/hue-saturation/index.d.ts",
+      "import": "./dist/effects/hue-saturation/index.js"
+    },
+    "./effects/invert-threshold": {
+      "types": "./dist/effects/invert-threshold/index.d.ts",
+      "import": "./dist/effects/invert-threshold/index.js"
+    },
+    "./effects/lut": {
+      "types": "./dist/effects/lut/index.d.ts",
+      "import": "./dist/effects/lut/index.js"
+    },
+    "./effects/monochrome": {
+      "types": "./dist/effects/monochrome/index.d.ts",
+      "import": "./dist/effects/monochrome/index.js"
+    },
+    "./effects/rgb-split-glitch": {
+      "types": "./dist/effects/rgb-split-glitch/index.d.ts",
+      "import": "./dist/effects/rgb-split-glitch/index.js"
+    },
+    "./effects/vignette": {
+      "types": "./dist/effects/vignette/index.d.ts",
+      "import": "./dist/effects/vignette/index.js"
+    },
     "./glsl": {
       "types": "./dist/glsl/index.d.ts",
       "import": "./dist/glsl/index.js"
+    },
+    "./shaders/blend": {
+      "types": "./dist/shaders/blend/index.d.ts",
+      "import": "./dist/shaders/blend/index.js"
+    },
+    "./shaders/color": {
+      "types": "./dist/shaders/color/index.d.ts",
+      "import": "./dist/shaders/color/index.js"
     },
     "./shaders": {
       "types": "./dist/shaders/index.d.ts",
@@ -33,42 +97,6 @@
     "./shaders/noise": {
       "types": "./dist/shaders/noise/index.d.ts",
       "import": "./dist/shaders/noise/index.js"
-    },
-    "./shaders/color": {
-      "types": "./dist/shaders/color/index.d.ts",
-      "import": "./dist/shaders/color/index.js"
-    },
-    "./shaders/blend": {
-      "types": "./dist/shaders/blend/index.d.ts",
-      "import": "./dist/shaders/blend/index.js"
-    },
-    "./effect": {
-      "types": "./dist/effect/index.d.ts",
-      "import": "./dist/effect/index.js"
-    },
-    "./core": {
-      "types": "./dist/core/index.d.ts",
-      "import": "./dist/core/index.js"
-    },
-    "./effects/vignette": {
-      "types": "./dist/effects/vignette/index.d.ts",
-      "import": "./dist/effects/vignette/index.js"
-    },
-    "./effects/chromatic-aberration": {
-      "types": "./dist/effects/chromatic-aberration/index.d.ts",
-      "import": "./dist/effects/chromatic-aberration/index.js"
-    },
-    "./effects/bloom": {
-      "types": "./dist/effects/bloom/index.d.ts",
-      "import": "./dist/effects/bloom/index.js"
-    },
-    "./effects/rgb-split-glitch": {
-      "types": "./dist/effects/rgb-split-glitch/index.d.ts",
-      "import": "./dist/effects/rgb-split-glitch/index.js"
-    },
-    "./effects/holographic-foil": {
-      "types": "./dist/effects/holographic-foil/index.d.ts",
-      "import": "./dist/effects/holographic-foil/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -86,7 +114,8 @@
     "prepack": "node build/copy-legal.mjs",
     "fixtures": "vite --config test/fixtures/vite.config.ts",
     "chunks": "node scripts/chunk-maps.mjs",
-    "effects:docs": "node scripts/effect-docs.mjs"
+    "effects:docs": "node scripts/effect-docs.mjs",
+    "exports": "node scripts/exports.mjs"
   },
   "peerDependencies": {
     "three": ">=0.180.0 <0.187.0"

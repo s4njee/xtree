@@ -19,7 +19,7 @@ import { effectLoaders } from './effect-registry';
 const props = defineProps<{ effect: string }>();
 
 type Definition = EffectFactory<ParamSchema>['definition'];
-type Value = number | boolean | string | readonly number[];
+type Value = number | boolean | string | null | readonly number[];
 
 const root = ref<HTMLElement>();
 const stage = ref<HTMLElement>();
@@ -58,6 +58,7 @@ function sameValue(a: unknown, b: unknown): boolean {
 }
 
 function literal(value: Value): string {
+  if (value === null) return 'null';
   if (typeof value === 'number') return String(Number(value.toFixed(4)));
   if (typeof value === 'string') return `'${value}'`;
   if (Array.isArray(value))
@@ -496,6 +497,30 @@ onBeforeUnmount(() => teardown?.());
               </option>
             </select>
           </template>
+          <p class="hcss-description">{{ param.description }}</p>
+        </div>
+
+        <div v-else-if="param.kind === 'texture'" class="hcss-field">
+          <label class="hcss-label" :for="fieldId(name)">{{
+            labelFor(name, param)
+          }}</label>
+          <select
+            :id="fieldId(name)"
+            class="hcss-select"
+            :value="values[name] ?? ''"
+            @change="
+              setParam(name, ($event.target as HTMLSelectElement).value || null)
+            "
+          >
+            <option value="">None</option>
+            <option
+              v-for="sample in Object.keys(param.samples ?? {})"
+              :key="sample"
+              :value="sample"
+            >
+              {{ labelFor(sample) }}
+            </option>
+          </select>
           <p class="hcss-description">{{ param.description }}</p>
         </div>
 

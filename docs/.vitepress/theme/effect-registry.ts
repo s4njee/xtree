@@ -10,13 +10,41 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/bloom').then(
       (m) => m.bloom as unknown as EffectFactory<ParamSchema>,
     ),
+  'brightness-contrast': () =>
+    import('@mk7s/xtree/effects/brightness-contrast').then(
+      (m) => m.brightnessContrast as unknown as EffectFactory<ParamSchema>,
+    ),
   'chromatic-aberration': () =>
     import('@mk7s/xtree/effects/chromatic-aberration').then(
       (m) => m.chromaticAberration as unknown as EffectFactory<ParamSchema>,
     ),
+  'exposure-gamma': () =>
+    import('@mk7s/xtree/effects/exposure-gamma').then(
+      (m) => m.exposureGamma as unknown as EffectFactory<ParamSchema>,
+    ),
+  'gradient-map': () =>
+    import('@mk7s/xtree/effects/gradient-map').then(
+      (m) => m.gradientMap as unknown as EffectFactory<ParamSchema>,
+    ),
   'holographic-foil': () =>
     import('@mk7s/xtree/effects/holographic-foil').then(
       (m) => m.holographicFoil as unknown as EffectFactory<ParamSchema>,
+    ),
+  'hue-saturation': () =>
+    import('@mk7s/xtree/effects/hue-saturation').then(
+      (m) => m.hueSaturation as unknown as EffectFactory<ParamSchema>,
+    ),
+  'invert-threshold': () =>
+    import('@mk7s/xtree/effects/invert-threshold').then(
+      (m) => m.invertThreshold as unknown as EffectFactory<ParamSchema>,
+    ),
+  lut: () =>
+    import('@mk7s/xtree/effects/lut').then(
+      (m) => m.lut as unknown as EffectFactory<ParamSchema>,
+    ),
+  monochrome: () =>
+    import('@mk7s/xtree/effects/monochrome').then(
+      (m) => m.monochrome as unknown as EffectFactory<ParamSchema>,
     ),
   'rgb-split-glitch': () =>
     import('@mk7s/xtree/effects/rgb-split-glitch').then(

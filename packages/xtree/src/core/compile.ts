@@ -5,7 +5,7 @@
 import { resolveIncludes, type ChunkMap } from '../glsl/index.js';
 import type { Effect } from '../effect/define.js';
 import { fullscreenVertex } from '../effect/fullscreen-vertex.js';
-import { glslTypes, type Param } from '../effect/params.js';
+import { glslTypes, samplerType, type Param } from '../effect/params.js';
 import { blendModes } from '../shaders/blend/constants.js';
 import {
   blendModesChunks,
@@ -108,6 +108,7 @@ export function compilePass(
     'precision highp float;',
     'precision highp int;',
     'precision highp sampler2D;',
+    'precision highp sampler3D;',
     'uniform sampler2D xt_inputBuffer;',
     'uniform vec2 xt_resolution;',
     'uniform vec2 xt_texel;',
@@ -148,7 +149,13 @@ export function compilePass(
           lines.push(`#define ${prefix}${name}_${identifier(option)} ${i}`),
         );
       }
-      if (param.structural) {
+      if (param.kind === 'texture') {
+        lines.push(
+          `uniform ${samplerType(param)} ${prefix}${name};`,
+          `#define ${prefix}has_${name} ${structural[`has_${name}`] ? 1 : 0}`,
+        );
+        uniforms[prefix + name] = effect.uniforms[name]!;
+      } else if (param.structural) {
         lines.push(
           `#define ${prefix}${name} ${literal(param, structural[name]!)}`,
         );

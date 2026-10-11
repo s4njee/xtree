@@ -29,6 +29,8 @@ const escape = (text) => String(text).replace(/\|/g, '\\|');
 
 function formatValue(param, value) {
   switch (param.kind) {
+    case 'texture':
+      return value === null ? 'null' : `'${value}'`;
     case 'vec2':
     case 'vec3':
       return `[${value.join(', ')}]`;
@@ -46,6 +48,14 @@ function typeOf(param) {
       return param.options.map((o) => `'${o}'`).join(' \\| ');
     case 'color':
       return 'hex color';
+    case 'texture':
+      return `${param.dimension.toUpperCase()} texture${
+        param.samples
+          ? ` or ${Object.keys(param.samples)
+              .map((n) => `'${n}'`)
+              .join(' \\| ')}`
+          : ''
+      }`;
     case 'vec2':
       return '[x, y]';
     case 'vec3':

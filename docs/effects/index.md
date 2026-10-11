@@ -6,11 +6,18 @@ title: Effects
 
 # Effects
 
-5 effects so far, out of the 141 planned. Each page has a live demo you can adjust, compare and copy.
+12 effects so far, out of the 141 planned. Each page has a live demo you can adjust, compare and copy.
 
 ## Color & tone
 
 <div class="xt-effect-grid">
+<a class="hcss-card xt-effect-card" href="./brightness-contrast"><strong>Brightness & contrast</strong><span>The everyday image adjustments: brightness, contrast, saturation and vibrance, applied to display-encoded values so the sliders behave like a photo editor’s.</span></a>
+<a class="hcss-card xt-effect-card" href="./exposure-gamma"><strong>Exposure & gamma</strong><span>Exposure in photographic stops, a black-level offset and a gamma curve, applied in linear light before tone mapping, like adjusting a camera rather than a screenshot.</span></a>
+<a class="hcss-card xt-effect-card" href="./gradient-map"><strong>Gradient map</strong><span>Replaces every pixel with a color from a three-stop gradient chosen by its brightness, for thermal-camera, neon or tinted-print looks.</span></a>
+<a class="hcss-card xt-effect-card" href="./hue-saturation"><strong>Hue / saturation</strong><span>Rotates hues, scales saturation and lifts or lowers lightness in OKLCH, a perceptual space, so a hue shift does not make yellows glow or blues go dark.</span></a>
+<a class="hcss-card xt-effect-card" href="./invert-threshold"><strong>Invert / threshold</strong><span>A photographic negative, or a black-and-white threshold with an adjustable level and edge softness, optionally per channel for a posterized look.</span></a>
+<a class="hcss-card xt-effect-card" href="./lut"><strong>LUT color grading</strong><span>Grades the image through a 3D lookup table, such as a `.cube` file exported from Resolve, Premiere or Photoshop, with tetrahedral interpolation.</span></a>
+<a class="hcss-card xt-effect-card" href="./monochrome"><strong>Monochrome</strong><span>Greyscale, classic sepia, or a duotone that maps shadows and highlights to two colors.</span></a>
 <a class="hcss-card xt-effect-card" href="./vignette"><strong>Vignette</strong><span>Darkens or tints the frame toward its edges, drawing the eye to the center.</span></a>
 </div>
 
