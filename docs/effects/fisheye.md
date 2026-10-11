@@ -64,4 +64,5 @@ Original implementation (MIT). References: Equidistant fisheye projection; Sharp
 ## Related
 
 - [Lens distortion](./lens-distortion) — Barrel, pincushion or mustache distortion from the Brown–Conrady radial lens model, with a choice of what fills the edges.
+- [Bulge & pinch](./bulge) — A round lens that magnifies the image toward its center (bulge) or squeezes it (pinch).
 - [Chromatic aberration](./chromatic-aberration) — Shifts red and blue (or a whole spectrum) apart, like a lens that focuses each wavelength at a slightly different place.

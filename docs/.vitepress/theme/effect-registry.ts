@@ -46,6 +46,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/buffer-view').then(
       (m) => m.bufferView as unknown as EffectFactory<ParamSchema>,
     ),
+  bulge: () =>
+    import('@mk7s/xtree/effects/bulge').then(
+      (m) => m.bulge as unknown as EffectFactory<ParamSchema>,
+    ),
   'channel-mixer': () =>
     import('@mk7s/xtree/effects/channel-mixer').then(
       (m) => m.channelMixer as unknown as EffectFactory<ParamSchema>,
@@ -61,6 +65,10 @@ export const effectLoaders: Record<
   crossfade: () =>
     import('@mk7s/xtree/effects/crossfade').then(
       (m) => m.crossfade as unknown as EffectFactory<ParamSchema>,
+    ),
+  crosshatch: () =>
+    import('@mk7s/xtree/effects/crosshatch').then(
+      (m) => m.crosshatch as unknown as EffectFactory<ParamSchema>,
     ),
   crt: () =>
     import('@mk7s/xtree/effects/crt').then(
@@ -102,6 +110,14 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/dither').then(
       (m) => m.dither as unknown as EffectFactory<ParamSchema>,
     ),
+  edges: () =>
+    import('@mk7s/xtree/effects/edges').then(
+      (m) => m.edges as unknown as EffectFactory<ParamSchema>,
+    ),
+  emboss: () =>
+    import('@mk7s/xtree/effects/emboss').then(
+      (m) => m.emboss as unknown as EffectFactory<ParamSchema>,
+    ),
   'error-diffusion': () =>
     import('@mk7s/xtree/effects/error-diffusion').then(
       (m) => m.errorDiffusion as unknown as EffectFactory<ParamSchema>,
@@ -117,6 +133,10 @@ export const effectLoaders: Record<
   fisheye: () =>
     import('@mk7s/xtree/effects/fisheye').then(
       (m) => m.fisheye as unknown as EffectFactory<ParamSchema>,
+    ),
+  'flow-warp': () =>
+    import('@mk7s/xtree/effects/flow-warp').then(
+      (m) => m.flowWarp as unknown as EffectFactory<ParamSchema>,
     ),
   'foil-material': () =>
     import('@mk7s/xtree/effects/foil-material').then(
@@ -146,6 +166,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/halftone').then(
       (m) => m.halftone as unknown as EffectFactory<ParamSchema>,
     ),
+  'heat-haze': () =>
+    import('@mk7s/xtree/effects/heat-haze').then(
+      (m) => m.heatHaze as unknown as EffectFactory<ParamSchema>,
+    ),
   hologram: () =>
     import('@mk7s/xtree/effects/hologram').then(
       (m) => m.hologram as unknown as EffectFactory<ParamSchema>,
@@ -165,6 +189,14 @@ export const effectLoaders: Record<
   jpeg: () =>
     import('@mk7s/xtree/effects/jpeg').then(
       (m) => m.jpeg as unknown as EffectFactory<ParamSchema>,
+    ),
+  kaleidoscope: () =>
+    import('@mk7s/xtree/effects/kaleidoscope').then(
+      (m) => m.kaleidoscope as unknown as EffectFactory<ParamSchema>,
+    ),
+  kuwahara: () =>
+    import('@mk7s/xtree/effects/kuwahara').then(
+      (m) => m.kuwahara as unknown as EffectFactory<ParamSchema>,
     ),
   lcd: () =>
     import('@mk7s/xtree/effects/lcd').then(
@@ -190,9 +222,17 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/lut').then(
       (m) => m.lut as unknown as EffectFactory<ParamSchema>,
     ),
+  mirror: () =>
+    import('@mk7s/xtree/effects/mirror').then(
+      (m) => m.mirror as unknown as EffectFactory<ParamSchema>,
+    ),
   monochrome: () =>
     import('@mk7s/xtree/effects/monochrome').then(
       (m) => m.monochrome as unknown as EffectFactory<ParamSchema>,
+    ),
+  mosaic: () =>
+    import('@mk7s/xtree/effects/mosaic').then(
+      (m) => m.mosaic as unknown as EffectFactory<ParamSchema>,
     ),
   'motion-blur': () =>
     import('@mk7s/xtree/effects/motion-blur').then(
@@ -210,6 +250,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/palette').then(
       (m) => m.palette as unknown as EffectFactory<ParamSchema>,
     ),
+  pencil: () =>
+    import('@mk7s/xtree/effects/pencil').then(
+      (m) => m.pencil as unknown as EffectFactory<ParamSchema>,
+    ),
   'pixel-sort': () =>
     import('@mk7s/xtree/effects/pixel-sort').then(
       (m) => m.pixelSort as unknown as EffectFactory<ParamSchema>,
@@ -217,6 +261,10 @@ export const effectLoaders: Record<
   pixelate: () =>
     import('@mk7s/xtree/effects/pixelate').then(
       (m) => m.pixelate as unknown as EffectFactory<ParamSchema>,
+    ),
+  posterize: () =>
+    import('@mk7s/xtree/effects/posterize').then(
+      (m) => m.posterize as unknown as EffectFactory<ParamSchema>,
     ),
   'radial-blur': () =>
     import('@mk7s/xtree/effects/radial-blur').then(
@@ -270,6 +318,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/tilt-shift').then(
       (m) => m.tiltShift as unknown as EffectFactory<ParamSchema>,
     ),
+  twirl: () =>
+    import('@mk7s/xtree/effects/twirl').then(
+      (m) => m.twirl as unknown as EffectFactory<ParamSchema>,
+    ),
   vhs: () =>
     import('@mk7s/xtree/effects/vhs').then(
       (m) => m.vhs as unknown as EffectFactory<ParamSchema>,
@@ -277,6 +329,14 @@ export const effectLoaders: Record<
   vignette: () =>
     import('@mk7s/xtree/effects/vignette').then(
       (m) => m.vignette as unknown as EffectFactory<ParamSchema>,
+    ),
+  watercolor: () =>
+    import('@mk7s/xtree/effects/watercolor').then(
+      (m) => m.watercolor as unknown as EffectFactory<ParamSchema>,
+    ),
+  'wave-warp': () =>
+    import('@mk7s/xtree/effects/wave-warp').then(
+      (m) => m.waveWarp as unknown as EffectFactory<ParamSchema>,
     ),
   'white-balance': () =>
     import('@mk7s/xtree/effects/white-balance').then(

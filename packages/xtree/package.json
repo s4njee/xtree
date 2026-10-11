@@ -71,6 +71,10 @@
       "types": "./dist/effects/buffer-view/index.d.ts",
       "import": "./dist/effects/buffer-view/index.js"
     },
+    "./effects/bulge": {
+      "types": "./dist/effects/bulge/index.d.ts",
+      "import": "./dist/effects/bulge/index.js"
+    },
     "./effects/channel-mixer": {
       "types": "./dist/effects/channel-mixer/index.d.ts",
       "import": "./dist/effects/channel-mixer/index.js"
@@ -86,6 +90,10 @@
     "./effects/crossfade": {
       "types": "./dist/effects/crossfade/index.d.ts",
       "import": "./dist/effects/crossfade/index.js"
+    },
+    "./effects/crosshatch": {
+      "types": "./dist/effects/crosshatch/index.d.ts",
+      "import": "./dist/effects/crosshatch/index.js"
     },
     "./effects/crt": {
       "types": "./dist/effects/crt/index.d.ts",
@@ -127,6 +135,14 @@
       "types": "./dist/effects/dither/index.d.ts",
       "import": "./dist/effects/dither/index.js"
     },
+    "./effects/edges": {
+      "types": "./dist/effects/edges/index.d.ts",
+      "import": "./dist/effects/edges/index.js"
+    },
+    "./effects/emboss": {
+      "types": "./dist/effects/emboss/index.d.ts",
+      "import": "./dist/effects/emboss/index.js"
+    },
     "./effects/error-diffusion": {
       "types": "./dist/effects/error-diffusion/index.d.ts",
       "import": "./dist/effects/error-diffusion/index.js"
@@ -142,6 +158,10 @@
     "./effects/fisheye": {
       "types": "./dist/effects/fisheye/index.d.ts",
       "import": "./dist/effects/fisheye/index.js"
+    },
+    "./effects/flow-warp": {
+      "types": "./dist/effects/flow-warp/index.d.ts",
+      "import": "./dist/effects/flow-warp/index.js"
     },
     "./effects/foil-material": {
       "types": "./dist/effects/foil-material/index.d.ts",
@@ -171,6 +191,10 @@
       "types": "./dist/effects/halftone/index.d.ts",
       "import": "./dist/effects/halftone/index.js"
     },
+    "./effects/heat-haze": {
+      "types": "./dist/effects/heat-haze/index.d.ts",
+      "import": "./dist/effects/heat-haze/index.js"
+    },
     "./effects/hologram": {
       "types": "./dist/effects/hologram/index.d.ts",
       "import": "./dist/effects/hologram/index.js"
@@ -190,6 +214,14 @@
     "./effects/jpeg": {
       "types": "./dist/effects/jpeg/index.d.ts",
       "import": "./dist/effects/jpeg/index.js"
+    },
+    "./effects/kaleidoscope": {
+      "types": "./dist/effects/kaleidoscope/index.d.ts",
+      "import": "./dist/effects/kaleidoscope/index.js"
+    },
+    "./effects/kuwahara": {
+      "types": "./dist/effects/kuwahara/index.d.ts",
+      "import": "./dist/effects/kuwahara/index.js"
     },
     "./effects/lcd": {
       "types": "./dist/effects/lcd/index.d.ts",
@@ -215,9 +247,17 @@
       "types": "./dist/effects/lut/index.d.ts",
       "import": "./dist/effects/lut/index.js"
     },
+    "./effects/mirror": {
+      "types": "./dist/effects/mirror/index.d.ts",
+      "import": "./dist/effects/mirror/index.js"
+    },
     "./effects/monochrome": {
       "types": "./dist/effects/monochrome/index.d.ts",
       "import": "./dist/effects/monochrome/index.js"
+    },
+    "./effects/mosaic": {
+      "types": "./dist/effects/mosaic/index.d.ts",
+      "import": "./dist/effects/mosaic/index.js"
     },
     "./effects/motion-blur": {
       "types": "./dist/effects/motion-blur/index.d.ts",
@@ -235,6 +275,10 @@
       "types": "./dist/effects/palette/index.d.ts",
       "import": "./dist/effects/palette/index.js"
     },
+    "./effects/pencil": {
+      "types": "./dist/effects/pencil/index.d.ts",
+      "import": "./dist/effects/pencil/index.js"
+    },
     "./effects/pixel-sort": {
       "types": "./dist/effects/pixel-sort/index.d.ts",
       "import": "./dist/effects/pixel-sort/index.js"
@@ -242,6 +286,10 @@
     "./effects/pixelate": {
       "types": "./dist/effects/pixelate/index.d.ts",
       "import": "./dist/effects/pixelate/index.js"
+    },
+    "./effects/posterize": {
+      "types": "./dist/effects/posterize/index.d.ts",
+      "import": "./dist/effects/posterize/index.js"
     },
     "./effects/radial-blur": {
       "types": "./dist/effects/radial-blur/index.d.ts",
@@ -295,6 +343,10 @@
       "types": "./dist/effects/tilt-shift/index.d.ts",
       "import": "./dist/effects/tilt-shift/index.js"
     },
+    "./effects/twirl": {
+      "types": "./dist/effects/twirl/index.d.ts",
+      "import": "./dist/effects/twirl/index.js"
+    },
     "./effects/vhs": {
       "types": "./dist/effects/vhs/index.d.ts",
       "import": "./dist/effects/vhs/index.js"
@@ -302,6 +354,14 @@
     "./effects/vignette": {
       "types": "./dist/effects/vignette/index.d.ts",
       "import": "./dist/effects/vignette/index.js"
+    },
+    "./effects/watercolor": {
+      "types": "./dist/effects/watercolor/index.d.ts",
+      "import": "./dist/effects/watercolor/index.js"
+    },
+    "./effects/wave-warp": {
+      "types": "./dist/effects/wave-warp/index.d.ts",
+      "import": "./dist/effects/wave-warp/index.js"
     },
     "./effects/white-balance": {
       "types": "./dist/effects/white-balance/index.d.ts",

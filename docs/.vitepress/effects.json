@@ -256,8 +256,40 @@
     "text": "Stylization",
     "items": [
       {
+        "text": "Crosshatch",
+        "link": "/effects/crosshatch"
+      },
+      {
+        "text": "Edge detect (Sobel, Canny)",
+        "link": "/effects/edges"
+      },
+      {
+        "text": "Emboss",
+        "link": "/effects/emboss"
+      },
+      {
+        "text": "Kuwahara (painterly)",
+        "link": "/effects/kuwahara"
+      },
+      {
+        "text": "Mosaic & stained glass",
+        "link": "/effects/mosaic"
+      },
+      {
         "text": "Outline",
         "link": "/effects/outline"
+      },
+      {
+        "text": "Pencil sketch",
+        "link": "/effects/pencil"
+      },
+      {
+        "text": "Toon posterize",
+        "link": "/effects/posterize"
+      },
+      {
+        "text": "Watercolor",
+        "link": "/effects/watercolor"
       }
     ]
   },
@@ -265,12 +297,40 @@
     "text": "Distortion & warp",
     "items": [
       {
+        "text": "Bulge & pinch",
+        "link": "/effects/bulge"
+      },
+      {
         "text": "Displacement map",
         "link": "/effects/displacement-map"
       },
       {
+        "text": "Liquid flow warp",
+        "link": "/effects/flow-warp"
+      },
+      {
+        "text": "Heat haze",
+        "link": "/effects/heat-haze"
+      },
+      {
+        "text": "Kaleidoscope",
+        "link": "/effects/kaleidoscope"
+      },
+      {
+        "text": "Mirror",
+        "link": "/effects/mirror"
+      },
+      {
         "text": "Ripple",
         "link": "/effects/ripple"
+      },
+      {
+        "text": "Twirl",
+        "link": "/effects/twirl"
+      },
+      {
+        "text": "Wave warp",
+        "link": "/effects/wave-warp"
       }
     ]
   },

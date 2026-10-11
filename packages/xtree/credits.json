@@ -86,6 +86,12 @@
       ]
     },
     {
+      "id": "effects/bulge",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Radial magnification with a smooth falloff"]
+    },
+    {
       "id": "effects/channel-mixer",
       "kind": "original",
       "licence": "MIT",
@@ -114,6 +120,14 @@
       "licence": "MIT",
       "references": [
         "Luma-keyed wipe with a soft threshold edge, as in classic video switchers; patterns from simple distance functions and fbm noise"
+      ]
+    },
+    {
+      "id": "effects/crosshatch",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Luminance-thresholded hatching layers, after tonal art maps (Praun et al., 2001)"
       ]
     },
     {
@@ -196,6 +210,21 @@
       ]
     },
     {
+      "id": "effects/edges",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Sobel operator (Sobel and Feldman, 1968)",
+        "Non-maximum suppression after Canny, A computational approach to edge detection, 1986"
+      ]
+    },
+    {
+      "id": "effects/emboss",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Directional derivative relief of display luma"]
+    },
+    {
       "id": "effects/error-diffusion",
       "kind": "original",
       "licence": "MIT",
@@ -226,6 +255,14 @@
       "references": [
         "Equidistant fisheye projection",
         "Sharpless, Postle and German, Pannini: A New Projection for Rendering Wide Angle Perspective Images, CAe 2010 (inverse Panini mapping)"
+      ]
+    },
+    {
+      "id": "effects/flow-warp",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Bridson, Hourihan and Nordenstam, Curl-noise for procedural fluid flow, 2007"
       ]
     },
     {
@@ -283,6 +320,12 @@
       ]
     },
     {
+      "id": "effects/heat-haze",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Refraction offsets from rising simplex noise"]
+    },
+    {
       "id": "effects/hologram",
       "kind": "original",
       "licence": "MIT",
@@ -317,6 +360,21 @@
       "licence": "MIT",
       "references": [
         "ITU-T T.81 (JPEG): 8×8 DCT-II and the Annex K quantization tables; libjpeg quality scaling; 4:2:0 chroma subsampling"
+      ]
+    },
+    {
+      "id": "effects/kaleidoscope",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Polar folding into mirrored wedges"]
+    },
+    {
+      "id": "effects/kuwahara",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Kuwahara et al., Processing of RI-angiocardiographic images, 1976",
+        "Papari, Petkov and Campisi, Artistic edge and corner enhancing smoothing, 2007 (generalized sector filter)"
       ]
     },
     {
@@ -369,12 +427,26 @@
       ]
     },
     {
+      "id": "effects/mirror",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Reflection across vertical and horizontal axes"]
+    },
+    {
       "id": "effects/monochrome",
       "kind": "original",
       "licence": "MIT",
       "references": [
         "Rec. 709 luma",
         "Widely published sepia tone matrix (0.393/0.769/0.189 …)"
+      ]
+    },
+    {
+      "id": "effects/mosaic",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Worley, A cellular texture basis function, 1996 (jittered Voronoi cells)"
       ]
     },
     {
@@ -411,6 +483,14 @@
       ]
     },
     {
+      "id": "effects/pencil",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Contours from depth and normal discontinuities with diagonal strokes on value-noise paper"
+      ]
+    },
+    {
       "id": "effects/pixel-sort",
       "kind": "original",
       "licence": "MIT",
@@ -423,6 +503,14 @@
       "kind": "original",
       "licence": "MIT",
       "references": ["Cell-center sampling on square and hexagonal grids"]
+    },
+    {
+      "id": "effects/posterize",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Brightness banding in HSV with gradient-based edge darkening"
+      ]
     },
     {
       "id": "effects/radial-blur",
@@ -523,6 +611,12 @@
       ]
     },
     {
+      "id": "effects/twirl",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Rotation that falls off quadratically with radius"]
+    },
+    {
       "id": "effects/vhs",
       "kind": "original",
       "licence": "MIT",
@@ -539,6 +633,20 @@
         "three.js VignetteShader (Eskil mode formula)",
         "Smoothstep vignette: original"
       ]
+    },
+    {
+      "id": "effects/watercolor",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "After Bousseau et al., Interactive watercolor rendering with temporal coherence and abstraction, 2006: wobble, edge darkening and pigment granulation"
+      ]
+    },
+    {
+      "id": "effects/wave-warp",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Sinusoidal displacement along one or both axes"]
     },
     {
       "id": "effects/white-balance",

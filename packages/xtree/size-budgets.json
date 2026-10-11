@@ -82,5 +82,20 @@
   "./effects/signal-loss": 7616,
   "./effects/slice-shift": 6272,
   "./effects/teletext": 7488,
-  "./effects/vhs": 8896
+  "./effects/vhs": 8896,
+  "./effects/bulge": 5568,
+  "./effects/crosshatch": 7360,
+  "./effects/edges": 7552,
+  "./effects/emboss": 7104,
+  "./effects/flow-warp": 7104,
+  "./effects/heat-haze": 7104,
+  "./effects/kaleidoscope": 5632,
+  "./effects/kuwahara": 6208,
+  "./effects/mirror": 5504,
+  "./effects/mosaic": 6400,
+  "./effects/pencil": 8384,
+  "./effects/posterize": 7104,
+  "./effects/twirl": 5568,
+  "./effects/watercolor": 8448,
+  "./effects/wave-warp": 5632
 }
