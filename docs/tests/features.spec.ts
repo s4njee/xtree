@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 
 // The M2 docs features: theme switcher and motion control (X19.4, X19.5),
@@ -183,19 +184,29 @@ test('without WebGL2 a demo shows its poster and a notice', async ({
 });
 
 test('the gallery filters instantly', async ({ page }) => {
+  // Counts come from the generated catalogue, so new effects don't break this.
+  const effects = JSON.parse(
+    readFileSync(
+      new URL('../.vitepress/effects-meta.json', import.meta.url),
+      'utf8',
+    ),
+  ) as { id: string; kind: string; buffers: string[] }[];
+  const all = `${effects.length} of ${effects.length} effects`;
+  const depth = effects.filter((e) => e.buffers.includes('depth')).length;
+  const materials = effects.filter((e) => e.kind === 'material').length;
   await page.goto(`${base}/effects/`);
   const count = page.locator('.xt-catalogue-count');
-  await expect(count).toContainText('39 of 39 effects');
+  await expect(count).toContainText(all);
   await page.getByRole('combobox', { name: 'Buffers' }).selectOption('depth');
-  await expect(count).toContainText('4 of 39 effects');
+  await expect(count).toContainText(`${depth} of ${effects.length} effects`);
   await expect(
     page.locator('.xt-effect-card[data-effect="depth-fog"]'),
   ).toBeVisible();
   await page.getByRole('switch', { name: 'Still effects only' }).check();
   await page.getByRole('button', { name: 'Clear filters' }).click();
-  await expect(count).toContainText('39 of 39 effects');
+  await expect(count).toContainText(all);
   await page.getByRole('radio', { name: 'Material' }).check();
-  await expect(page.locator('.xt-effect-card')).toHaveCount(5);
+  await expect(page.locator('.xt-effect-card')).toHaveCount(materials);
 });
 
 test('searching a parameter name finds the effects that have it', async ({
