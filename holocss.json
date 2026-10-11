@@ -1,0 +1,5 @@
+{
+  "repository": "https://github.com/s4njee/holocss",
+  "commit": "bd7b341f0f9cedc9ccbf3ab81af7b0163b55cdc8",
+  "note": "Pinned HoloCSS source used by the docs site until @mk7s/holocss is published. See docs/adr/0005-holocss-relationship.md."
+}

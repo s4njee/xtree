@@ -1,0 +1,13 @@
+node_modules/
+dist/
+artifacts/
+test-results/
+playwright-report/
+.cache/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+*.tgz
+*.tsbuildinfo
+.DS_Store
+packages/xtree/LICENSE
+packages/xtree/THIRD_PARTY_NOTICES.md

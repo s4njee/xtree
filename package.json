@@ -1,0 +1,40 @@
+{
+  "name": "xtree-workspace",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.15.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "build": "pnpm --filter @mk7s/xtree build",
+    "typecheck": "pnpm -r typecheck && tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "glsl:lint": "pnpm --filter @mk7s/xtree glsl:lint",
+    "credits": "pnpm --filter @mk7s/xtree credits",
+    "size": "pnpm --filter @mk7s/xtree size",
+    "shaders:docs": "pnpm --filter @mk7s/xtree shaders:docs",
+    "test": "pnpm --filter @mk7s/xtree test",
+    "test:browser": "playwright test",
+    "holocss:setup": "node scripts/holocss.mjs",
+    "docs:dev": "pnpm --filter xtree-docs dev",
+    "docs:build": "pnpm --filter xtree-docs build",
+    "docs:preview": "pnpm --filter xtree-docs preview",
+    "changeset": "changeset",
+    "release:dry": "node scripts/release-dry.mjs",
+    "check": "pnpm format:check && pnpm lint && pnpm glsl:lint && pnpm credits && pnpm typecheck && pnpm build && pnpm size && pnpm shaders:docs --check && pnpm test"
+  },
+  "devDependencies": {
+    "@changesets/cli": "3.0.3",
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.0",
+    "@types/node": "26.6.5",
+    "eslint": "10.12.0",
+    "globals": "17.13.0",
+    "prettier": "3.9.9",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.1"
+  }
+}

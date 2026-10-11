@@ -1,0 +1,9 @@
+pnpm-lock.yaml
+dist/
+artifacts/
+test-results/
+playwright-report/
+.cache/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+.changeset/*.md

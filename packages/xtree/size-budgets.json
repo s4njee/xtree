@@ -1,0 +1,8 @@
+{
+  ".": 1152,
+  "./glsl": 1088,
+  "./shaders": 8192,
+  "./shaders/noise": 3072,
+  "./shaders/color": 3584,
+  "./shaders/blend": 2048
+}

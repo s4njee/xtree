@@ -1,0 +1,71 @@
+{
+  "name": "@mk7s/xtree",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A comprehensive, tree-shakeable effects library for three.js: post-processing, materials and transitions.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/s4njee/xtree.git",
+    "directory": "packages/xtree"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./glsl": {
+      "types": "./dist/glsl/index.d.ts",
+      "import": "./dist/glsl/index.js"
+    },
+    "./shaders": {
+      "types": "./dist/shaders/index.d.ts",
+      "import": "./dist/shaders/index.js"
+    },
+    "./shaders/noise": {
+      "types": "./dist/shaders/noise/index.d.ts",
+      "import": "./dist/shaders/noise/index.js"
+    },
+    "./shaders/color": {
+      "types": "./dist/shaders/color/index.d.ts",
+      "import": "./dist/shaders/color/index.js"
+    },
+    "./shaders/blend": {
+      "types": "./dist/shaders/blend/index.d.ts",
+      "import": "./dist/shaders/blend/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "build": "node build/build.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "glsl:lint": "node scripts/glsl-lint.mjs",
+    "credits": "node scripts/credits.mjs",
+    "size": "node scripts/size.mjs",
+    "shaders:docs": "node scripts/shader-docs.mjs",
+    "prepack": "node build/copy-legal.mjs"
+  },
+  "peerDependencies": {
+    "three": ">=0.180.0 <0.187.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.5",
+    "@types/three": "0.186.0",
+    "three": "0.186.1",
+    "typescript": "6.0.3",
+    "vite": "8.3.4",
+    "vitest": "5.0.3"
+  }
+}

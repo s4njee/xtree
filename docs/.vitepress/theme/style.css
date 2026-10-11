@@ -1,0 +1,69 @@
+/*
+ * Maps VitePress's theme variables onto HoloCSS roles, so every HoloCSS
+ * palette (data-hcss-theme on <html>) restyles the whole site. The selectors
+ * match VitePress's own :root and .dark rules and come after them.
+ */
+:root,
+:root.dark {
+  --vp-c-bg: var(--hcss-background);
+  --vp-c-bg-alt: var(--hcss-surface);
+  --vp-c-bg-elv: var(--hcss-elevated-surface);
+  /* Some palettes use the same color for surface and background; mix in a little text color so cards and code stay visible. */
+  --vp-c-bg-soft: color-mix(in oklab, var(--hcss-surface), var(--hcss-text) 5%);
+  --vp-c-text-1: var(--hcss-text);
+  --vp-c-text-2: var(--hcss-text-muted);
+  --vp-c-text-3: var(--hcss-text-muted);
+  --vp-c-border: var(--hcss-border);
+  --vp-c-divider: var(--hcss-subtle-border);
+  --vp-c-gutter: var(--hcss-subtle-border);
+  --vp-c-default-soft: var(--hcss-muted);
+  --vp-c-brand-1: var(--hcss-link-color, var(--hcss-accent));
+  --vp-c-brand-2: var(--hcss-link-color, var(--hcss-accent));
+  --vp-c-brand-3: var(--hcss-accent);
+  --vp-c-brand-soft: var(--hcss-muted);
+  --vp-c-tip-1: var(--hcss-info);
+  --vp-c-warning-1: var(--hcss-warning);
+  --vp-c-danger-1: var(--hcss-danger);
+  --vp-button-brand-bg: var(--hcss-accent);
+  --vp-button-brand-text: var(--hcss-accent-text);
+  --vp-button-brand-hover-bg: var(--hcss-accent);
+  --vp-button-brand-hover-text: var(--hcss-accent-text);
+  --vp-button-brand-active-bg: var(--hcss-accent);
+  --vp-button-brand-active-text: var(--hcss-accent-text);
+  --vp-button-alt-bg: var(--vp-c-bg-soft);
+  --vp-button-alt-hover-bg: color-mix(
+    in oklab,
+    var(--hcss-surface),
+    var(--hcss-text) 10%
+  );
+  --vp-button-alt-active-bg: color-mix(
+    in oklab,
+    var(--hcss-surface),
+    var(--hcss-text) 10%
+  );
+  --vp-button-alt-text: var(--hcss-text);
+  --vp-code-block-bg: var(--vp-c-bg-soft);
+  --vp-code-bg: var(--hcss-muted);
+  --vp-font-family-base: var(--hcss-font-family);
+  --vp-font-family-mono: var(--hcss-font-mono);
+  --vp-home-hero-name-color: var(--hcss-text);
+  --vp-nav-bg-color: var(--hcss-background);
+  --vp-sidebar-bg-color: var(--vp-c-bg-alt);
+  --vp-local-search-bg: var(--hcss-background);
+  --vp-local-search-result-bg: var(--hcss-surface);
+  --vp-local-search-highlight-bg: var(--hcss-accent);
+  --vp-local-search-highlight-text: var(--hcss-accent-text);
+}
+
+.VPButton.medium,
+.VPButton.big {
+  border-radius: var(--hcss-radius-medium);
+}
+
+.vp-doc div[class*='language-'] {
+  border-radius: var(--hcss-radius-large);
+}
+
+.VPFeature {
+  border-color: var(--hcss-subtle-border) !important;
+}
