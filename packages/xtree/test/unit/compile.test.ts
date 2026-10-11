@@ -9,6 +9,7 @@ import { bloom } from '../../src/effects/bloom/index.js';
 import { chromaticAberration } from '../../src/effects/chromatic-aberration/index.js';
 import { holographicFoil } from '../../src/effects/holographic-foil/index.js';
 import { rgbSplitGlitch } from '../../src/effects/rgb-split-glitch/index.js';
+import { signalLoss } from '../../src/effects/signal-loss/index.js';
 import { vignette } from '../../src/effects/vignette/index.js';
 
 describe('renameEffectSource', () => {
@@ -39,6 +40,13 @@ describe('compilePass', () => {
     expect(fragment).not.toMatch(/#include/);
     expect(uniforms.e0_darkness).toBe(a.uniforms.darkness);
     expect(uniforms.e1_opacity).toBe(b.uniforms.opacity);
+  });
+
+  it('declares state uniforms', () => {
+    const effect = signalLoss();
+    const { fragment, uniforms } = compilePass([effect], null);
+    expect(fragment).toContain('uniform float e0_dropout;');
+    expect(uniforms.e0_dropout).toBe(effect.uniforms.dropout);
   });
 
   it('compiles structural parameters as defines', () => {

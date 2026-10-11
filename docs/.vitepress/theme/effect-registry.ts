@@ -14,6 +14,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/ascii').then(
       (m) => m.ascii as unknown as EffectFactory<ParamSchema>,
     ),
+  'bit-crush': () =>
+    import('@mk7s/xtree/effects/bit-crush').then(
+      (m) => m.bitCrush as unknown as EffectFactory<ParamSchema>,
+    ),
   'bleach-bypass': () =>
     import('@mk7s/xtree/effects/bleach-bypass').then(
       (m) => m.bleachBypass as unknown as EffectFactory<ParamSchema>,
@@ -66,6 +70,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/curves').then(
       (m) => m.curves as unknown as EffectFactory<ParamSchema>,
     ),
+  datamosh: () =>
+    import('@mk7s/xtree/effects/datamosh').then(
+      (m) => m.datamosh as unknown as EffectFactory<ParamSchema>,
+    ),
   'depth-fog': () =>
     import('@mk7s/xtree/effects/depth-fog').then(
       (m) => m.depthFog as unknown as EffectFactory<ParamSchema>,
@@ -93,6 +101,10 @@ export const effectLoaders: Record<
   dither: () =>
     import('@mk7s/xtree/effects/dither').then(
       (m) => m.dither as unknown as EffectFactory<ParamSchema>,
+    ),
+  'error-diffusion': () =>
+    import('@mk7s/xtree/effects/error-diffusion').then(
+      (m) => m.errorDiffusion as unknown as EffectFactory<ParamSchema>,
     ),
   'exposure-gamma': () =>
     import('@mk7s/xtree/effects/exposure-gamma').then(
@@ -150,6 +162,14 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/invert-threshold').then(
       (m) => m.invertThreshold as unknown as EffectFactory<ParamSchema>,
     ),
+  jpeg: () =>
+    import('@mk7s/xtree/effects/jpeg').then(
+      (m) => m.jpeg as unknown as EffectFactory<ParamSchema>,
+    ),
+  lcd: () =>
+    import('@mk7s/xtree/effects/lcd').then(
+      (m) => m.lcd as unknown as EffectFactory<ParamSchema>,
+    ),
   'lens-dirt': () =>
     import('@mk7s/xtree/effects/lens-dirt').then(
       (m) => m.lensDirt as unknown as EffectFactory<ParamSchema>,
@@ -178,9 +198,21 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/motion-blur').then(
       (m) => m.motionBlur as unknown as EffectFactory<ParamSchema>,
     ),
+  ntsc: () =>
+    import('@mk7s/xtree/effects/ntsc').then(
+      (m) => m.ntsc as unknown as EffectFactory<ParamSchema>,
+    ),
   outline: () =>
     import('@mk7s/xtree/effects/outline').then(
       (m) => m.outline as unknown as EffectFactory<ParamSchema>,
+    ),
+  palette: () =>
+    import('@mk7s/xtree/effects/palette').then(
+      (m) => m.palette as unknown as EffectFactory<ParamSchema>,
+    ),
+  'pixel-sort': () =>
+    import('@mk7s/xtree/effects/pixel-sort').then(
+      (m) => m.pixelSort as unknown as EffectFactory<ParamSchema>,
     ),
   pixelate: () =>
     import('@mk7s/xtree/effects/pixelate').then(
@@ -210,6 +242,14 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/selective-bloom').then(
       (m) => m.selectiveBloom as unknown as EffectFactory<ParamSchema>,
     ),
+  'signal-loss': () =>
+    import('@mk7s/xtree/effects/signal-loss').then(
+      (m) => m.signalLoss as unknown as EffectFactory<ParamSchema>,
+    ),
+  'slice-shift': () =>
+    import('@mk7s/xtree/effects/slice-shift').then(
+      (m) => m.sliceShift as unknown as EffectFactory<ParamSchema>,
+    ),
   'split-toning': () =>
     import('@mk7s/xtree/effects/split-toning').then(
       (m) => m.splitToning as unknown as EffectFactory<ParamSchema>,
@@ -218,6 +258,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/star-streaks').then(
       (m) => m.starStreaks as unknown as EffectFactory<ParamSchema>,
     ),
+  teletext: () =>
+    import('@mk7s/xtree/effects/teletext').then(
+      (m) => m.teletext as unknown as EffectFactory<ParamSchema>,
+    ),
   'thin-film': () =>
     import('@mk7s/xtree/effects/thin-film').then(
       (m) => m.thinFilm as unknown as EffectFactory<ParamSchema>,
@@ -225,6 +269,10 @@ export const effectLoaders: Record<
   'tilt-shift': () =>
     import('@mk7s/xtree/effects/tilt-shift').then(
       (m) => m.tiltShift as unknown as EffectFactory<ParamSchema>,
+    ),
+  vhs: () =>
+    import('@mk7s/xtree/effects/vhs').then(
+      (m) => m.vhs as unknown as EffectFactory<ParamSchema>,
     ),
   vignette: () =>
     import('@mk7s/xtree/effects/vignette').then(

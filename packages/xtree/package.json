@@ -39,6 +39,10 @@
       "types": "./dist/effects/ascii/index.d.ts",
       "import": "./dist/effects/ascii/index.js"
     },
+    "./effects/bit-crush": {
+      "types": "./dist/effects/bit-crush/index.d.ts",
+      "import": "./dist/effects/bit-crush/index.js"
+    },
     "./effects/bleach-bypass": {
       "types": "./dist/effects/bleach-bypass/index.d.ts",
       "import": "./dist/effects/bleach-bypass/index.js"
@@ -91,6 +95,10 @@
       "types": "./dist/effects/curves/index.d.ts",
       "import": "./dist/effects/curves/index.js"
     },
+    "./effects/datamosh": {
+      "types": "./dist/effects/datamosh/index.d.ts",
+      "import": "./dist/effects/datamosh/index.js"
+    },
     "./effects/depth-fog": {
       "types": "./dist/effects/depth-fog/index.d.ts",
       "import": "./dist/effects/depth-fog/index.js"
@@ -118,6 +126,10 @@
     "./effects/dither": {
       "types": "./dist/effects/dither/index.d.ts",
       "import": "./dist/effects/dither/index.js"
+    },
+    "./effects/error-diffusion": {
+      "types": "./dist/effects/error-diffusion/index.d.ts",
+      "import": "./dist/effects/error-diffusion/index.js"
     },
     "./effects/exposure-gamma": {
       "types": "./dist/effects/exposure-gamma/index.d.ts",
@@ -175,6 +187,14 @@
       "types": "./dist/effects/invert-threshold/index.d.ts",
       "import": "./dist/effects/invert-threshold/index.js"
     },
+    "./effects/jpeg": {
+      "types": "./dist/effects/jpeg/index.d.ts",
+      "import": "./dist/effects/jpeg/index.js"
+    },
+    "./effects/lcd": {
+      "types": "./dist/effects/lcd/index.d.ts",
+      "import": "./dist/effects/lcd/index.js"
+    },
     "./effects/lens-dirt": {
       "types": "./dist/effects/lens-dirt/index.d.ts",
       "import": "./dist/effects/lens-dirt/index.js"
@@ -203,9 +223,21 @@
       "types": "./dist/effects/motion-blur/index.d.ts",
       "import": "./dist/effects/motion-blur/index.js"
     },
+    "./effects/ntsc": {
+      "types": "./dist/effects/ntsc/index.d.ts",
+      "import": "./dist/effects/ntsc/index.js"
+    },
     "./effects/outline": {
       "types": "./dist/effects/outline/index.d.ts",
       "import": "./dist/effects/outline/index.js"
+    },
+    "./effects/palette": {
+      "types": "./dist/effects/palette/index.d.ts",
+      "import": "./dist/effects/palette/index.js"
+    },
+    "./effects/pixel-sort": {
+      "types": "./dist/effects/pixel-sort/index.d.ts",
+      "import": "./dist/effects/pixel-sort/index.js"
     },
     "./effects/pixelate": {
       "types": "./dist/effects/pixelate/index.d.ts",
@@ -235,6 +267,14 @@
       "types": "./dist/effects/selective-bloom/index.d.ts",
       "import": "./dist/effects/selective-bloom/index.js"
     },
+    "./effects/signal-loss": {
+      "types": "./dist/effects/signal-loss/index.d.ts",
+      "import": "./dist/effects/signal-loss/index.js"
+    },
+    "./effects/slice-shift": {
+      "types": "./dist/effects/slice-shift/index.d.ts",
+      "import": "./dist/effects/slice-shift/index.js"
+    },
     "./effects/split-toning": {
       "types": "./dist/effects/split-toning/index.d.ts",
       "import": "./dist/effects/split-toning/index.js"
@@ -243,6 +283,10 @@
       "types": "./dist/effects/star-streaks/index.d.ts",
       "import": "./dist/effects/star-streaks/index.js"
     },
+    "./effects/teletext": {
+      "types": "./dist/effects/teletext/index.d.ts",
+      "import": "./dist/effects/teletext/index.js"
+    },
     "./effects/thin-film": {
       "types": "./dist/effects/thin-film/index.d.ts",
       "import": "./dist/effects/thin-film/index.js"
@@ -250,6 +294,10 @@
     "./effects/tilt-shift": {
       "types": "./dist/effects/tilt-shift/index.d.ts",
       "import": "./dist/effects/tilt-shift/index.js"
+    },
+    "./effects/vhs": {
+      "types": "./dist/effects/vhs/index.d.ts",
+      "import": "./dist/effects/vhs/index.js"
     },
     "./effects/vignette": {
       "types": "./dist/effects/vignette/index.d.ts",

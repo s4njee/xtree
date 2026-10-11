@@ -58,7 +58,7 @@ Apply one with `selectiveBloom({ preset: 'name' })` or `effect.applyPreset('name
 - **Passes:** samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass. It also renders its own intermediate passes before the merged pass.
 - **Masks:** reads its `mask` itself rather than fading by it (see the description); any [mask kind](/guide/masks) works.
 - **Motion:** Static: nothing animates.
-- **Size:** 7.1 KB gzip budget for `@mk7s/xtree/effects/selective-bloom`, including the shared effect runtime.
+- **Size:** 7.9 KB gzip budget for `@mk7s/xtree/effects/selective-bloom`, including the shared effect runtime.
 
 ### Selecting what glows
 

@@ -40,6 +40,16 @@ export const effectFamilies = {
 /** The family an effect belongs to in the catalogue. */
 export type EffectFamily = keyof typeof effectFamilies;
 
+/** GLSL types an effect's `state` uniforms can have. */
+export type StateType = 'float' | 'int' | 'bool' | 'vec2' | 'vec3' | 'vec4';
+
+const stateZero = (type: StateType): unknown =>
+  type === 'bool'
+    ? false
+    : type[0] === 'v'
+      ? new Array<number>(Number(type[3])).fill(0)
+      : 0;
+
 /** Documentation and catalogue metadata for an effect. */
 export interface EffectMeta {
   /** Display name, for example "Chromatic aberration". */
@@ -173,6 +183,12 @@ export interface EffectDefinition<S extends ParamSchema> {
   /** Extra sampler uniforms that `setup` fills, referenced as `$name`. */
   readonly textures?: readonly string[];
   /**
+   * Extra uniforms that `setup` sets each frame, by GLSL type, referenced as
+   * `$name`: per-frame state that isn't a parameter, such as whether a
+   * dropout is under way. They start at zero.
+   */
+  readonly state?: Readonly<Record<string, StateType>>;
+  /**
    * GLSL ES 3.00 defining `vec4 $main(vec4 color, vec2 uv)`. `$name` refers
    * to the effect's own parameters, textures and helper functions; the
    * compiler renames them per effect so effects merge into one shader. Use
@@ -295,6 +311,8 @@ export class Effect<S extends ParamSchema = ParamSchema> {
     }
     for (const texture of definition.textures ?? [])
       this.uniforms[texture] = { value: null };
+    for (const [name, type] of Object.entries(definition.state ?? {}))
+      this.uniforms[name] = { value: stateZero(type) };
     this.uniforms.opacity = { value: 1 };
     this.uniforms.xtMask = { value: null };
     this.uniforms.xtMaskChannel = { value: 0 };
@@ -658,12 +676,21 @@ export function buildFactory<S extends ParamSchema>(
       throw new TypeError(`${name}: parameter "${param}" is a reserved name`);
     validateParam(name, param, spec, spec.default);
   }
-  for (const texture of definition.textures ?? []) {
-    if (texture in definition.params || reserved.has(texture))
+  // Textures and state are uniforms too, so their names share one namespace.
+  const extras = [
+    ...(definition.textures ?? []),
+    ...Object.keys(definition.state ?? {}),
+  ];
+  extras.forEach((extra, i) => {
+    if (
+      extra in definition.params ||
+      reserved.has(extra) ||
+      extras.indexOf(extra) !== i
+    )
       throw new TypeError(
-        `${name}: texture "${texture}" clashes with a parameter or reserved name`,
+        `${name}: "${extra}" clashes with a parameter, texture, state or reserved name`,
       );
-  }
+  });
   for (const [preset, values] of Object.entries(definition.presets ?? {})) {
     for (const [param, value] of Object.entries(
       values as Record<string, unknown>,

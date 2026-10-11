@@ -201,6 +201,7 @@ for (const { id, factory } of effects) {
     'maskKind',
     ...Object.keys(definition.params),
     ...(definition.textures ?? []),
+    ...Object.keys(definition.state ?? {}),
   ]);
   for (const [name, param] of Object.entries(definition.params)) {
     if (param.kind === 'select')
@@ -209,6 +210,11 @@ for (const { id, factory } of effects) {
     if (param.kind === 'texture') known.add(`has_${name}`);
   }
   for (const [, fn] of sources.matchAll(/\b\w+\s+\$(\w+)\s*\(/g)) known.add(fn);
+  // Names an effect defines itself: `#define $NAME` and `const type $name`.
+  for (const [, defined] of sources.matchAll(/#define\s+\$(\w+)/g))
+    known.add(defined);
+  for (const [, constant] of sources.matchAll(/\bconst\s+\w+\s+\$(\w+)/g))
+    known.add(constant);
   for (const [, used] of sources.matchAll(/\$(\w+)/g)) {
     if (!known.has(used))
       problems.push(

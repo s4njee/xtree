@@ -299,6 +299,10 @@ export function compilePass(
       lines.push(`uniform sampler2D ${prefix}${texture};`);
       uniforms[prefix + texture] = effect.uniforms[texture]!;
     }
+    for (const [name, type] of Object.entries(definition.state ?? {})) {
+      lines.push(`uniform ${type} ${prefix}${name};`);
+      uniforms[prefix + name] = effect.uniforms[name]!;
+    }
     lines.push(`uniform float ${prefix}opacity;`);
     uniforms[`${prefix}opacity`] = effect.uniforms.opacity!;
     lines.push(...maskSource(effect, prefix));

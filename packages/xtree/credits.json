@@ -18,6 +18,14 @@
       ]
     },
     {
+      "id": "effects/bit-crush",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Per-channel quantization of display values with optional Bayer dithering"
+      ]
+    },
+    {
       "id": "effects/bleach-bypass",
       "kind": "original",
       "licence": "MIT",
@@ -125,6 +133,15 @@
       ]
     },
     {
+      "id": "effects/datamosh",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Lucas and Kanade, An iterative image registration technique, 1981 (block optical flow)",
+        "Datamoshing by dropping I-frames, as described by video artists"
+      ]
+    },
+    {
       "id": "effects/depth-fog",
       "kind": "original",
       "licence": "MIT",
@@ -176,6 +193,16 @@
         "Bayer, An optimum method for two-level rendition of continuous-tone pictures, 1973",
         "Ulichney, The void-and-cluster method for dither array generation, SPIE 1993",
         "Jimenez, Next Generation Post Processing in Call of Duty: Advanced Warfare, SIGGRAPH 2014 (interleaved gradient noise)"
+      ]
+    },
+    {
+      "id": "effects/error-diffusion",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Floyd and Steinberg, An adaptive algorithm for spatial grey scale, 1976",
+        "Bill Atkinson’s dither (Apple MacPaint)",
+        "Replayed per 4×4 tile in scanline order for the GPU"
       ]
     },
     {
@@ -285,6 +312,22 @@
       "references": ["Photographic negative and smoothstep threshold"]
     },
     {
+      "id": "effects/jpeg",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "ITU-T T.81 (JPEG): 8×8 DCT-II and the Annex K quantization tables; libjpeg quality scaling; 4:2:0 chroma subsampling"
+      ]
+    },
+    {
+      "id": "effects/lcd",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "RGB stripe subpixel layout with exponential pixel response for persistence"
+      ]
+    },
+    {
       "id": "effects/lens-dirt",
       "kind": "original",
       "licence": "MIT",
@@ -343,11 +386,36 @@
       ]
     },
     {
+      "id": "effects/ntsc",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "NTSC composite encoding of YIQ on a 4×-sampled color subcarrier, with box-filtered luma and synchronous chroma demodulation"
+      ]
+    },
+    {
       "id": "effects/outline",
       "kind": "original",
       "licence": "MIT",
       "references": [
         "Edge detection from the second difference of inverse depth and of view-space normals; outer outline by dilating a selection mask"
+      ]
+    },
+    {
+      "id": "effects/palette",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Nearest-color matching in OKLab (Ottosson, 2020)",
+        "Palettes: Nintendo Game Boy (DMG), IBM CGA mode 4 palette 1 (high intensity), IBM EGA 16 colors, PICO-8 (Lexaloffle), Commodore 64 (Pepto), NES 2C02 (common approximation)"
+      ]
+    },
+    {
+      "id": "effects/pixel-sort",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Odd–even transposition sort (Habermann, 1972) on the GPU, after Kim Asendorf’s pixel sorting"
       ]
     },
     {
@@ -401,6 +469,22 @@
       ]
     },
     {
+      "id": "effects/signal-loss",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Digital dropouts: frozen frames with static bands and block damage on a hashed schedule"
+      ]
+    },
+    {
+      "id": "effects/slice-shift",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Hash-driven slice offsets with staggered per-slice timing"
+      ]
+    },
+    {
       "id": "effects/split-toning",
       "kind": "original",
       "licence": "MIT",
@@ -412,6 +496,14 @@
       "licence": "MIT",
       "references": [
         "Kawase, Frame buffer postprocessing effects in DOUBLE-S.T.E.A.L, GDC 2003 (star filter with growing steps)"
+      ]
+    },
+    {
+      "id": "effects/teletext",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Teletext (ETS 300 706) 2×3 block mosaic graphics in eight colors"
       ]
     },
     {
@@ -428,6 +520,14 @@
       "licence": "MIT",
       "references": [
         "Variable-radius blur masked by distance from a focus line (miniature-faking)"
+      ]
+    },
+    {
+      "id": "effects/vhs",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "VHS artifacts after common descriptions: chroma bandwidth and delay, head switching, tracking errors; seven-segment on-screen display"
       ]
     },
     {

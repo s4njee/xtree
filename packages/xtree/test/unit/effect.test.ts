@@ -187,6 +187,37 @@ describe('defineEffect', () => {
     ).toThrow(/\$main/);
   });
 
+  it('creates zeroed state uniforms and keeps their names distinct', () => {
+    const base = {
+      meta: demo.definition.meta,
+      params: {
+        amount: float({ default: 0, min: 0, max: 1, description: '' }),
+      },
+      fragment: 'vec4 $main(vec4 c, vec2 uv) { return c * $level; }',
+    };
+    const stateful = defineEffect({
+      ...base,
+      name: 'stateful',
+      textures: ['history'],
+      state: { level: 'float', on: 'bool', offset: 'vec2', tint: 'vec3' },
+    })();
+    expect(stateful.uniforms.level!.value).toBe(0);
+    expect(stateful.uniforms.on!.value).toBe(false);
+    expect(stateful.uniforms.offset!.value).toEqual([0, 0]);
+    expect(stateful.uniforms.tint!.value).toEqual([0, 0, 0]);
+    // State is not a parameter, so it is not serialized.
+    stateful.uniforms.level!.value = 1;
+    expect(stateful.toJSON()).toEqual({ effect: 'stateful' });
+    for (const state of [
+      { amount: 'float' },
+      { opacity: 'float' },
+      { history: 'int' },
+    ] as const)
+      expect(() =>
+        defineEffect({ ...base, name: 'x', textures: ['history'], state }),
+      ).toThrow(/clashes/);
+  });
+
   it('converts hex colors to linear RGB like three.js', () => {
     const [r, g, b] = hexToLinear('#808080');
     expect(r).toBeCloseTo(0.2158605, 6);

@@ -22,6 +22,7 @@ export {
   type MotionBehavior,
   type Sampling,
   type SetupContext,
+  type StateType,
   type ThreeKit,
 } from './define.js';
 export {

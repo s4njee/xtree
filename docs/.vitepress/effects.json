@@ -158,12 +158,28 @@
     "text": "Glitch & signal",
     "items": [
       {
+        "text": "Bit crush",
+        "link": "/effects/bit-crush"
+      },
+      {
         "text": "Block displacement",
         "link": "/effects/block-displacement"
       },
       {
+        "text": "Datamosh",
+        "link": "/effects/datamosh"
+      },
+      {
         "text": "Digital noise",
         "link": "/effects/digital-noise"
+      },
+      {
+        "text": "JPEG artifacts",
+        "link": "/effects/jpeg"
+      },
+      {
+        "text": "Pixel sort",
+        "link": "/effects/pixel-sort"
       },
       {
         "text": "RGB split glitch",
@@ -172,6 +188,14 @@
       {
         "text": "Scanline tear",
         "link": "/effects/scanline-tear"
+      },
+      {
+        "text": "Signal loss",
+        "link": "/effects/signal-loss"
+      },
+      {
+        "text": "Slice shift",
+        "link": "/effects/slice-shift"
       }
     ]
   },
@@ -191,8 +215,24 @@
         "link": "/effects/dither"
       },
       {
+        "text": "Error-diffusion dither",
+        "link": "/effects/error-diffusion"
+      },
+      {
         "text": "Halftone",
         "link": "/effects/halftone"
+      },
+      {
+        "text": "LCD subpixels",
+        "link": "/effects/lcd"
+      },
+      {
+        "text": "NTSC composite",
+        "link": "/effects/ntsc"
+      },
+      {
+        "text": "Palette reduction",
+        "link": "/effects/palette"
       },
       {
         "text": "Pixelate",
@@ -201,6 +241,14 @@
       {
         "text": "Scanlines",
         "link": "/effects/scanlines"
+      },
+      {
+        "text": "Teletext",
+        "link": "/effects/teletext"
+      },
+      {
+        "text": "VHS",
+        "link": "/effects/vhs"
       }
     ]
   },
