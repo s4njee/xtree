@@ -219,10 +219,12 @@ vec4 xt_test(vec4 c, int index) { return vec4(xt_whitePointXy(c.x, c.y), 0.0, 0.
         inputs: settings.flatMap(([k, t]) => [k, t, 0, 0]),
       }),
     );
+    // 4 digits: float32 evaluation of the locus polynomials differs by up to ~2e-5
+    // between GPUs, far below a visible white-point shift (~1e-3 in xy).
     settings.forEach(([kelvin, tint], i) => {
       const [x, y] = whitePointXy(kelvin, tint);
-      expect(out[i]![0]).toBeCloseTo(x, 5);
-      expect(out[i]![1]).toBeCloseTo(y, 5);
+      expect(out[i]![0]).toBeCloseTo(x, 4);
+      expect(out[i]![1]).toBeCloseTo(y, 4);
     });
     const d65 = settings.findIndex(([k, t]) => k === 6500 && t === 0);
     expect(out[d65]![0]).toBeCloseTo(0.3127266, 6);

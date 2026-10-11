@@ -21,7 +21,16 @@ const chromiumLaunch =
 
 const projects = {
   chromium: { ...devices['Desktop Chrome'], launchOptions: chromiumLaunch },
-  firefox: devices['Desktop Firefox'],
+  // Headless Firefox disables WebGL without a GPU; force it on so Mesa's software renderer is used.
+  firefox: {
+    ...devices['Desktop Firefox'],
+    launchOptions: {
+      firefoxUserPrefs: {
+        'webgl.force-enabled': true,
+        'webgl.disabled': false,
+      },
+    },
+  },
   webkit: devices['Desktop Safari'],
 } as const;
 
