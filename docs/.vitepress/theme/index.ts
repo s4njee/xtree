@@ -1,20 +1,29 @@
 import type { Theme } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
+import { h } from 'vue';
 import '@mk7s/holocss/components.css';
+import EffectCatalogue from './EffectCatalogue.vue';
 import EffectDemo from './EffectDemo.vue';
+import FamilyCards from './FamilyCards.vue';
+import HeroDemo from './HeroDemo.vue';
+import SiteControls from './SiteControls.vue';
+import { startPreferences } from './preferences';
 import './style.css';
 
 export default {
   extends: DefaultTheme,
-  async enhanceApp({ app }) {
+  // The HoloCSS theme switcher and motion control replace VitePress's
+  // light/dark toggle, in the nav bar and the mobile menu.
+  Layout: () =>
+    h(DefaultTheme.Layout, null, {
+      'nav-bar-content-after': () => h(SiteControls),
+      'nav-screen-content-after': () => h(SiteControls, { screen: true }),
+      'home-hero-image': () => h(HeroDemo),
+    }),
+  enhanceApp({ app }) {
     app.component('EffectDemo', EffectDemo);
-    if (import.meta.env.SSR) return;
-    // Follow `auto` (OS light/dark/contrast) and other tabs, keeping VitePress's
-    // `dark` class in step with the resolved HoloCSS palette.
-    const { createTheme } = await import('@mk7s/holocss/theme');
-    const root = document.documentElement;
-    createTheme(root).subscribe(() => {
-      root.classList.toggle('dark', root.dataset.appearance === 'dark');
-    });
+    app.component('EffectCatalogue', EffectCatalogue);
+    app.component('FamilyCards', FamilyCards);
+    if (!import.meta.env.SSR) void startPreferences();
   },
 } satisfies Theme;

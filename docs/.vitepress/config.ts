@@ -33,6 +33,8 @@ const bootstrap = buildSync({
 const themeScript = [
   "document.documentElement.dataset.hcssTheme??='auto';",
   bootstrap.trim(),
+  // HoloCSS's motion preference (createMotion), restored before paint too.
+  "try{var m=localStorage.getItem('hcss-motion');if(m==='none'||m==='auto')document.documentElement.dataset.hcssMotion=m}catch(e){}",
   "document.documentElement.classList.toggle('dark',document.documentElement.dataset.appearance==='dark');",
 ].join('');
 
@@ -124,6 +126,10 @@ export default defineConfig({
         {
           find: /^@mk7s\/holocss\/theme$/,
           replacement: resolve(holocss, 'src/theme/index.ts'),
+        },
+        {
+          find: /^@mk7s\/holocss\/motion$/,
+          replacement: resolve(holocss, 'src/motion/index.ts'),
         },
       ],
     },

@@ -14,6 +14,7 @@ import {
   reactive,
   ref,
   shallowRef,
+  watch,
 } from 'vue';
 import { withBase } from 'vitepress';
 import { effectLoaders } from './effect-registry';
@@ -44,6 +45,17 @@ const followPointer = ref(true);
 const pointerParams = ['tilt', 'center'];
 const passes = ref(0);
 const copied = ref(false);
+/** Which code tab shows: plain three.js, or with the HoloCSS helpers. */
+const codeTab = ref<'three' | 'holocss'>('three');
+/** The stats overlay (FPS, GPU time, draws, programs); off by default. */
+const stats = ref(false);
+/** The preset last applied, which the URL records with any changes since. */
+const activePreset = ref<string | null>(null);
+/**
+ * Theme-aware colors the visitor set (or a preset set), which stop
+ * following the HoloCSS theme.
+ */
+const themeOverrides = ref<string[]>([]);
 type MaskChoice = 'none' | 'selection' | 'xray' | 'distance';
 const maskChoice = ref<MaskChoice>('none');
 const maskOptions: Record<MaskChoice, string> = {
@@ -57,6 +69,10 @@ let effect: Effect | null = null;
 let findObject: (name: string) => unknown = () => undefined;
 let requestRender = () => {};
 let teardown: (() => void) | null = null;
+let rebindTheme = () => {};
+/** The URL is written only after the demo has read it on load. */
+let urlReady = false;
+let setStats = (_on: boolean) => {};
 
 const paramEntries = computed(
   () => Object.entries(definition.value?.params ?? {}) as [string, Param][],
@@ -68,6 +84,101 @@ const presetNames = computed(() =>
 const selectionNames = computed(
   () => definition.value?.meta.demo?.selection ?? ['knot'],
 );
+
+/** Color parameters that follow the HoloCSS theme through bindTheme(). */
+const themedParams = computed(() =>
+  paramEntries.value
+    .filter(
+      ([name, param]) =>
+        param.kind === 'color' &&
+        param.theme &&
+        !themeOverrides.value.includes(name),
+    )
+    .map(([name]) => name),
+);
+
+/** Parameter values a URL or the code panel compares with: the defaults, plus the active preset. */
+function baseline(): Record<string, unknown> {
+  const def = definition.value;
+  if (!def) return {};
+  return {
+    ...Object.fromEntries(
+      Object.entries(def.params).map(([name, p]) => [name, p.default]),
+    ),
+    ...(activePreset.value ? def.presets?.[activePreset.value] : {}),
+  };
+}
+
+/** Records the demo state in the URL (`?preset=…&name=value`) without a navigation. */
+function writeUrl() {
+  const def = definition.value;
+  if (!def || !urlReady) return;
+  const url = new URL(window.location.href);
+  for (const key of [...url.searchParams.keys()]) url.searchParams.delete(key);
+  if (activePreset.value) url.searchParams.set('preset', activePreset.value);
+  const base = baseline();
+  for (const [name] of paramEntries.value) {
+    if (themedParams.value.includes(name)) continue;
+    if (sameValue(values[name], base[name])) continue;
+    const value = values[name];
+    url.searchParams.set(
+      name,
+      typeof value === 'object' && value !== null
+        ? JSON.stringify(value)
+        : String(value),
+    );
+  }
+  if (isPost.value && maskChoice.value !== defaultMask())
+    url.searchParams.set('mask', maskChoice.value);
+  window.history.replaceState(window.history.state, '', url);
+}
+
+/** Parses a URL value for a parameter; undefined when it doesn't fit. */
+function parseValue(param: Param, raw: string): Value | undefined {
+  switch (param.kind) {
+    case 'float':
+    case 'int': {
+      const n = Number(raw);
+      return Number.isFinite(n) ? n : undefined;
+    }
+    case 'bool':
+      return raw === 'true' ? true : raw === 'false' ? false : undefined;
+    case 'vec2':
+    case 'vec3':
+    case 'gradient':
+    case 'curve':
+      try {
+        return JSON.parse(raw) as Value;
+      } catch {
+        return undefined;
+      }
+    case 'texture':
+      return raw === 'null' ? null : raw;
+    default:
+      return raw;
+  }
+}
+
+/** Applies `?preset=…&name=value&mask=…` from the URL. */
+function readUrl() {
+  const def = definition.value;
+  if (!def || !effect) return;
+  const query = new URLSearchParams(window.location.search);
+  const preset = query.get('preset');
+  if (preset && def.presets?.[preset]) applyPreset(preset);
+  for (const [name, raw] of query) {
+    const param = def.params[name] as Param | undefined;
+    if (!param) continue;
+    const value = parseValue(param, raw);
+    if (value !== undefined) setParam(name, value);
+  }
+  const mask = query.get('mask');
+  if (isPost.value && mask && mask in maskOptions) setMask(mask as MaskChoice);
+}
+
+function defaultMask(): MaskChoice {
+  return definition.value?.meta.demo?.selection ? 'selection' : 'none';
+}
 
 function maskFor(choice: MaskChoice) {
   if (choice === 'distance') return { depth: [9, 1000], feather: 2 } as const;
@@ -83,6 +194,7 @@ function setMask(choice: MaskChoice) {
   if (!effect) return;
   effect.mask = maskFor(choice) as never;
   requestRender();
+  writeUrl();
 }
 
 const factoryName = computed(() =>
@@ -117,9 +229,24 @@ function literal(value: Value): string {
 const code = computed(() => {
   const def = definition.value;
   if (!def) return '';
+  const holo = codeTab.value === 'holocss';
+  // With HoloCSS, theme-aware colors come from bindTheme() instead.
+  const themed = holo ? themedParams.value : [];
   const changed = paramEntries.value
-    .filter(([name, param]) => !sameValue(values[name], param.default))
+    .filter(
+      ([name, param]) =>
+        !themed.includes(name) && !sameValue(values[name], param.default),
+    )
     .map(([name]) => `${name}: ${literal(values[name]!)}`);
+  const helpers = holo
+    ? [
+        ...(themed.length ? ['bindTheme'] : []),
+        ...(def.motion && def.motion !== 'static' ? ['bindMotion'] : []),
+      ]
+    : [];
+  const holoImports = helpers.length
+    ? [`import { ${helpers.join(', ')} } from '@mk7s/xtree/holocss';`]
+    : [];
   const mask = {
     none: '',
     selection: `mask: { selection: ${selectionNames.value.length === 1 ? '[hero]' : 'hero'} }`,
@@ -129,17 +256,27 @@ const code = computed(() => {
   const all = mask && !isMaterial.value ? [...changed, mask] : changed;
   const options = all.length ? `{ ${all.join(', ')} }` : '';
   if (isTransition.value) {
+    if (holo)
+      return [
+        "import { transition3d } from '@mk7s/holocss/three';",
+        "import { toHoloEffect } from '@mk7s/xtree/core';",
+        `import { ${factoryName.value} } from '@mk7s/xtree/effects/${props.effect}';`,
+        '',
+        `const effect = ${factoryName.value}(${options});`,
+        '// HoloCSS supplies the theme accent and the motion policy.',
+        'await transition3d(fromElement, toElement, toHoloEffect(effect), {',
+        '  target,',
+        '  update: () => swapContent(),',
+        '});',
+      ].join('\n');
     return [
-      "import { createTransition, toHoloEffect } from '@mk7s/xtree/core';",
+      "import { createTransition } from '@mk7s/xtree/core';",
       `import { ${factoryName.value} } from '@mk7s/xtree/effects/${props.effect}';`,
       '',
       `const effect = ${factoryName.value}(${options});`,
       'const player = createTransition(renderer, effect, { from: textureA, to: textureB });',
       `player.progress = ${Number(transitionProgress.value.toFixed(2))};`,
       'player.render();',
-      '',
-      '// Or with HoloCSS:',
-      '// transition3d(fromElement, toElement, toHoloEffect(effect), { target, update });',
     ].join('\n');
   }
   if (isMaterial.value) {
@@ -149,10 +286,17 @@ const code = computed(() => {
     return [
       "import { patchMaterial } from '@mk7s/xtree/core';",
       `import { ${factoryName.value} } from '@mk7s/xtree/effects/${props.effect}';`,
+      ...holoImports,
       '',
       `const effect = ${factoryName.value}(${options});`,
       `for (const material of [${targets}])`,
       '  patchMaterial(material, effect);',
+      ...(holo && themed.length
+        ? ['bindTheme(effect, renderer.domElement);']
+        : []),
+      ...(holo && def.motion && def.motion !== 'static'
+        ? ['bindMotion(effect, renderer.domElement);']
+        : []),
       'const clock = new THREE.Clock();',
       'renderer.setAnimationLoop(() => {',
       '  effect.tick(clock.getDelta());',
@@ -163,6 +307,7 @@ const code = computed(() => {
   return [
     "import { EffectComposer } from '@mk7s/xtree/core';",
     `import { ${factoryName.value} } from '@mk7s/xtree/effects/${props.effect}';`,
+    ...holoImports,
     '',
     'const composer = new EffectComposer(renderer);',
     'composer.setScene(scene, camera);',
@@ -175,8 +320,19 @@ const code = computed(() => {
           };`,
         ]
       : []),
-    `composer.add(${factoryName.value}(${options}));`,
-    ...(def.motion && def.motion !== 'static' ? ['composer.play();'] : []),
+    ...(holo && themed.length
+      ? [
+          `const effect = ${factoryName.value}(${options});`,
+          'composer.add(effect);',
+          'bindTheme(effect, renderer.domElement);',
+        ]
+      : [`composer.add(${factoryName.value}(${options}));`]),
+    ...(def.motion && def.motion !== 'static'
+      ? [
+          ...(holo ? ['bindMotion(composer, renderer.domElement);'] : []),
+          'composer.play();',
+        ]
+      : []),
     'renderer.setAnimationLoop(() => composer.render());',
   ].join('\n');
 });
@@ -220,7 +376,13 @@ function setParam(name: string, value: Value) {
     return;
   }
   values[name] = Array.isArray(value) ? [...value] : value;
+  // A color the visitor picks stops following the theme.
+  if (themedParams.value.includes(name)) {
+    themeOverrides.value = [...themeOverrides.value, name];
+    rebindTheme();
+  }
   requestRender();
+  writeUrl();
 }
 
 function setComponent(name: string, index: number, component: number) {
@@ -238,15 +400,74 @@ function syncValues() {
 }
 
 function applyPreset(name: string) {
-  effect?.applyPreset(name);
+  if (!effect) return;
+  effect.applyPreset(name);
+  activePreset.value = name;
+  // Colors the preset sets win over the theme; the rest follow it again.
+  const preset = definition.value?.presets?.[name] ?? {};
+  themeOverrides.value = Object.keys(preset).filter(
+    (key) => definition.value?.params[key]?.kind === 'color',
+  );
+  rebindTheme();
   syncValues();
   requestRender();
+  writeUrl();
 }
 
 function reset() {
   effect?.reset();
+  activePreset.value = null;
+  themeOverrides.value = [];
+  rebindTheme();
   syncValues();
   requestRender();
+  writeUrl();
+}
+
+/** Moves the compare divider by keyboard: arrows (Shift for 10%), Home and End. */
+function dividerKey(event: KeyboardEvent) {
+  const step = event.shiftKey ? 10 : 1;
+  const next =
+    event.key === 'ArrowLeft' || event.key === 'ArrowDown'
+      ? divider.value - step
+      : event.key === 'ArrowRight' || event.key === 'ArrowUp'
+        ? divider.value + step
+        : event.key === 'Home'
+          ? 5
+          : event.key === 'End'
+            ? 95
+            : null;
+  if (next === null) return;
+  event.preventDefault();
+  divider.value = Math.max(5, Math.min(95, next));
+  requestRender();
+}
+
+/** Drags the compare divider with a mouse, pen or finger. */
+function dividerDrag(event: PointerEvent) {
+  const handle = event.currentTarget as HTMLElement;
+  try {
+    handle.setPointerCapture(event.pointerId);
+  } catch {
+    /* Synthetic or already released pointers can't be captured. */
+  }
+  const move = (e: PointerEvent) => {
+    const rect = stage.value!.getBoundingClientRect();
+    divider.value = Math.max(
+      5,
+      Math.min(95, ((e.clientX - rect.left) / rect.width) * 100),
+    );
+    requestRender();
+  };
+  move(event);
+  const up = () => {
+    handle.removeEventListener('pointermove', move);
+    handle.removeEventListener('pointerup', up);
+    handle.removeEventListener('pointercancel', up);
+  };
+  handle.addEventListener('pointermove', move);
+  handle.addEventListener('pointerup', up);
+  handle.addEventListener('pointercancel', up);
 }
 
 function togglePlay() {
@@ -272,12 +493,18 @@ onMounted(async () => {
     errorMessage.value = `Unknown effect "${props.effect}".`;
     return;
   }
-  const [three, core, scenes, factory, runtime] = await Promise.all([
+  // Without WebGL2 the demo shows its poster, without loading three.js.
+  if (!document.createElement('canvas').getContext('webgl2')) {
+    status.value = 'unsupported';
+    return;
+  }
+  const [three, core, scenes, factory, runtime, holo] = await Promise.all([
     import('three'),
     import('@mk7s/xtree/core'),
     import('@xtree/scenes'),
     load(),
     import('@mk7s/holocss/runtime'),
+    import('@mk7s/xtree/holocss'),
   ]);
   if (!root.value) return;
 
@@ -348,11 +575,29 @@ onMounted(async () => {
     player = core.createTransition(renderer, effect as never, {
       from: views[0]!.texture,
       to: views[1]!.texture,
-      accent:
-        getComputedStyle(root.value).getPropertyValue('--hcss-accent').trim() ||
-        '#7cc4ff',
     });
   }
+
+  // Theme-aware colors and the transition accent follow the site's HoloCSS
+  // theme (X15.2), except colors the visitor or a preset chose.
+  let unbindTheme = () => {};
+  rebindTheme = () => {
+    unbindTheme();
+    unbindTheme = holo.bindTheme(
+      player ? [effect!, player] : [effect!],
+      root.value!,
+      {
+        roles: Object.fromEntries(
+          themeOverrides.value.map((name) => [name, null]),
+        ),
+        onChange: () => {
+          syncValues();
+          requestRender();
+        },
+      },
+    );
+  };
+  rebindTheme();
 
   const resize = () => {
     const width = host.clientWidth;
@@ -448,9 +693,19 @@ onMounted(async () => {
   };
   canvas.addEventListener('pointermove', onPointer);
 
+  // The stats overlay: FPS, GPU time where timer queries exist, draws and programs.
+  let overlay: ReturnType<typeof core.createDebugOverlay> | null = null;
+  setStats = (on: boolean) => {
+    overlay?.dispose();
+    overlay = on ? core.createDebugOverlay(composer, host) : null;
+  };
+
   const live = window as unknown as { __xtreeLiveDemos?: number };
   live.__xtreeLiveDemos = (live.__xtreeLiveDemos ?? 0) + 1;
   status.value = 'ready';
+  readUrl();
+  urlReady = true;
+  writeUrl();
   resize();
 
   teardown = () => {
@@ -459,6 +714,8 @@ onMounted(async () => {
     observer.disconnect();
     visibility.disconnect();
     stopWatching();
+    unbindTheme();
+    overlay?.dispose();
     canvas.removeEventListener('pointermove', onPointer);
     composer.dispose();
     materialEffect?.dispose();
@@ -474,6 +731,7 @@ onMounted(async () => {
   };
 });
 
+watch(stats, (on) => setStats(on));
 onBeforeUnmount(() => teardown?.());
 </script>
 
@@ -487,19 +745,36 @@ onBeforeUnmount(() => teardown?.());
       <p v-if="status === 'loading'" class="xt-demo-status">
         Loading the demo…
       </p>
-      <p v-else-if="status === 'unsupported'" class="xt-demo-status">
-        This demo needs WebGL2, which this browser or device does not provide.
-      </p>
+      <template v-else-if="status === 'unsupported'">
+        <img
+          class="xt-demo-poster"
+          :src="withBase(`/thumbnails/${props.effect}.png`)"
+          :alt="`A still of the ${props.effect} effect`"
+        />
+        <p class="xt-demo-status xt-demo-notice" role="status">
+          This live demo needs WebGL2, which this browser or device does not
+          provide. The image shows the effect with its default settings.
+        </p>
+      </template>
       <p v-else-if="status === 'error'" class="xt-demo-status">
         {{ errorMessage }}
       </p>
       <div
         v-if="compare && status === 'ready'"
         class="xt-demo-divider"
+        role="slider"
+        tabindex="0"
+        aria-label="Before and after divider"
+        aria-valuemin="5"
+        aria-valuemax="95"
+        :aria-valuenow="Math.round(divider)"
+        :aria-valuetext="`${Math.round(divider)}% before`"
         :style="{ left: `${divider}%` }"
-        aria-hidden="true"
+        @pointerdown.prevent="dividerDrag"
+        @keydown="dividerKey"
       >
-        <span>Before</span><span>After</span>
+        <span aria-hidden="true">Before</span
+        ><span aria-hidden="true">After</span>
       </div>
     </div>
 
@@ -524,16 +799,15 @@ onBeforeUnmount(() => teardown?.());
         />
         Compare
       </label>
-      <input
-        v-if="compare"
-        v-model.number="divider"
-        class="hcss-slider xt-demo-divider-input"
-        type="range"
-        min="5"
-        max="95"
-        aria-label="Divider position"
-        @input="requestRender()"
-      />
+      <label v-if="!isTransition" class="hcss-choice">
+        <input
+          v-model="stats"
+          class="hcss-switch"
+          type="checkbox"
+          role="switch"
+        />
+        Stats
+      </label>
       <span v-if="isTransition" class="xt-demo-meta"
         >Between two camera views</span
       >
@@ -874,6 +1148,22 @@ onBeforeUnmount(() => teardown?.());
     <div v-if="definition" class="hcss-code-block xt-demo-code">
       <div class="xt-demo-code-header">
         <strong>Code for these settings</strong>
+        <div class="hcss-segmented xt-demo-code-tabs" role="tablist">
+          <button
+            v-for="(label, tab) in {
+              three: 'three.js',
+              holocss: 'With HoloCSS',
+            }"
+            :key="tab"
+            type="button"
+            role="tab"
+            :aria-selected="codeTab === tab"
+            :class="{ 'xt-demo-tab-active': codeTab === tab }"
+            @click="codeTab = tab"
+          >
+            {{ label }}
+          </button>
+        </div>
         <button
           class="hcss-button"
           data-variant="ghost"

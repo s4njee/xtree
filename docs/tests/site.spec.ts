@@ -121,18 +121,19 @@ test('the demo responds to its controls', async ({ page }) => {
   await page.goto(`${base}/effects/vignette`);
   await expect(page.locator('.xt-demo canvas')).toBeVisible();
   const darkness = page.getByRole('slider', { name: 'Darkness' });
+  const code = page.locator('.xt-demo-code code');
   await darkness.fill('0.9');
-  await expect(page.locator('.xt-demo-code code')).toContainText(
-    'vignette({ darkness: 0.9 })',
+  // The three.js code spells out the color the site theme gave the vignette.
+  await expect(code).toContainText(
+    /vignette\(\{ darkness: 0\.9, color: '#[0-9a-f]{6}' \}\)/,
   );
   await page.getByRole('button', { name: 'Cinematic' }).click();
-  await expect(page.locator('.xt-demo-code code')).toContainText(
-    'roundness: 0.4',
-  );
+  await expect(code).toContainText('roundness: 0.4');
   await page.getByRole('button', { name: 'Reset' }).click();
-  await expect(page.locator('.xt-demo-code code')).toContainText(
-    'composer.add(vignette());',
-  );
+  // With HoloCSS, bindTheme() supplies the color instead.
+  await page.getByRole('tab', { name: 'With HoloCSS' }).click();
+  await expect(code).toContainText('const effect = vignette();');
+  await expect(code).toContainText('bindTheme(effect, renderer.domElement);');
   expect(problems).toEqual([]);
 });
 
