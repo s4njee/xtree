@@ -225,6 +225,7 @@ function projectSidebar() {
         { text: 'M0 validation', link: '/project/m0-validation' },
         { text: 'M1 validation', link: '/project/m1-validation' },
         { text: 'M2 validation', link: '/project/m2-validation' },
+        { text: 'M3 validation', link: '/project/m3-validation' },
       ],
     },
     {

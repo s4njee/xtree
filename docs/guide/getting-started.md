@@ -6,7 +6,7 @@ description: Install xtree, add effects to an existing three.js scene, animate t
 # Getting started
 
 ::: info Before the first release
-`@mk7s/xtree` is published as `0.1.0-alpha` builds for testing; the API can still change before 1.0. Until it is on npm, use a local checkout or the release tarball (see [Work on xtree](#work-on-xtree)).
+`@mk7s/xtree` is published as `0.1.0-beta` builds; the API can still change before 1.0. Until it is on npm, use a local checkout or the release tarball (see [Work on xtree](#work-on-xtree)).
 :::
 
 ## Install

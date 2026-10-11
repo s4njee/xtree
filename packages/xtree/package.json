@@ -1,6 +1,6 @@
 {
   "name": "@mk7s/xtree",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-beta.0",
   "private": true,
   "description": "A comprehensive, tree-shakeable effects library for three.js: post-processing, materials and transitions.",
   "license": "MIT",

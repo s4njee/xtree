@@ -2,7 +2,7 @@
 
 A comprehensive, tree-shakeable effects library for three.js, with a VitePress documentation site styled with [HoloCSS](https://github.com/s4njee/holocss).
 
-**Status: M2 (alpha) complete, `0.1.0-alpha.0`.** 39 effects: every P0 post-processing, material and transition effect. Geometry buffers and masks, HoloCSS theme and motion integration, a photosensitivity analyser, and a docs site with live demos, a gallery and an API reference (https://s4njee.github.io/xtree/). M3 (beta) is next. See [plan.md](plan.md) for every epic and story, and the [M0](docs/project/m0-validation.md), [M1](docs/project/m1-validation.md) and [M2](docs/project/m2-validation.md) validation records for what was verified.
+**Status: M3 (beta) complete, `0.1.0-beta.0`.** 109 effects: 86 post-processing, 14 material and 9 transition, covering every P0 and P1 story. Geometry, velocity and history buffers and masks. `@mk7s/xtree/animation` for easing, timelines and pointer, scroll and audio bindings. HoloCSS theme, motion and stage integration. Precompiling, adaptive quality and benchmarks. A photosensitivity analyser. A docs site with live demos, a gallery, guides and an API reference (https://s4njee.github.io/xtree/). M4 (playground and adapters) is next. See [plan.md](plan.md) for every epic and story, and the [M0](docs/project/m0-validation.md), [M1](docs/project/m1-validation.md), [M2](docs/project/m2-validation.md) and [M3](docs/project/m3-validation.md) validation records for what was verified.
 
 ```ts
 import { EffectComposer } from '@mk7s/xtree/core';
