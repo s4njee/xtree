@@ -34,6 +34,11 @@ const motion = ref(true);
 const compare = ref(false);
 /** Material effects are patched into the studio's materials instead of the composer. */
 const isMaterial = computed(() => definition.value?.kind === 'material');
+/** Transitions play between two views of the studio instead of post-processing it. */
+const isTransition = computed(() => definition.value?.kind === 'transition');
+const transitionProgress = ref(0.5);
+/** Effects that run in the composer and take masks. */
+const isPost = computed(() => !isMaterial.value && !isTransition.value);
 const divider = ref(50);
 const followPointer = ref(true);
 const pointerParams = ['tilt', 'center'];
@@ -115,6 +120,20 @@ const code = computed(() => {
   }[maskChoice.value];
   const all = mask && !isMaterial.value ? [...changed, mask] : changed;
   const options = all.length ? `{ ${all.join(', ')} }` : '';
+  if (isTransition.value) {
+    return [
+      "import { createTransition, toHoloEffect } from '@mk7s/xtree/core';",
+      `import { ${factoryName.value} } from '@mk7s/xtree/effects/${props.effect}';`,
+      '',
+      `const effect = ${factoryName.value}(${options});`,
+      'const player = createTransition(renderer, effect, { from: textureA, to: textureB });',
+      `player.progress = ${Number(transitionProgress.value.toFixed(2))};`,
+      'player.render();',
+      '',
+      '// Or with HoloCSS:',
+      '// transition3d(fromElement, toElement, toHoloEffect(effect), { target, update });',
+    ].join('\n');
+  }
   if (isMaterial.value) {
     const targets = selectionNames.value
       .map((n) => `scene.getObjectByName('${n}').material`)
@@ -286,17 +305,50 @@ onMounted(async () => {
       if (mesh?.material)
         core.patchMaterial(mesh.material as never, materialEffect);
     }
-  } else {
+  } else if (factory.definition.kind !== 'transition') {
     composer.add(effect);
     setMask(factory.definition.meta.demo?.selection ? 'selection' : 'none');
   }
   syncValues();
+
+  // Transitions: the studio from two camera angles, rendered (tone-mapped, linear) into textures.
+  let player: ReturnType<typeof core.createTransition> | null = null;
+  const views: InstanceType<typeof three.WebGLRenderTarget>[] = [];
+  const renderViews = () => {
+    const second = studio.camera.clone();
+    second.position.set(4.5, 2.6, 5.2);
+    second.lookAt(0, 0.9, 0);
+    const output = renderer.outputColorSpace;
+    renderer.outputColorSpace = three.LinearSRGBColorSpace;
+    for (const [i, camera] of [studio.camera, second].entries()) {
+      const size = renderer.getDrawingBufferSize(new three.Vector2());
+      views[i] ??= new three.WebGLRenderTarget(1, 1, {
+        type: three.HalfFloatType,
+      });
+      views[i]!.setSize(size.x, size.y);
+      composer.setScene(studio.scene, camera);
+      composer.render(0, views[i]!);
+    }
+    renderer.outputColorSpace = output;
+    composer.setScene(studio.scene, studio.camera);
+  };
+  if (factory.definition.kind === 'transition') {
+    renderViews();
+    player = core.createTransition(renderer, effect as never, {
+      from: views[0]!.texture,
+      to: views[1]!.texture,
+      accent:
+        getComputedStyle(root.value).getPropertyValue('--hcss-accent').trim() ||
+        '#7cc4ff',
+    });
+  }
 
   const resize = () => {
     const width = host.clientWidth;
     const height = Math.round((width * 9) / 16);
     renderer.setSize(width, height);
     studio.resize(width / height);
+    if (player) renderViews();
     requestRender();
   };
 
@@ -304,6 +356,7 @@ onMounted(async () => {
   let visible = true;
   let last = performance.now();
   let sceneTime = 0;
+  let transitionTime = Math.acos(0) / 1.2;
   const frame = (now: number) => {
     raf = 0;
     const delta = Math.min(0.1, (now - last) / 1000);
@@ -314,6 +367,16 @@ onMounted(async () => {
       studio.update(sceneTime);
     }
     if (animating) materialEffect?.tick(delta);
+    if (player) {
+      if (animating) {
+        transitionTime += delta;
+        transitionProgress.value = 0.5 - 0.5 * Math.cos(transitionTime * 1.2);
+      }
+      player.progress = transitionProgress.value;
+      player.render();
+      if (animating && visible) raf = requestAnimationFrame(frame);
+      return;
+    }
     composer.render(animating ? delta : 0);
     passes.value = composer.passes.length;
     if (compare.value && !materialEffect) {
@@ -388,6 +451,9 @@ onMounted(async () => {
     canvas.removeEventListener('pointermove', onPointer);
     composer.dispose();
     materialEffect?.dispose();
+    player?.dispose();
+    for (const view of views) view.dispose();
+    if (player) effect?.dispose();
     studio.dispose();
     renderer.dispose();
     renderer.forceContextLoss();
@@ -437,7 +503,7 @@ onBeforeUnmount(() => teardown?.());
       >
         {{ playing ? 'Pause' : 'Play' }}
       </button>
-      <label v-if="!isMaterial" class="hcss-choice">
+      <label v-if="isPost" class="hcss-choice">
         <input
           v-model="compare"
           class="hcss-switch"
@@ -457,7 +523,10 @@ onBeforeUnmount(() => teardown?.());
         aria-label="Divider position"
         @input="requestRender()"
       />
-      <span v-if="isMaterial" class="xt-demo-meta"
+      <span v-if="isTransition" class="xt-demo-meta"
+        >Between two camera views</span
+      >
+      <span v-else-if="isMaterial" class="xt-demo-meta"
         >Patched into the {{ selectionNames.join(' and ') }}</span
       >
       <span v-else class="xt-demo-meta"
@@ -496,7 +565,26 @@ onBeforeUnmount(() => teardown?.());
     </div>
 
     <form v-if="definition" class="xt-demo-controls" @submit.prevent>
-      <div v-if="!isMaterial" class="hcss-field xt-demo-mask">
+      <div v-if="isTransition" class="hcss-field">
+        <label class="hcss-label" :for="fieldId('progress')">Progress</label>
+        <input
+          :id="fieldId('progress')"
+          v-model.number="transitionProgress"
+          class="hcss-slider"
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          @input="
+            playing = false;
+            requestRender();
+          "
+        />
+        <p class="hcss-description">
+          Drag to scrub; Play loops between the two views.
+        </p>
+      </div>
+      <div v-if="isPost" class="hcss-field xt-demo-mask">
         <fieldset class="hcss-segmented">
           <legend>Mask</legend>
           <label v-for="(label, choice) in maskOptions" :key="choice">

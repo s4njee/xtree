@@ -71,6 +71,7 @@ export default defineConfig({
             { text: 'Getting started', link: '/guide/getting-started' },
             { text: 'Masks and geometry buffers', link: '/guide/masks' },
             { text: 'Material effects', link: '/guide/materials' },
+            { text: 'Transitions', link: '/guide/transitions' },
           ],
         },
       ],
@@ -174,6 +175,10 @@ function projectSidebar() {
         {
           text: '0008 Geometry buffers and masks',
           link: '/adr/0008-geometry-buffers-and-masks',
+        },
+        {
+          text: '0009 Transitions and HoloCSS',
+          link: '/adr/0009-transitions-and-holocss',
         },
       ],
     },

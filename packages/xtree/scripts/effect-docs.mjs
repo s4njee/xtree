@@ -85,6 +85,7 @@ function page(factory) {
     : '';
   const exampleParams = Object.entries(definition.presets ?? {})[0];
   const material = definition.kind === 'material';
+  const transition = definition.kind === 'transition';
   const motion = definition.motion ?? 'static';
   const lines = [
     '---',
@@ -104,40 +105,58 @@ function page(factory) {
     '## Usage',
     '',
     '```ts',
-    ...(material
+    ...(transition
       ? [
-          "import { patchMaterial } from '@mk7s/xtree/core';",
+          "import { createTransition, toHoloEffect } from '@mk7s/xtree/core';",
           `import { ${factoryName} } from '@mk7s/xtree/effects/${name}';`,
           '',
           exampleParams
             ? `const effect = ${factoryName}({ preset: '${exampleParams[0]}' });`
             : `const effect = ${factoryName}();`,
-          'patchMaterial(mesh.material, effect);',
-          ...(motion === 'static'
-            ? [
-                'renderer.setAnimationLoop(() => renderer.render(scene, camera));',
-              ]
-            : [
-                'const clock = new THREE.Clock();',
-                'renderer.setAnimationLoop(() => {',
-                '  effect.tick(clock.getDelta());',
-                '  renderer.render(scene, camera);',
-                '});',
-              ]),
-        ]
-      : [
-          "import { EffectComposer } from '@mk7s/xtree/core';",
-          `import { ${factoryName} } from '@mk7s/xtree/effects/${name}';`,
           '',
-          'const composer = new EffectComposer(renderer);',
-          'composer.setScene(scene, camera);',
-          meta.demo?.selection
-            ? `const hero = scene.getObjectByName('hero'); // the objects to select\ncomposer.add(${factoryName}({ mask: { selection: [hero] } }));`
-            : exampleParams
-              ? `composer.add(${factoryName}({ preset: '${exampleParams[0]}' }));`
-              : `composer.add(${factoryName}());`,
-          'renderer.setAnimationLoop(() => composer.render());',
-        ]),
+          '// Standalone: blend two textures as progress goes from 0 to 1.',
+          'const player = createTransition(renderer, effect, { from: textureA, to: textureB });',
+          'player.progress = 0.5;',
+          'player.render();',
+          '',
+          '// With HoloCSS: hand it to transition3d().',
+          "import { transition3d } from '@mk7s/holocss/three';",
+          'await transition3d(fromElement, toElement, toHoloEffect(effect), { target, update });',
+        ]
+      : material
+        ? [
+            "import { patchMaterial } from '@mk7s/xtree/core';",
+            `import { ${factoryName} } from '@mk7s/xtree/effects/${name}';`,
+            '',
+            exampleParams
+              ? `const effect = ${factoryName}({ preset: '${exampleParams[0]}' });`
+              : `const effect = ${factoryName}();`,
+            'patchMaterial(mesh.material, effect);',
+            ...(motion === 'static'
+              ? [
+                  'renderer.setAnimationLoop(() => renderer.render(scene, camera));',
+                ]
+              : [
+                  'const clock = new THREE.Clock();',
+                  'renderer.setAnimationLoop(() => {',
+                  '  effect.tick(clock.getDelta());',
+                  '  renderer.render(scene, camera);',
+                  '});',
+                ]),
+          ]
+        : [
+            "import { EffectComposer } from '@mk7s/xtree/core';",
+            `import { ${factoryName} } from '@mk7s/xtree/effects/${name}';`,
+            '',
+            'const composer = new EffectComposer(renderer);',
+            'composer.setScene(scene, camera);',
+            meta.demo?.selection
+              ? `const hero = scene.getObjectByName('hero'); // the objects to select\ncomposer.add(${factoryName}({ mask: { selection: [hero] } }));`
+              : exampleParams
+                ? `composer.add(${factoryName}({ preset: '${exampleParams[0]}' }));`
+                : `composer.add(${factoryName}());`,
+            'renderer.setAnimationLoop(() => composer.render());',
+          ]),
     '```',
     '',
     `Every parameter is also a property: \`effect.${Object.keys(params)[0]} = ${formatValue(Object.values(params)[0], Object.values(params)[0].default)}\`. Uniform changes take effect on the next frame without recompiling${Object.values(params).some((p) => p.structural) ? `; parameters marked *structural* recompile ${material ? 'the materials the effect is patched into' : 'the pass that contains the effect'}` : ''}.`,
@@ -218,7 +237,12 @@ function page(factory) {
     '',
     `- **Family:** ${effectFamilies[meta.family]} · tracked as story ${meta.story} in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).`,
     ...(material ? materialLines : []),
-    ...(material
+    ...(transition
+      ? [
+          `- **Kind:** transition. \`createTransition(renderer, effect, { from, to })\` runs it on two textures; \`toHoloEffect(effect)\` turns it into a HoloCSS \`ThreeEffect\` (parameters are baked in when called), with the \`${definition.fallback}\` CSS fallback. See [transitions](/guide/transitions).`,
+        ]
+      : []),
+    ...(material || transition
       ? []
       : [
           `- **Passes:** ${
@@ -227,11 +251,13 @@ function page(factory) {
               : 'samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass.'
           }${definition.setup ? ' It also renders its own intermediate passes before the merged pass.' : ''}`,
         ]),
-    ...(buffersText && !material
+    ...(buffersText && !material && !transition
       ? [`- **Geometry buffers:** ${buffersText}`]
       : []),
-    ...(material ? [] : [`- **Masks:** ${maskText}`]),
-    `- **Motion:** ${motionText}`,
+    ...(material || transition ? [] : [`- **Masks:** ${maskText}`]),
+    transition
+      ? '- **Motion:** driven by `progress` from your timeline. HoloCSS skips transitions when motion is off; standalone, set `progress = 1` instead of animating.'
+      : `- **Motion:** ${motionText}`,
     `- **Size:** ${(budgets[`./effects/${name}`] / 1024).toFixed(1)} KB gzip budget for \`@mk7s/xtree/effects/${name}\`, including the shared effect runtime.`,
     '',
   );

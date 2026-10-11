@@ -58,7 +58,11 @@ export function renameEffectSource(source: string, prefix: string): string {
   );
 }
 
-function literal(param: Param, value: number | boolean | number[]): string {
+/** A parameter value as a GLSL literal. */
+export function literal(
+  param: Param,
+  value: number | boolean | number[],
+): string {
   const f = (v: number) => (Number.isInteger(v) ? `${v}.0` : String(v));
   switch (param.kind) {
     case 'float':
@@ -75,7 +79,9 @@ function literal(param: Param, value: number | boolean | number[]): string {
   }
 }
 
-const identifier = (option: string) => option.replace(/\W+/g, '_');
+/** A select option as a GLSL identifier suffix. */
+export const identifier = (option: string): string =>
+  option.replace(/\W+/g, '_');
 
 /** A stable key for the compiled form of a pass: changes exactly when its shader must be rebuilt. */
 export function passSignature(

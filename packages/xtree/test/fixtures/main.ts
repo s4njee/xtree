@@ -18,6 +18,11 @@ import {
   MeshStandardMaterial,
   MeshToonMaterial,
   SphereGeometry,
+  Color,
+  OrthographicCamera,
+  PlaneGeometry,
+  Scene,
+  ShaderMaterial,
   RGBAFormat,
   FloatType,
   WebGLRenderTarget,
@@ -33,6 +38,8 @@ import { EffectComposer as ThreeEffectComposer } from 'three/examples/jsm/postpr
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import {
+  createTransition,
+  toHoloEffect,
   EffectComposer,
   EffectPass,
   patchMaterial,
@@ -44,7 +51,11 @@ import {
   type Effect,
 } from '../../src/effect/index.js';
 import { createSampleTexture } from '../../src/core/index.js';
-import type { EffectFactory, ParamSchema } from '../../src/effect/index.js';
+import type {
+  EffectFactory,
+  ParamSchema,
+  Transition,
+} from '../../src/effect/index.js';
 
 // Every effect folder, discovered at build time.
 const modules = import.meta.glob<Record<string, unknown>>(
@@ -176,6 +187,96 @@ function toMask(
   return mask;
 }
 
+/** Two deterministic sRGB images for transitions: warm rings and cool stripes. */
+function transitionImage(kind: 'from' | 'to'): DataTexture {
+  const data = new Uint8Array(width * height * 4);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const i = (y * width + x) * 4;
+      if (kind === 'from') {
+        const r = Math.hypot(x - width * 0.35, y - height * 0.5);
+        const ring = Math.floor(r / 14) % 2;
+        data.set([220 - ring * 60, 120 + (x / width) * 80, 60, 255], i);
+      } else {
+        const stripe = Math.floor((x + y) / 16) % 2;
+        data.set([40, 90 + stripe * 70, 200 - (y / height) * 80, 255], i);
+      }
+    }
+  }
+  const texture = new DataTexture(data, width, height, RGBAFormat);
+  texture.colorSpace = SRGBColorSpace;
+  texture.needsUpdate = true;
+  return texture;
+}
+const transitionImages = {
+  from: transitionImage('from'),
+  to: transitionImage('to'),
+};
+
+export interface TransitionSpec {
+  id: string;
+  preset?: string;
+  params?: Record<string, unknown>;
+  progress: number;
+  /** `holocss` renders the way HoloCSS's transition3d() does, through toHoloEffect(). */
+  via?: 'xtree' | 'holocss';
+}
+
+// transition3d()'s vertex shader and plane, from HoloCSS src/three/transition.ts.
+const holoVertex = `varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`;
+
+function renderTransition(spec: TransitionSpec) {
+  configure({});
+  const factory = factories[spec.id] as unknown as (
+    options: Record<string, unknown>,
+  ) => Transition;
+  const transition = factory({
+    ...(spec.preset ? { preset: spec.preset } : {}),
+    ...(spec.params ?? {}),
+  });
+  const accent = '#7cc4ff';
+  try {
+    if (spec.via === 'holocss') {
+      const effect = toHoloEffect(transition);
+      const material = new ShaderMaterial({
+        vertexShader: holoVertex,
+        fragmentShader: effect.fragment,
+        uniforms: {
+          fromTexture: { value: transitionImages.from },
+          toTexture: { value: transitionImages.to },
+          progress: { value: spec.progress },
+          accent: { value: new Color(accent) },
+        },
+        transparent: true,
+        depthTest: false,
+      });
+      const geometry = new PlaneGeometry(2, 2, 64, 32);
+      const scene = new Scene();
+      scene.add(new Mesh(geometry, material));
+      const camera = new OrthographicCamera(-1, 1, 1, -1, 0.01, 10);
+      camera.position.z = 2;
+      renderer.setRenderTarget(null);
+      renderer.render(scene, camera);
+      const result = snapshot();
+      material.dispose();
+      geometry.dispose();
+      return { ...result, fallback: effect.fallback, name: effect.name };
+    }
+    const player = createTransition(renderer, transition, {
+      from: transitionImages.from,
+      to: transitionImages.to,
+      accent,
+    });
+    player.progress = spec.progress;
+    player.render();
+    const result = snapshot();
+    player.dispose();
+    return { ...result, fallback: '', name: transition.definition.meta.title };
+  } finally {
+    transition.dispose();
+  }
+}
+
 function createEffects(
   specs: EffectSpec[] = [],
   sharedMask?: MaskSpec,
@@ -262,6 +363,98 @@ function withComposer<T>(
 
 const xt = {
   factories: Object.keys(factories),
+  kind(id: string) {
+    return factories[id]?.definition.kind ?? 'post';
+  },
+  renderTransition,
+  /**
+   * Runs a transition through HoloCSS's own transition3d() between two solid
+   * colors, stops it at `progress` and reads the middle pixel of its stage.
+   */
+  async holoTransition(spec: Omit<TransitionSpec, 'via'>) {
+    const { transition3d } = await import('@holocss/three');
+    const target = document.createElement('div');
+    target.style.cssText =
+      'position:fixed;left:0;top:0;width:160px;height:90px;';
+    document.body.append(target);
+    const source = (color: string) => {
+      const canvas = new OffscreenCanvas(160, 90);
+      const g = canvas.getContext('2d')!;
+      g.fillStyle = color;
+      g.fillRect(0, 0, 160, 90);
+      return canvas;
+    };
+    const errors: string[] = [];
+    const log = console.error;
+    console.error = (...args: unknown[]) => {
+      errors.push(args.map(String).join(' ').slice(0, 300));
+    };
+    let updates = 0;
+    let driven = false;
+    let pixel: number[] = [];
+    const factory = factories[spec.id] as unknown as (
+      options: Record<string, unknown>,
+    ) => Transition;
+    const transition = factory({
+      ...(spec.preset ? { preset: spec.preset } : {}),
+      ...(spec.params ?? {}),
+    });
+    try {
+      const result = await transition3d(
+        source('rgb(200, 120, 60)'),
+        source('rgb(40, 90, 200)'),
+        toHoloEffect(transition),
+        {
+          target,
+          update: () => {
+            updates++;
+          },
+          driver(control) {
+            driven = true;
+            control.progress = spec.progress;
+            // The stage is a 2D canvas that HoloCSS copies each WebGL frame into.
+            const canvas = document.querySelector<HTMLCanvasElement>(
+              'canvas[data-hcss-three]',
+            );
+            const g = canvas?.getContext('2d');
+            if (canvas && g)
+              pixel = [
+                ...g.getImageData(
+                  Math.floor(canvas.width / 2),
+                  Math.floor(canvas.height / 2),
+                  1,
+                  1,
+                ).data,
+              ];
+            control.finish();
+          },
+        },
+      );
+      return { status: result.status, updates, pixel, errors, driven };
+    } finally {
+      console.error = log;
+      target.remove();
+      transition.dispose();
+    }
+  },
+  /** The two transition test images as display pixels (rows top to bottom). */
+  transitionImages() {
+    return withComposer({}, () => {
+      const out = {} as { from: number[]; to: number[] };
+      for (const name of ['from', 'to'] as const) {
+        const texture = transitionImages[name];
+        const player = createTransition(
+          renderer,
+          (factories.crossfade as unknown as () => Transition)(),
+          { from: texture, to: texture },
+        );
+        player.render();
+        out[name] = readPixels();
+        player.dispose();
+      }
+      return out;
+    });
+  },
   presets(id: string) {
     return Object.keys(factories[id]?.definition.presets ?? {});
   },

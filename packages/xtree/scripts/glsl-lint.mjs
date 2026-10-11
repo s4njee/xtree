@@ -119,6 +119,21 @@ for (const chunk of chunks) {
 const effects = await loadEffects();
 const { compilePass } = await loadSource('src/core/compile.ts');
 const { compileMaterial } = await loadSource('src/core/material-compile.ts');
+const { compileTransition, compileHoloFragment } = await loadSource(
+  'src/core/transition-compile.ts',
+);
+
+// What three.js puts around a ShaderMaterial fragment on WebGL2, as HoloCSS's transition3d() uses it.
+const holoFragment = (code) => `#version 300 es
+precision highp float;
+precision highp int;
+#define varying in
+#define texture2D texture
+out highp vec4 pc_fragColor;
+#define gl_FragColor pc_fragColor
+vec4 sRGBTransferOETF(vec4 v) { return v; }
+${code.replace('#include <colorspace_fragment>', 'gl_FragColor = sRGBTransferOETF(gl_FragColor);')}
+`;
 
 // Stand-ins for the prefixes three.js puts in front of a built-in material's shaders.
 const materialVertex = (code) => `#version 300 es
@@ -164,11 +179,13 @@ for (const { id, factory } of effects) {
   const { definition } = factory;
   const folder = `src/effects/${id}`;
   const material = definition.kind === 'material';
+  const transition = definition.kind === 'transition';
   const sources = [definition.fragment, definition.vertex ?? ''].join('\n');
   const known = new Set([
     'main',
     'fragment',
     'vertex',
+    'transition',
     'time',
     'maskAt',
     'has_mask',
@@ -197,7 +214,10 @@ for (const { id, factory } of effects) {
   const settings = [{}];
   for (const [name, param] of Object.entries(definition.params)) {
     if (param.kind === 'texture') {
-      settings.push({ [name]: null });
+      // Compile both with and without the texture.
+      settings.push({
+        [name]: param.default === null ? { isTexture: true } : null,
+      });
       continue;
     }
     if (!param.structural) continue;
@@ -212,7 +232,7 @@ for (const { id, factory } of effects) {
   for (const preset of Object.keys(definition.presets ?? {}))
     settings.push({ preset });
   // Every mask kind, which also adds the depth buffer for depth masks.
-  if (!material)
+  if (!material && !transition)
     settings.push(
       { mask: { texture: { isTexture: true }, channel: 'a' } },
       { mask: { depth: [1, 10], feather: 1 } },
@@ -236,7 +256,29 @@ for (const { id, factory } of effects) {
       }
     }
   }
-  for (const setting of material ? [] : settings) {
+  for (const setting of transition ? settings : []) {
+    for (const srgb of [true, false]) {
+      const compiled = compileTransition(factory(setting), { srgb });
+      variants++;
+      const log = validate(`#version 300 es\n${compiled.fragment}`);
+      if (log)
+        problems.push(
+          `${folder} ${JSON.stringify(setting)}: glslangValidator failed\n${formatShaderError(log, compiled.files).trim()}`,
+        );
+    }
+    const textured = Object.entries(definition.params).some(
+      ([name, param]) =>
+        param.kind === 'texture' && factory(setting).get(name) !== null,
+    );
+    if (textured) continue;
+    variants++;
+    const log = validate(holoFragment(compileHoloFragment(factory(setting))));
+    if (log)
+      problems.push(
+        `${folder} ${JSON.stringify(setting)} HoloCSS: glslangValidator failed\n${log.trim()}`,
+      );
+  }
+  for (const setting of material || transition ? [] : settings) {
     const pass = compilePass([factory(setting), factory(setting)], {
       toneMapping: 'aces',
       colorSpace: 'srgb',

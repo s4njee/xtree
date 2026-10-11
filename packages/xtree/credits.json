@@ -62,6 +62,14 @@
       ]
     },
     {
+      "id": "effects/crossfade",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Luma-keyed wipe with a soft threshold edge, as in classic video switchers; patterns from simple distance functions and fbm noise"
+      ]
+    },
+    {
       "id": "effects/crt",
       "kind": "original",
       "licence": "MIT",

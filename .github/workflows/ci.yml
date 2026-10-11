@@ -52,6 +52,11 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+      # The transition tests run HoloCSS's transition3d() from its pinned source.
+      - uses: actions/cache@v4
+        with:
+          path: .cache/holocss
+          key: holocss-${{ hashFiles('holocss.json') }}
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
       - run: xvfb-run -a pnpm test:browser

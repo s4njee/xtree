@@ -58,6 +58,10 @@
       "types": "./dist/effects/chromatic-aberration/index.d.ts",
       "import": "./dist/effects/chromatic-aberration/index.js"
     },
+    "./effects/crossfade": {
+      "types": "./dist/effects/crossfade/index.d.ts",
+      "import": "./dist/effects/crossfade/index.js"
+    },
     "./effects/crt": {
       "types": "./dist/effects/crt/index.d.ts",
       "import": "./dist/effects/crt/index.js"

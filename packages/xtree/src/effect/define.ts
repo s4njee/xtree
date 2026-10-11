@@ -131,8 +131,8 @@ export type Masking = 'opacity' | 'custom';
 export interface EffectDefinition<S extends ParamSchema> {
   /** Kebab-case id, also the export path: `@mk7s/xtree/effects/<name>`. */
   readonly name: string;
-  /** Set to `material` by `defineMaterialEffect`; post effects leave it out. */
-  readonly kind?: 'post' | 'material';
+  /** Set by `defineMaterialEffect` and `defineTransition`; post effects leave it out. */
+  readonly kind?: 'post' | 'material' | 'transition';
   readonly meta: EffectMeta;
   readonly params: S;
   /** Named parameter sets; each is applied over the defaults. */

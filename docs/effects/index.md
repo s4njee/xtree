@@ -6,7 +6,7 @@ title: Effects
 
 # Effects
 
-38 effects so far, out of the 141 planned. Each page has a live demo you can adjust, compare and copy.
+39 effects so far, out of the 141 planned. Each page has a live demo you can adjust, compare and copy.
 
 ## Color & tone
 
@@ -93,6 +93,12 @@ title: Effects
 <div class="xt-effect-grid">
 <a class="hcss-card xt-effect-card" href="./dissolve"><strong>Dissolve</strong><span>Burns the surface away as `progress` goes from 0 to 1, in noisy patches or as a front sweeping up the object, with a glowing edge.</span></a>
 <a class="hcss-card xt-effect-card" href="./fresnel-glow"><strong>Fresnel glow</strong><span>Adds light where a surface turns away from the camera, the rim lighting of force fields, energy shields and selected objects.</span></a>
+</div>
+
+## Transitions
+
+<div class="xt-effect-grid">
+<a class="hcss-card xt-effect-card" href="./crossfade"><strong>Crossfade & luma wipe</strong><span>Blends to the next image everywhere at once, through noise, or along a luma pattern (linear, radial, diamond or spiral) with a soft edge that can glow in the theme accent.</span></a>
 </div>
 
 ## Utilities

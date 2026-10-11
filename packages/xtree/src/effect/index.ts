@@ -70,3 +70,11 @@ export {
   type MaterialEffectInstance,
   type MaterialSettings,
 } from './material.js';
+export {
+  defineTransition,
+  Transition,
+  type HoloFallback,
+  type TransitionDefinition,
+  type TransitionFactory,
+  type TransitionInstance,
+} from './transition.js';

@@ -34,6 +34,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/chromatic-aberration').then(
       (m) => m.chromaticAberration as unknown as EffectFactory<ParamSchema>,
     ),
+  crossfade: () =>
+    import('@mk7s/xtree/effects/crossfade').then(
+      (m) => m.crossfade as unknown as EffectFactory<ParamSchema>,
+    ),
   crt: () =>
     import('@mk7s/xtree/effects/crt').then(
       (m) => m.crt as unknown as EffectFactory<ParamSchema>,

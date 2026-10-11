@@ -24,6 +24,20 @@ test.describe('visual baselines', () => {
         id,
       );
       expect(presets.length).toBeGreaterThanOrEqual(2);
+      const kind = await page.evaluate((effect) => window.xt.kind(effect), id);
+      if (kind === 'transition') {
+        // Transitions halfway between the fixture's two test images.
+        for (const preset of [undefined, ...presets]) {
+          const { png: image } = await page.evaluate(
+            (s) => window.xt.renderTransition(s),
+            { id, ...(preset ? { preset } : {}), progress: 0.5 },
+          );
+          expect
+            .soft(png(image), `${id} ${preset ?? 'default'}`)
+            .toMatchSnapshot(`${id}-${preset ?? 'default'}.png`, tolerance);
+        }
+        return;
+      }
       for (const preset of [undefined, ...presets]) {
         const spec: RenderSpec = {
           effects: [

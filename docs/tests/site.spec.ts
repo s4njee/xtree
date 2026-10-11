@@ -93,17 +93,23 @@ test.describe('theme contrast', () => {
 });
 
 test('every page renders without console errors', async ({ page }) => {
-  const problems = watchConsole(page);
-  for (const path of [
+  const paths = [
     '/',
     '/guide/',
     '/guide/getting-started',
+    '/guide/masks',
+    '/guide/materials',
+    '/guide/transitions',
     '/effects/',
     ...effectLinks,
     '/reference/shaders',
     '/project/',
     '/adr/',
-  ]) {
+  ];
+  // Each page loads and starts its demo; the budget grows with the catalogue.
+  test.setTimeout(30_000 + paths.length * 2_000);
+  const problems = watchConsole(page);
+  for (const path of paths) {
     await page.goto(`${base}${path}`);
     await expect(page.locator('h1').first()).toBeVisible();
   }

@@ -198,6 +198,15 @@
     ]
   },
   {
+    "text": "Transitions",
+    "items": [
+      {
+        "text": "Crossfade & luma wipe",
+        "link": "/effects/crossfade"
+      }
+    ]
+  },
+  {
     "text": "Utilities",
     "items": [
       {

@@ -27,3 +27,15 @@ export {
   materialSignature,
   type MaterialInjection,
 } from './material-compile.js';
+export {
+  createTransition,
+  toHoloEffect,
+  type HoloThreeEffect,
+  type TransitionOptions,
+  type TransitionPlayer,
+} from './transition.js';
+export {
+  compileHoloFragment,
+  compileTransition,
+  type CompiledTransition,
+} from './transition-compile.js';

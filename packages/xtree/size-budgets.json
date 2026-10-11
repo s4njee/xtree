@@ -45,5 +45,6 @@
   "./effects/foil-material": 8960,
   "./effects/fresnel-glow": 5440,
   "./effects/hologram": 7616,
-  "./effects/thin-film": 7936
+  "./effects/thin-film": 7936,
+  "./effects/crossfade": 7616
 }
