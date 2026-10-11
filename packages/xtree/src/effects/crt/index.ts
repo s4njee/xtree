@@ -1,4 +1,4 @@
-import { defineEffect, float, select } from '../../effect/index.js';
+import { defineEffect, float, seed, select } from '../../effect/index.js';
 import { noiseHashChunks } from '../../shaders/maps.js';
 import fragment from './shader.glsl';
 
@@ -96,6 +96,7 @@ export const crt = defineEffect({
       description:
         'Compensates for the light the mask and scanlines take away.',
     }),
+    seed: seed(),
   },
   presets: {
     television: { curvature: 0.14, phosphor: 'shadow', maskStrength: 0.35 },

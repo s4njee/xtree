@@ -28,13 +28,14 @@ Every parameter is also a property: `effect.bleed = 4`. Uniform changes take eff
 
 ## Parameters
 
-| Parameter       | Type                                                          | Default     | Range     | Description                                   |
-| --------------- | ------------------------------------------------------------- | ----------- | --------- | --------------------------------------------- |
-| `bleed`         | number                                                        | `4`         | 0 – 16 px | How far colors bleed into each other.         |
-| `wobble`        | number                                                        | `4`         | 0 – 16 px | How much edges waver.                         |
-| `edgeDarkening` | number                                                        | `0.7`       | 0 – 1     | Darker rims where the wash changes.           |
-| `granulation`   | number                                                        | `0.6`       | 0 – 1     | Pigment settling into the paper grain.        |
-| `paper`         | hex color (theme: [`background`](/guide/holocss#theme-roles)) | `'#fbf7ee'` |           | Paper color, which shows through thin washes. |
+| Parameter       | Type                                                          | Default     | Range     | Description                                                             |
+| --------------- | ------------------------------------------------------------- | ----------- | --------- | ----------------------------------------------------------------------- |
+| `bleed`         | number                                                        | `4`         | 0 – 16 px | How far colors bleed into each other.                                   |
+| `wobble`        | number                                                        | `4`         | 0 – 16 px | How much edges waver.                                                   |
+| `edgeDarkening` | number                                                        | `0.7`       | 0 – 1     | Darker rims where the wash changes.                                     |
+| `granulation`   | number                                                        | `0.6`       | 0 – 1     | Pigment settling into the paper grain.                                  |
+| `paper`         | hex color (theme: [`background`](/guide/holocss#theme-roles)) | `'#fbf7ee'` |           | Paper color, which shows through thin washes.                           |
+| `seed`          | integer                                                       | `0`         | 0 – 9999  | Picks the random pattern: the same seed always renders the same frames. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

@@ -43,6 +43,7 @@ Every parameter is also a property: `effect.color = '#5ad8ff'`. Uniform changes 
 | `scanlineSpeed`    | number                                                    | `0.3`       | -3 – 3   | Scroll speed of the scanlines, in world units per second.                            |
 | `flicker`          | number                                                    | `0.12`      | 0 – 0.25 | Brightness wobble; slow (under 3 Hz) and at most 25%, to stay photosensitivity-safe. |
 | `glitch`           | number                                                    | `0.06`      | 0 – 0.5  | Sideways shift of occasional horizontal slices, in object units.                     |
+| `seed`             | integer                                                   | `0`         | 0 – 9999 | Picks the random pattern: the same seed always renders the same frames.              |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

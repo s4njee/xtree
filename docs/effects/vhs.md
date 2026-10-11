@@ -30,15 +30,16 @@ Every parameter is also a property: `effect.wobble = 0.5`. Uniform changes take 
 
 ## Parameters
 
-| Parameter         | Type    | Default | Range     | Description                            |
-| ----------------- | ------- | ------- | --------- | -------------------------------------- |
-| `wobble`          | number  | `0.5`   | 0 – 2     | Horizontal wobble of the tape.         |
-| `bleed`           | number  | `6`     | 0 – 24 px | How far colors smear to the right.     |
-| `saturation`      | number  | `0.85`  | 0 – 1.5   | Color strength after the tape.         |
-| `tracking`        | number  | `0.5`   | 0 – 1     | Strength of the rolling tracking band. |
-| `headSwitching`   | number  | `0.6`   | 0 – 1     | Skew and noise in the bottom lines.    |
-| `noise`           | number  | `0.3`   | 0 – 1     | Luma noise.                            |
-| `onScreenDisplay` | boolean | `true`  |           | Show PLAY and a tape counter.          |
+| Parameter         | Type    | Default | Range     | Description                                                             |
+| ----------------- | ------- | ------- | --------- | ----------------------------------------------------------------------- |
+| `wobble`          | number  | `0.5`   | 0 – 2     | Horizontal wobble of the tape.                                          |
+| `bleed`           | number  | `6`     | 0 – 24 px | How far colors smear to the right.                                      |
+| `saturation`      | number  | `0.85`  | 0 – 1.5   | Color strength after the tape.                                          |
+| `tracking`        | number  | `0.5`   | 0 – 1     | Strength of the rolling tracking band.                                  |
+| `headSwitching`   | number  | `0.6`   | 0 – 1     | Skew and noise in the bottom lines.                                     |
+| `noise`           | number  | `0.3`   | 0 – 1     | Luma noise.                                                             |
+| `onScreenDisplay` | boolean | `true`  |           | Show PLAY and a tape counter.                                           |
+| `seed`            | integer | `0`     | 0 – 9999  | Picks the random pattern: the same seed always renders the same frames. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

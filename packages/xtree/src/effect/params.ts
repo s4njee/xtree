@@ -223,6 +223,21 @@ export const curve = (options: ParamOptions<CurveParam>): CurveParam => ({
   kind: 'curve',
   ...options,
 });
+/**
+ * The random seed of a stochastic effect (X14.7): the same seed always
+ * renders the same frames, and another seed an unrelated pattern. Use it in
+ * GLSL as `xt_seeded(coordinates, $seed)`.
+ */
+export const seed = (options: Partial<ParamOptions<IntParam>> = {}): IntParam =>
+  int({
+    default: 0,
+    min: 0,
+    max: 9999,
+    step: 1,
+    description:
+      'Picks the random pattern: the same seed always renders the same frames.',
+    ...options,
+  });
 /** A choice between named options. */
 export const select = <const O extends string>(
   options: Omit<SelectParam<O>, 'kind' | 'default'> & {

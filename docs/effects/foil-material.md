@@ -42,6 +42,7 @@ Every parameter is also a property: `effect.intensity = 0.7`. Uniform changes ta
 | `sparkle`       | number                                                    | `0.4`       | 0 – 1    | Density of view-dependent glints.                                                   |
 | `speed`         | number                                                    | `0.2`       | 0 – 2    | Drift of the cosmos pattern (stops when motion is off).                             |
 | `tint`          | hex color (theme: [`accent`](/guide/holocss#theme-roles)) | `'#ffffff'` |          | Color multiplied into the foil.                                                     |
+| `seed`          | integer                                                   | `0`         | 0 – 9999 | Picks the random pattern: the same seed always renders the same frames.             |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

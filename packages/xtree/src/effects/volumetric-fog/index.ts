@@ -4,6 +4,7 @@ import {
   defineEffect,
   float,
   int,
+  seed,
   vec2,
   vec3,
 } from '../../effect/index.js';
@@ -125,6 +126,7 @@ export const volumetricFog = defineEffect({
       step: 0.25,
       description: 'Fog buffer size relative to the frame.',
     }),
+    seed: seed(),
   },
   presets: {
     groundMist: { density: 0.4, falloff: 2, height: -0.5, noise: 0.7 },
@@ -161,6 +163,7 @@ export const volumetricFog = defineEffect({
         lightDirection: u.light!,
         anisotropy: u.anisotropy!,
         steps: u.steps!,
+        seed: u.seed!,
       },
       depthReconstructChunks,
       noiseValueChunks,

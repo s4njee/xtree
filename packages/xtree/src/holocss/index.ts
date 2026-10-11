@@ -46,3 +46,12 @@ export function bindMotion(
 ): () => void {
   return bindPolicy(targets, element, holocssMotion);
 }
+export {
+  stageEffects,
+  withEffects,
+  type HoloSceneBuilder,
+  type HoloSceneContext,
+  type HoloSceneView,
+  type HoloStage,
+  type StageComposer,
+} from './stage.js';

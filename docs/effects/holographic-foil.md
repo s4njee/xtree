@@ -44,6 +44,7 @@ Every parameter is also a property: `effect.intensity = 0.5`. Uniform changes ta
 | `sparkle`       | number                                                    | `0.3`       | 0 – 1       | Density of view-dependent glitter.                                           |
 | `speed`         | number                                                    | `0.5`       | 0 – 4       | Drift of the pattern over time. Freezes when motion is off.                  |
 | `tint`          | hex color (theme: [`accent`](/guide/holocss#theme-roles)) | `'#ffffff'` |             | Color multiplied into the foil.                                              |
+| `seed`          | integer                                                   | `0`         | 0 – 9999    | Picks the random pattern: the same seed always renders the same frames.      |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

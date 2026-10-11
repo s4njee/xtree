@@ -49,6 +49,7 @@ Every parameter is also a property: `effect.blockSize = 32`. Uniform changes tak
 | `shift`     | number  | `0.08`  | 0 – 0.5    | Largest sideways shift of a slice, as a fraction of the width.                                                      |
 | `split`     | number  | `12`    | 0 – 60 px  | Largest color channel split.                                                                                        |
 | `steps`     | integer | `3`     | 1 – 6      | How many times the slices re-roll across the transition; kept low so a one-second cut stays within the flash limit. |
+| `seed`      | integer | `0`     | 0 – 9999   | Picks the random pattern: the same seed always renders the same frames.                                             |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

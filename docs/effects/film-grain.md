@@ -30,14 +30,15 @@ Every parameter is also a property: `effect.intensity = 0.12`. Uniform changes t
 
 ## Parameters
 
-| Parameter           | Type    | Default | Range      | Description                                                  |
-| ------------------- | ------- | ------- | ---------- | ------------------------------------------------------------ |
-| `intensity`         | number  | `0.12`  | 0 – 0.6    | Strength of the grain.                                       |
-| `size`              | number  | `1.5`   | 1 – 6 px   | Size of a grain particle.                                    |
-| `luminanceResponse` | number  | `0.6`   | 0 – 1      | How much less grain shows in highlights, as with film stock. |
-| `colored`           | boolean | `false` |            | Separate grain per color channel, like color negative film.  |
-| `animated`          | boolean | `true`  |            | Change the grain every frame.                                |
-| `speed`             | number  | `24`    | 1 – 60 fps | How often the grain changes.                                 |
+| Parameter           | Type    | Default | Range      | Description                                                             |
+| ------------------- | ------- | ------- | ---------- | ----------------------------------------------------------------------- |
+| `intensity`         | number  | `0.12`  | 0 – 0.6    | Strength of the grain.                                                  |
+| `size`              | number  | `1.5`   | 1 – 6 px   | Size of a grain particle.                                               |
+| `luminanceResponse` | number  | `0.6`   | 0 – 1      | How much less grain shows in highlights, as with film stock.            |
+| `colored`           | boolean | `false` |            | Separate grain per color channel, like color negative film.             |
+| `animated`          | boolean | `true`  |            | Change the grain every frame.                                           |
+| `speed`             | number  | `24`    | 1 – 60 fps | How often the grain changes.                                            |
+| `seed`              | integer | `0`     | 0 – 9999   | Picks the random pattern: the same seed always renders the same frames. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

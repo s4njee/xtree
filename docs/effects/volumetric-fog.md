@@ -46,6 +46,7 @@ Every parameter is also a property: `effect.density = 0.12`. Uniform changes tak
 | `brightness`  | number                                                     | `1`                | 0 – 4                | Brightness of the scattered light.                                         |
 | `steps`       | integer                                                    | `24`               | 8 – 64               | March steps per ray: more are smoother and slower.                         |
 | `resolution`  | number                                                     | `0.5`              | 0.25 – 1             | Fog buffer size relative to the frame.                                     |
+| `seed`        | integer                                                    | `0`                | 0 – 9999             | Picks the random pattern: the same seed always renders the same frames.    |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

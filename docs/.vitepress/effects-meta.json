@@ -281,7 +281,8 @@
       "luminanceResponse",
       "colored",
       "animated",
-      "speed"
+      "speed",
+      "seed"
     ]
   },
   {
@@ -364,7 +365,8 @@
       "haloWidth",
       "chromatic",
       "starburst",
-      "dirtAmount"
+      "dirtAmount",
+      "seed"
     ]
   },
   {
@@ -462,7 +464,8 @@
       "frostScale",
       "tint",
       "tintAmount",
-      "grain"
+      "grain",
+      "seed"
     ]
   },
   {
@@ -590,7 +593,7 @@
     "buffers": [],
     "motion": "freeze",
     "presets": 4,
-    "params": ["amount", "mode", "size", "rate", "bands"]
+    "params": ["amount", "mode", "size", "rate", "bands", "seed"]
   },
   {
     "id": "jpeg",
@@ -739,7 +742,8 @@
       "chromatic",
       "vignette",
       "flicker",
-      "brightness"
+      "brightness",
+      "seed"
     ]
   },
   {
@@ -893,7 +897,8 @@
       "tracking",
       "headSwitching",
       "noise",
-      "onScreenDisplay"
+      "onScreenDisplay",
+      "seed"
     ]
   },
   {
@@ -1000,7 +1005,8 @@
       "imageEdges",
       "lead",
       "paper",
-      "paperGrain"
+      "paperGrain",
+      "seed"
     ]
   },
   {
@@ -1027,7 +1033,14 @@
     "buffers": [],
     "motion": "static",
     "presets": 4,
-    "params": ["bleed", "wobble", "edgeDarkening", "granulation", "paper"]
+    "params": [
+      "bleed",
+      "wobble",
+      "edgeDarkening",
+      "granulation",
+      "paper",
+      "seed"
+    ]
   },
   {
     "id": "bulge",
@@ -1053,7 +1066,7 @@
     "buffers": [],
     "motion": "freeze",
     "presets": 4,
-    "params": ["map", "strength", "scale", "scroll", "channel", "angle"]
+    "params": ["map", "strength", "scale", "scroll", "channel", "angle", "seed"]
   },
   {
     "id": "flow-warp",
@@ -1066,7 +1079,7 @@
     "buffers": [],
     "motion": "freeze",
     "presets": 4,
-    "params": ["strength", "scale", "speed"]
+    "params": ["strength", "scale", "speed", "seed"]
   },
   {
     "id": "heat-haze",
@@ -1079,7 +1092,7 @@
     "buffers": [],
     "motion": "freeze",
     "presets": 4,
-    "params": ["strength", "scale", "speed", "rise"]
+    "params": ["strength", "scale", "speed", "rise", "seed"]
   },
   {
     "id": "kaleidoscope",
@@ -1271,7 +1284,8 @@
       "color",
       "brightness",
       "steps",
-      "resolution"
+      "resolution",
+      "seed"
     ]
   },
   {
@@ -1294,7 +1308,8 @@
       "saturation",
       "sparkle",
       "speed",
-      "tint"
+      "tint",
+      "seed"
     ]
   },
   {
@@ -1340,7 +1355,8 @@
       "scanlineStrength",
       "scanlineSpeed",
       "flicker",
-      "glitch"
+      "glitch",
+      "seed"
     ]
   },
   {
@@ -1366,7 +1382,8 @@
       "luminanceMask",
       "sparkle",
       "speed",
-      "tint"
+      "tint",
+      "seed"
     ]
   },
   {
@@ -1437,7 +1454,8 @@
       "scale",
       "intensity",
       "sheen",
-      "speed"
+      "speed",
+      "seed"
     ]
   },
   {
@@ -1472,7 +1490,8 @@
       "noiseAmount",
       "edgeWidth",
       "edgeColor",
-      "edgeIntensity"
+      "edgeIntensity",
+      "seed"
     ]
   },
   {
@@ -1547,7 +1566,8 @@
       "saturation",
       "flakeScale",
       "flakeVariation",
-      "tintBase"
+      "tintBase",
+      "seed"
     ]
   },
   {
@@ -1629,7 +1649,7 @@
     "buffers": [],
     "motion": "freeze",
     "presets": 3,
-    "params": ["amplitude", "frequency", "speed", "recomputeNormals"]
+    "params": ["amplitude", "frequency", "speed", "recomputeNormals", "seed"]
   },
   {
     "id": "x-ray",
@@ -1661,7 +1681,8 @@
       "edgeWidth",
       "glow",
       "charWidth",
-      "charring"
+      "charring",
+      "seed"
     ]
   },
   {
@@ -1682,7 +1703,8 @@
       "scale",
       "invert",
       "edgeGlow",
-      "luma"
+      "luma",
+      "seed"
     ]
   },
   {
@@ -1703,7 +1725,8 @@
       "density",
       "shift",
       "split",
-      "steps"
+      "steps",
+      "seed"
     ]
   },
   {
@@ -1730,7 +1753,7 @@
     "buffers": [],
     "motion": "static",
     "presets": 3,
-    "params": ["strength", "scale", "map"]
+    "params": ["strength", "scale", "map", "seed"]
   },
   {
     "id": "pixelate-transition",

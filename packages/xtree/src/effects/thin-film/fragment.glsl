@@ -6,11 +6,11 @@ vec4 $fragment(vec4 color, XtSurface surface) {
   float cosTheta = clamp(abs(dot(surface.viewNormal, surface.viewDirection)), 0.0, 1.0);
   float t;
   if ($variation == $variation_height) {
-    t = fract(surface.objectPosition.y * $scale * 0.5 + 0.1 * xt_simplex(vec3(surface.objectPosition * 2.0 + $time * $speed)));
+    t = fract(surface.objectPosition.y * $scale * 0.5 + 0.1 * xt_simplex(xt_seeded(vec3(surface.objectPosition * 2.0 + $time * $speed), $seed)));
   } else if ($variation == $variation_uniform) {
     t = 0.0;
   } else {
-    t = xt_simplex(vec3(surface.objectPosition * $scale + vec3(0.0, $time * $speed, 0.0))) * 0.5 + 0.5;
+    t = xt_simplex(xt_seeded(vec3(surface.objectPosition * $scale + vec3(0.0, $time * $speed, 0.0)), $seed)) * 0.5 + 0.5;
   }
   float thickness = mix($thicknessMin, $thicknessMax, t);
   vec3 film = xt_thinFilm(thickness, $ior, cosTheta);

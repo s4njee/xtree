@@ -38,6 +38,7 @@ Every parameter is also a property: `effect.map = 'noise'`. Uniform changes take
 | `scroll`   | [x, y]                           | `[0.02, 0.01]` | -1 – 1       | Map movement per second, in map widths.                                                                        |
 | `channel`  | 'rg' \| 'luminance'              | `'rg'`         |              | Red and green move pixels horizontally and vertically, or brightness moves them along the angle.               |
 | `angle`    | number                           | `45`           | -180 – 180 ° | Luminance: direction of the offset.                                                                            |
+| `seed`     | integer                          | `0`            | 0 – 9999     | Picks the random pattern: the same seed always renders the same frames.                                        |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

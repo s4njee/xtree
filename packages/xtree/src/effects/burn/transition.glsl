@@ -6,7 +6,7 @@ vec4 $transition(vec2 uv, float progress) {
   vec2 p = uv * vec2(size.x / size.y, 1.0);
   // When this pixel burns, in [0, 1]: noise, optionally biased toward one side.
   // fBm clusters near zero (its spread is about 0.18), so a logistic stand-in for its CDF spreads the burn evenly over the transition instead of most of the frame catching at once (WCAG 2.3.1).
-  float n = 1.0 / (1.0 + exp(-9.5 * xt_fbm(p * $scale, 5, 2.0, 0.5)));
+  float n = 1.0 / (1.0 + exp(-9.5 * xt_fbm(xt_seeded(p * $scale, $seed), 5, 2.0, 0.5)));
   float v = clamp(mix(n, 1.0 - uv.y, $direction), 0.0, 1.0);
   // The burning edge (and the char ahead of it) moves from just before 0 to just past 1, so nothing glows or chars at either end.
   float w = $edgeWidth;

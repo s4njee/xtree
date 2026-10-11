@@ -2,7 +2,7 @@
 #include <xtree/noise/simplex>
 
 float $offset(vec3 p) {
-  return xt_simplex(vec4(p * $frequency, $time * $speed)) * $amplitude;
+  return xt_simplex(xt_seeded(vec4(p * $frequency, $time * $speed), $seed)) * $amplitude;
 }
 
 void $vertex(inout vec3 position, inout vec3 normal) {

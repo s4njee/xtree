@@ -28,11 +28,11 @@ vec4 $main(vec4 color, vec2 uv) {
   float l = $luma(uv);
   // Strokes: short, broken diagonal lines whose coverage follows darkness.
   vec2 stroke = mat2(0.707, 0.707, -0.707, 0.707) * p;
-  float lineNoise = xt_valueNoise(vec2(stroke.x * 0.6, floor(stroke.y / $strokeSpacing) * 7.1));
+  float lineNoise = xt_valueNoise(xt_seeded(vec2(stroke.x * 0.6, floor(stroke.y / $strokeSpacing) * 7.1), $seed));
   float lines = smoothstep(0.35, 0.0, abs(fract(stroke.y / $strokeSpacing) - 0.5) - (1.0 - l) * 0.35);
   float shade = lines * smoothstep(0.85, 0.2, l) * (0.6 + 0.4 * lineNoise);
   float graphite = max(shade * $shading, $contour(uv));
-  float grain = xt_valueNoise(p * 0.7) * 0.5 + xt_valueNoise(p * 2.3) * 0.5;
+  float grain = xt_valueNoise(xt_seeded(p * 0.7, $seed)) * 0.5 + xt_valueNoise(xt_seeded(p * 2.3, $seed)) * 0.5;
   vec3 paper = xt_linearToSrgb($paper) * (1.0 - grain * $paperGrain * 0.15);
   vec3 lead = xt_linearToSrgb($lead);
   return vec4(xt_srgbToLinear(mix(paper, lead, clamp(graphite * (0.75 + 0.25 * grain), 0.0, 1.0))), color.a);

@@ -1,4 +1,4 @@
-import { defineTransition, float, texture } from '../../effect/index.js';
+import { defineTransition, float, seed, texture } from '../../effect/index.js';
 import { noiseFbmChunks } from '../../shaders/maps.js';
 import fragment from './transition.glsl';
 
@@ -35,6 +35,7 @@ export const morph = defineTransition({
       description:
         'A displacement map: red and green, centered on mid-gray, give the direction. Replaces the noise when set.',
     }),
+    seed: seed(),
   },
   presets: {
     liquid: { strength: 0.3, scale: 1.2 },

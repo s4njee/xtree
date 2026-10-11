@@ -14,7 +14,7 @@ vec4 $fragment(vec4 color, XtSurface surface) {
   if ($pattern == $pattern_radial) {
     phase = length(p - 0.5);
   } else if ($pattern == $pattern_cosmos) {
-    phase = dot(p, vec2(0.8, 0.6)) + 0.25 * xt_simplex(vec3(p * 2.5, t * 0.15));
+    phase = dot(p, vec2(0.8, 0.6)) + 0.25 * xt_simplex(xt_seeded(vec3(p * 2.5, t * 0.15), $seed));
   } else {
     phase = dot(p, vec2(0.8, 0.6));
   }
@@ -26,7 +26,7 @@ vec4 $fragment(vec4 color, XtSurface surface) {
 
   if ($sparkle > 0.0) {
     vec2 cell = floor(p * 60.0);
-    vec3 h = xt_hash3(cell);
+    vec3 h = xt_hash3(xt_seeded(cell, $seed));
     float point = smoothstep(0.35, 0.0, length(fract(p * 60.0) - (0.25 + h.zy * 0.5)));
     float glint = step(1.0 - $sparkle * 0.2, h.x) * point;
     // Each glint lights up only for a narrow range of viewing angles.

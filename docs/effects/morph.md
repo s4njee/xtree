@@ -45,6 +45,7 @@ Every parameter is also a property: `effect.strength = 0.15`. Uniform changes ta
 | `strength` | number     | `0.15`  | 0 – 1     | How far the images are pushed, as a fraction of the frame.                                                |
 | `scale`    | number     | `2`     | 0.25 – 16 | Noise field: size of the swirls (higher is finer).                                                        |
 | `map`      | 2D texture | `null`  |           | A displacement map: red and green, centered on mid-gray, give the direction. Replaces the noise when set. |
+| `seed`     | integer    | `0`     | 0 – 9999  | Picks the random pattern: the same seed always renders the same frames.                                   |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

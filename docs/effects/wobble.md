@@ -31,12 +31,13 @@ Every parameter is also a property: `effect.amplitude = 0.08`. Uniform changes t
 
 ## Parameters
 
-| Parameter          | Type    | Default | Range             | Description                                             |
-| ------------------ | ------- | ------- | ----------------- | ------------------------------------------------------- |
-| `amplitude`        | number  | `0.08`  | 0 – 1 scene units | How far vertices move; 0 turns it off.                  |
-| `frequency`        | number  | `2`     | 0.1 – 20          | Size of the bulges: higher values make smaller ones.    |
-| `speed`            | number  | `0.4`   | 0 – 4             | How fast the bulges drift.                              |
-| `recomputeNormals` | boolean | `true`  |                   | Light the displaced shape rather than the original one. |
+| Parameter          | Type    | Default | Range             | Description                                                             |
+| ------------------ | ------- | ------- | ----------------- | ----------------------------------------------------------------------- |
+| `amplitude`        | number  | `0.08`  | 0 – 1 scene units | How far vertices move; 0 turns it off.                                  |
+| `frequency`        | number  | `2`     | 0.1 – 20          | Size of the bulges: higher values make smaller ones.                    |
+| `speed`            | number  | `0.4`   | 0 – 4             | How fast the bulges drift.                                              |
+| `recomputeNormals` | boolean | `true`  |                   | Light the displaced shape rather than the original one.                 |
+| `seed`             | integer | `0`     | 0 – 9999          | Picks the random pattern: the same seed always renders the same frames. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

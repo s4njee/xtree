@@ -27,15 +27,16 @@ Every parameter is also a property: `effect.sheen = 0.8`. Uniform changes take e
 
 ## Parameters
 
-| Parameter        | Type   | Default | Range    | Description                                                   |
-| ---------------- | ------ | ------- | -------- | ------------------------------------------------------------- |
-| `sheen`          | number | `0.8`   | 0 – 3    | Brightness of the sheen.                                      |
-| `hueRange`       | number | `0.6`   | 0 – 2    | How far the hue travels from the center to the rim, in turns. |
-| `hueOffset`      | number | `0.55`  | 0 – 1    | Hue facing the camera, in turns.                              |
-| `saturation`     | number | `0.45`  | 0 – 1    | Color strength; pearl is pale, opal is vivid.                 |
-| `flakeScale`     | number | `0.15`  | 0.01 – 1 | Size of the flakes, in object units.                          |
-| `flakeVariation` | number | `0.3`   | 0 – 1    | How much the hue varies between flakes.                       |
-| `tintBase`       | number | `0.3`   | 0 – 1    | How much the hue also colors the surface itself.              |
+| Parameter        | Type    | Default | Range    | Description                                                             |
+| ---------------- | ------- | ------- | -------- | ----------------------------------------------------------------------- |
+| `sheen`          | number  | `0.8`   | 0 – 3    | Brightness of the sheen.                                                |
+| `hueRange`       | number  | `0.6`   | 0 – 2    | How far the hue travels from the center to the rim, in turns.           |
+| `hueOffset`      | number  | `0.55`  | 0 – 1    | Hue facing the camera, in turns.                                        |
+| `saturation`     | number  | `0.45`  | 0 – 1    | Color strength; pearl is pale, opal is vivid.                           |
+| `flakeScale`     | number  | `0.15`  | 0.01 – 1 | Size of the flakes, in object units.                                    |
+| `flakeVariation` | number  | `0.3`   | 0 – 1    | How much the hue varies between flakes.                                 |
+| `tintBase`       | number  | `0.3`   | 0 – 1    | How much the hue also colors the surface itself.                        |
+| `seed`           | integer | `0`     | 0 – 9999 | Picks the random pattern: the same seed always renders the same frames. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

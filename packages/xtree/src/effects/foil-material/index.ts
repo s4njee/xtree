@@ -2,6 +2,7 @@ import {
   color,
   defineMaterialEffect,
   float,
+  seed,
   select,
 } from '../../effect/index.js';
 import {
@@ -92,6 +93,7 @@ export const foilMaterial = defineMaterialEffect({
       default: '#ffffff',
       description: 'Color multiplied into the foil.',
     }),
+    seed: seed(),
   },
   presets: {
     card: { intensity: 0.8, sheen: 0.5, sparkle: 0.6 },

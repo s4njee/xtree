@@ -1,5 +1,33 @@
 // The part of HoloCSS's three.js bridge the fixture uses (aliased to its source in vite.config.ts).
 declare module '@holocss/three' {
+  import type { Camera, Scene, WebGLRenderer } from 'three';
+  export interface Stage {
+    readonly canvas: HTMLCanvasElement;
+    readonly renderer: WebGLRenderer;
+    readonly lost: boolean;
+    own<T extends { dispose(): void }>(resource: T): T;
+    render(scene: Scene, camera: Camera): boolean;
+    destroy(): void;
+  }
+  export function createStage(
+    element: HTMLElement,
+    options?: { placement?: 'overlay' | 'inside' },
+  ): Promise<Stage | undefined>;
+  export interface SceneContext {
+    readonly stage: Stage;
+  }
+  export interface SceneView {
+    readonly camera: Camera;
+  }
+  export interface SceneController {
+    readonly stage: Stage;
+    progress: number;
+    destroy(): void;
+  }
+  export function scene(
+    element: HTMLElement,
+    build: (context: SceneContext) => SceneView,
+  ): Promise<SceneController | undefined>;
   export interface ProgressControl {
     progress: number;
     finish(): void;
@@ -35,4 +63,9 @@ declare module '@holocss-src/theme/registry' {
 declare module '*.css?inline' {
   const css: string;
   export default css;
+}
+
+declare module '@holocss-src/three/scenes/gradient' {
+  import type { SceneContext, SceneView } from '@holocss/three';
+  export const gradient: (context: SceneContext) => SceneView;
 }

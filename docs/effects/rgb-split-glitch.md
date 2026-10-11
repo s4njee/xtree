@@ -59,7 +59,7 @@ Apply one with `rgbSplitGlitch({ preset: 'name' })` or `effect.applyPreset('name
 - **Passes:** samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass.
 - **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Settles: when motion is off it switches to still values (`jitter: 0`, `trigger: 'always'`) without changing your settings.
-- **Size:** 5.8 KB gzip budget for `@mk7s/xtree/effects/rgb-split-glitch`, including the shared effect runtime.
+- **Size:** 6.5 KB gzip budget for `@mk7s/xtree/effects/rgb-split-glitch`, including the shared effect runtime.
 
 ## Credits
 

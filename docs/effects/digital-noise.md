@@ -30,13 +30,14 @@ Every parameter is also a property: `effect.amount = 0.15`. Uniform changes take
 
 ## Parameters
 
-| Parameter | Type              | Default  | Range      | Description                                    |
-| --------- | ----------------- | -------- | ---------- | ---------------------------------------------- |
-| `amount`  | number            | `0.15`   | 0 – 1      | Strength of the static.                        |
-| `mode`    | 'mono' \| 'color' | `'mono'` |            | Grey static, or independent noise per channel. |
-| `size`    | number            | `1`      | 1 – 8 px   | Size of a noise cell.                          |
-| `rate`    | number            | `30`     | 1 – 60 fps | How often the static changes.                  |
-| `bands`   | number            | `0.2`    | 0 – 1      | How often stronger noise bands appear.         |
+| Parameter | Type              | Default  | Range      | Description                                                             |
+| --------- | ----------------- | -------- | ---------- | ----------------------------------------------------------------------- |
+| `amount`  | number            | `0.15`   | 0 – 1      | Strength of the static.                                                 |
+| `mode`    | 'mono' \| 'color' | `'mono'` |            | Grey static, or independent noise per channel.                          |
+| `size`    | number            | `1`      | 1 – 8 px   | Size of a noise cell.                                                   |
+| `rate`    | number            | `30`     | 1 – 60 fps | How often the static changes.                                           |
+| `bands`   | number            | `0.2`    | 0 – 1      | How often stronger noise bands appear.                                  |
+| `seed`    | integer           | `0`      | 0 – 9999   | Picks the random pattern: the same seed always renders the same frames. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

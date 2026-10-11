@@ -1,4 +1,4 @@
-import { color, defineEffect, float } from '../../effect/index.js';
+import { color, defineEffect, float, seed } from '../../effect/index.js';
 import {
   colorSpaceChunks,
   noiseValueChunks,
@@ -55,6 +55,7 @@ export const watercolor = defineEffect({
       default: '#fbf7ee',
       description: 'Paper color, which shows through thin washes.',
     }),
+    seed: seed(),
   },
   presets: {
     wet: { bleed: 10, wobble: 6, edgeDarkening: 0.9 },

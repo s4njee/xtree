@@ -5,7 +5,7 @@ vec4 $fragment(vec4 color, XtSurface surface) {
   float facing = clamp(abs(dot(surface.viewNormal, surface.viewDirection)), 0.0, 1.0);
   // Flakes: cells of slightly different orientation in object space.
   vec3 p = surface.objectPosition / max($flakeScale, 1e-3);
-  float flake = xt_valueNoise(p) * 0.6 + xt_valueNoise(p * 2.7 + 5.1) * 0.4;
+  float flake = xt_valueNoise(xt_seeded(p, $seed)) * 0.6 + xt_valueNoise(xt_seeded(p * 2.7 + 5.1, $seed)) * 0.4;
   float hue = $hueOffset + (1.0 - facing) * $hueRange + (flake - 0.5) * $flakeVariation;
   vec3 tint = 0.5 + 0.5 * cos(6.2831853 * (hue + vec3(0.0, 0.33, 0.67)));
   // Pearl is pale: mix the hue toward white.

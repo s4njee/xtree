@@ -8,15 +8,15 @@ vec4 $main(vec4 color, vec2 uv) {
   float t = floor($phase * 2.0);
   vec3 held = texture($held, uv).rgb;
 #if $mode == $mode_noise
-  vec3 base = vec3(xt_hash1(vec2(floor(uv * xt_resolution / 2.0)) + t * 13.0)) * 0.6;
+  vec3 base = vec3(xt_hash1(xt_seeded(vec2(floor(uv * xt_resolution / 2.0)) + t * 13.0, $seed))) * 0.6;
 #else
   vec3 base = held;
 #endif
   // Bands of static and displaced blocks over the frozen picture.
-  float band = step(0.82, xt_hash1(vec2(line, t)));
+  float band = step(0.82, xt_hash1(xt_seeded(vec2(line, t), $seed)));
   vec2 block = floor(uv * vec2(12.0, 8.0));
-  float blocky = step(0.9, xt_hash1(block + t * 7.0));
-  vec3 staticNoise = vec3(xt_hash1(vec2(floor(uv * xt_resolution)) + t)) * 0.5;
+  float blocky = step(0.9, xt_hash1(xt_seeded(block + t * 7.0, $seed)));
+  vec3 staticNoise = vec3(xt_hash1(xt_seeded(vec2(floor(uv * xt_resolution)) + t, $seed))) * 0.5;
   vec3 c = mix(base, staticNoise, band * $severity);
   c = mix(c, texture($held, fract(uv + vec2(0.1, 0.0))).rgb, blocky * $severity);
   // Freeze frames lose some color, as decoders show them.

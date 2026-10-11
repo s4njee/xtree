@@ -1,4 +1,4 @@
-import { defineTransition, float, int } from '../../effect/index.js';
+import { defineTransition, float, int, seed } from '../../effect/index.js';
 import { noiseHashChunks } from '../../shaders/maps.js';
 import fragment from './transition.glsl';
 
@@ -70,6 +70,7 @@ export const glitchCut = defineTransition({
       description:
         'How many times the slices re-roll across the transition; kept low so a one-second cut stays within the flash limit.',
     }),
+    seed: seed(),
   },
   presets: {
     subtle: { shift: 0.03, split: 4, density: 0.25 },

@@ -1,4 +1,4 @@
-import { color, defineEffect, float } from '../../effect/index.js';
+import { color, defineEffect, float, seed } from '../../effect/index.js';
 import { colorSpaceChunks, noiseValueChunks } from '../../shaders/maps.js';
 import fragment from './shader.glsl';
 
@@ -65,6 +65,7 @@ export const pencil = defineEffect({
       step: 0.01,
       description: 'Texture of the paper.',
     }),
+    seed: seed(),
   },
   presets: {
     graphite: { lead: '#3a3a44', shading: 0.9 },

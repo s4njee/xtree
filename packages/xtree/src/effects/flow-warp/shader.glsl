@@ -4,8 +4,8 @@
 // The 2D curl of a simplex potential that drifts through time: divergence-free, so the image swirls without bunching up.
 vec2 $flow(vec2 p, float t) {
   const float e = 0.01;
-  float dx = xt_simplex(vec3(p + vec2(e, 0.0), t)) - xt_simplex(vec3(p - vec2(e, 0.0), t));
-  float dy = xt_simplex(vec3(p + vec2(0.0, e), t)) - xt_simplex(vec3(p - vec2(0.0, e), t));
+  float dx = xt_simplex(xt_seeded(vec3(p + vec2(e, 0.0), t), $seed)) - xt_simplex(xt_seeded(vec3(p - vec2(e, 0.0), t), $seed));
+  float dy = xt_simplex(xt_seeded(vec3(p + vec2(0.0, e), t), $seed)) - xt_simplex(xt_seeded(vec3(p - vec2(0.0, e), t), $seed));
   return vec2(dy, -dx) / (2.0 * e);
 }
 

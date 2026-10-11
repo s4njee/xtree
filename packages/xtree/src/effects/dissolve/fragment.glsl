@@ -2,7 +2,7 @@
 #include <xtree/noise/fbm>
 
 vec4 $fragment(vec4 color, XtSurface surface) {
-  float n = xt_fbm(surface.objectPosition * $noiseScale, 4, 2.0, 0.5) * 0.5 + 0.5;
+  float n = xt_fbm(xt_seeded(surface.objectPosition * $noiseScale, $seed), 4, 2.0, 0.5) * 0.5 + 0.5;
   float value;
   if ($pattern == $pattern_sweep) {
     float span = max($range.y - $range.x, 1e-4);

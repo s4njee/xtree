@@ -103,3 +103,23 @@ vec3 xt_latticeHash(ivec3 c) {
 vec4 xt_latticeHash(ivec4 c) {
   return xt_uintToUnit(xt_pcg4d(uvec4(c)));
 }
+
+/// Offsets noise coordinates by an effect's `seed`: each seed gives an unrelated pattern, and seed 0 leaves the coordinates unchanged. The offset stays under 100 so large seeds don't cost precision.
+float xt_seeded(float p, int seed) {
+  return p + fract(float(seed) * 0.6180340) * 97.0;
+}
+
+/// `xt_seeded` for 2D coordinates.
+vec2 xt_seeded(vec2 p, int seed) {
+  return p + fract(float(seed) * vec2(0.6180340, 0.7548777)) * vec2(97.0, 89.0);
+}
+
+/// `xt_seeded` for 3D coordinates.
+vec3 xt_seeded(vec3 p, int seed) {
+  return p + fract(float(seed) * vec3(0.6180340, 0.7548777, 0.5698403)) * vec3(97.0, 89.0, 83.0);
+}
+
+/// `xt_seeded` for 4D coordinates.
+vec4 xt_seeded(vec4 p, int seed) {
+  return p + fract(float(seed) * vec4(0.6180340, 0.7548777, 0.5698403, 0.8191725)) * vec4(97.0, 89.0, 83.0, 79.0);
+}

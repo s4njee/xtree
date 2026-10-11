@@ -4,6 +4,7 @@ import {
   defineEffect,
   float,
   int,
+  seed,
 } from '../../effect/index.js';
 import { noiseValueChunks, samplingPyramidChunks } from '../../shaders/maps.js';
 import kawaseSource from '../lens-flare/kawase.glsl';
@@ -65,6 +66,7 @@ export const frostedGlass = defineEffect({
       step: 0.005,
       description: 'Fine frost texture.',
     }),
+    seed: seed(),
   },
   presets: {
     bathroom: { blur: 6, distortion: 14, frostScale: 4 },

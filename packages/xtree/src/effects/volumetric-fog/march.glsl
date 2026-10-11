@@ -15,6 +15,7 @@ uniform float time;
 uniform vec3 lightDirection;
 uniform float anisotropy;
 uniform int steps;
+uniform int seed;
 in vec2 vUv;
 out vec4 fragColor;
 
@@ -27,7 +28,7 @@ float valueNoise3(vec3 p) {
   float z = floor(p.z);
   float f = fract(p.z);
   f = f * f * (3.0 - 2.0 * f);
-  return mix(xt_valueNoise(p.xy + z * 17.31), xt_valueNoise(p.xy + (z + 1.0) * 17.31), f);
+  return mix(xt_valueNoise(xt_seeded(p.xy + z * 17.31, seed)), xt_valueNoise(xt_seeded(p.xy + (z + 1.0) * 17.31, seed)), f);
 }
 
 float fogDensity(vec3 p) {

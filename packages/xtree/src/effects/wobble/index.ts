@@ -1,4 +1,4 @@
-import { bool, defineMaterialEffect, float } from '../../effect/index.js';
+import { bool, defineMaterialEffect, float, seed } from '../../effect/index.js';
 import { noiseSimplexChunks } from '../../shaders/maps.js';
 import fragment from './fragment.glsl';
 import vertex from './vertex.glsl';
@@ -44,6 +44,7 @@ export const wobble = defineMaterialEffect({
       default: true,
       description: 'Light the displaced shape rather than the original one.',
     }),
+    seed: seed(),
   },
   presets: {
     jelly: { amplitude: 0.12, frequency: 1.2, speed: 0.8 },

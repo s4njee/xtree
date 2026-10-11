@@ -28,15 +28,16 @@ Every parameter is also a property: `effect.lineWidth = 1.25`. Uniform changes t
 
 ## Parameters
 
-| Parameter       | Type                                                          | Default     | Range      | Description                                                     |
-| --------------- | ------------------------------------------------------------- | ----------- | ---------- | --------------------------------------------------------------- |
-| `lineWidth`     | number                                                        | `1.25`      | 0.5 – 4 px | Width of the contour lines.                                     |
-| `shading`       | number                                                        | `0.8`       | 0 – 1      | How much stroke shading fills the shadows.                      |
-| `strokeSpacing` | number                                                        | `4`         | 2 – 12 px  | Distance between shading strokes.                               |
-| `imageEdges`    | number                                                        | `0.6`       | 0 – 1      | How much the image’s own edges are drawn, besides the geometry. |
-| `lead`          | hex color (theme: [`text`](/guide/holocss#theme-roles))       | `'#2b2b33'` |            | Pencil color.                                                   |
-| `paper`         | hex color (theme: [`background`](/guide/holocss#theme-roles)) | `'#f6f2e8'` |            | Paper color.                                                    |
-| `paperGrain`    | number                                                        | `0.6`       | 0 – 1      | Texture of the paper.                                           |
+| Parameter       | Type                                                          | Default     | Range      | Description                                                             |
+| --------------- | ------------------------------------------------------------- | ----------- | ---------- | ----------------------------------------------------------------------- |
+| `lineWidth`     | number                                                        | `1.25`      | 0.5 – 4 px | Width of the contour lines.                                             |
+| `shading`       | number                                                        | `0.8`       | 0 – 1      | How much stroke shading fills the shadows.                              |
+| `strokeSpacing` | number                                                        | `4`         | 2 – 12 px  | Distance between shading strokes.                                       |
+| `imageEdges`    | number                                                        | `0.6`       | 0 – 1      | How much the image’s own edges are drawn, besides the geometry.         |
+| `lead`          | hex color (theme: [`text`](/guide/holocss#theme-roles))       | `'#2b2b33'` |            | Pencil color.                                                           |
+| `paper`         | hex color (theme: [`background`](/guide/holocss#theme-roles)) | `'#f6f2e8'` |            | Paper color.                                                            |
+| `paperGrain`    | number                                                        | `0.6`       | 0 – 1      | Texture of the paper.                                                   |
+| `seed`          | integer                                                       | `0`         | 0 – 9999   | Picks the random pattern: the same seed always renders the same frames. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

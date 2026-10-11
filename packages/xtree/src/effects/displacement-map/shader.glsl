@@ -5,9 +5,10 @@ vec4 $main(vec4 color, vec2 uv) {
   float aspect = xt_resolution.x / xt_resolution.y;
   vec2 p = uv * vec2(aspect, 1.0) * $scale - $scroll * xt_time;
 #if $has_map
-  vec3 value = texture($map, p).rgb;
+  // The seed shifts where a repeating map is read (seed 0 leaves it in place).
+  vec3 value = texture($map, xt_seeded(p, $seed)).rgb;
 #else
-  vec3 value = vec3(xt_simplex(p * 2.0), xt_simplex(p * 2.0 + 17.3), 0.0) * 0.5 + 0.5;
+  vec3 value = vec3(xt_simplex(xt_seeded(p * 2.0, $seed)), xt_simplex(xt_seeded(p * 2.0 + 17.3, $seed)), 0.0) * 0.5 + 0.5;
   value.b = 0.5 * (value.r + value.g);
 #endif
   vec2 offset;

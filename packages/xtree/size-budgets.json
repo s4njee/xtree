@@ -10,7 +10,7 @@
   "./effects/vignette": 5120,
   "./effects/chromatic-aberration": 5376,
   "./effects/bloom": 7680,
-  "./effects/rgb-split-glitch": 5888,
+  "./effects/rgb-split-glitch": 6656,
   "./effects/holographic-foil": 8896,
   "./effects/brightness-contrast": 6464,
   "./effects/exposure-gamma": 5440,
@@ -20,9 +20,9 @@
   "./effects/lut": 8000,
   "./effects/monochrome": 6400,
   "./effects/ascii": 7808,
-  "./effects/block-displacement": 5888,
+  "./effects/block-displacement": 6656,
   "./effects/blur": 6912,
-  "./effects/crt": 6272,
+  "./effects/crt": 7168,
   "./effects/digital-noise": 7040,
   "./effects/displacement-map": 7744,
   "./effects/dither": 8128,
@@ -52,7 +52,7 @@
   "./shaders/dither": 384,
   "./shaders/sampling": 1408,
   "./shaders/sdf": 640,
-  "./holocss": 1600,
+  "./holocss": 1920,
   "./effects/bleach-bypass": 7040,
   "./effects/channel-mixer": 5632,
   "./effects/color-balance": 7104,
@@ -122,5 +122,6 @@
   "./effects/wireframe": 6208,
   "./effects/wobble": 7424,
   "./effects/x-ray": 5952,
-  "./effects/zoom-transition": 6144
+  "./effects/zoom-transition": 6144,
+  "./animation": 5056
 }

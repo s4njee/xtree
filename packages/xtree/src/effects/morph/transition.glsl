@@ -8,7 +8,7 @@ vec2 $displacement(vec2 uv) {
 #else
   vec2 size = xt_size();
   vec2 p = uv * vec2(size.x / size.y, 1.0) * $scale;
-  return vec2(xt_fbm(p, 4, 2.0, 0.5), xt_fbm(p + 17.3, 4, 2.0, 0.5));
+  return vec2(xt_fbm(xt_seeded(p, $seed), 4, 2.0, 0.5), xt_fbm(xt_seeded(p + 17.3, $seed), 4, 2.0, 0.5));
 #endif
 }
 

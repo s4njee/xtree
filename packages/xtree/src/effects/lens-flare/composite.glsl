@@ -4,8 +4,8 @@
 // Smudges and specks that light up where the flare passes over them.
 float $dirt(vec2 uv) {
   vec2 p = uv * vec2(xt_resolution.x / xt_resolution.y, 1.0);
-  float smudge = xt_valueNoise(p * 3.0) * 0.6 + xt_valueNoise(p * 7.0 + 13.1) * 0.4;
-  float specks = step(0.985, xt_valueNoise(p * 60.0));
+  float smudge = xt_valueNoise(xt_seeded(p * 3.0, $seed)) * 0.6 + xt_valueNoise(xt_seeded(p * 7.0 + 13.1, $seed)) * 0.4;
+  float specks = step(0.985, xt_valueNoise(xt_seeded(p * 60.0, $seed)));
   return clamp(smoothstep(0.45, 0.9, smudge) + specks, 0.0, 1.0);
 }
 

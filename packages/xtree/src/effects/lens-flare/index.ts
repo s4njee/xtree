@@ -1,4 +1,10 @@
-import { createPassKit, defineEffect, float, int } from '../../effect/index.js';
+import {
+  createPassKit,
+  defineEffect,
+  float,
+  int,
+  seed,
+} from '../../effect/index.js';
 import { noiseValueChunks, samplingPyramidChunks } from '../../shaders/maps.js';
 import brightSource from './bright.glsl';
 import fragment from './composite.glsl';
@@ -82,6 +88,7 @@ export const lensFlare = defineEffect({
       step: 0.01,
       description: 'Smudges and specks on the lens that light up in the flare.',
     }),
+    seed: seed(),
   },
   presets: {
     cinematic: { intensity: 1.2, ghosts: 6, halo: 0.8, starburst: 0.6 },

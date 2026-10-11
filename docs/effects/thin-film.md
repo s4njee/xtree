@@ -41,6 +41,7 @@ Every parameter is also a property: `effect.thicknessMin = 250`. Uniform changes
 | `intensity`                | number                           | `0.8`     | 0 – 1       | How much the film tints the surface.                                                                |
 | `sheen`                    | number                           | `0.6`     | 0 – 3       | Film reflection added on top, strongest at grazing angles.                                          |
 | `speed`                    | number                           | `0.15`    | 0 – 2       | How fast the film swirls (stops when motion is off).                                                |
+| `seed`                     | integer                          | `0`       | 0 – 9999    | Picks the random pattern: the same seed always renders the same frames.                             |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

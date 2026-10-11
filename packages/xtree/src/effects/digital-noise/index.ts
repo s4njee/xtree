@@ -1,4 +1,4 @@
-import { defineEffect, float, select } from '../../effect/index.js';
+import { defineEffect, float, seed, select } from '../../effect/index.js';
 import { colorSpaceChunks, noiseHashChunks } from '../../shaders/maps.js';
 import fragment from './shader.glsl';
 
@@ -51,6 +51,7 @@ export const digitalNoise = defineEffect({
       step: 0.01,
       description: 'How often stronger noise bands appear.',
     }),
+    seed: seed(),
   },
   presets: {
     light: { amount: 0.08, bands: 0.1 },

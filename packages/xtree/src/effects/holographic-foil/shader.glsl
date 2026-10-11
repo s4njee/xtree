@@ -14,7 +14,7 @@ vec4 $main(vec4 color, vec2 uv) {
   if ($pattern == $pattern_radial) {
     phase = length(p - $tilt * 0.35);
   } else if ($pattern == $pattern_cosmos) {
-    phase = dot(p, dir) + 0.25 * xt_simplex(vec3(p * 2.5, t * 0.15));
+    phase = dot(p, dir) + 0.25 * xt_simplex(xt_seeded(vec3(p * 2.5, t * 0.15), $seed));
   } else {
     phase = dot(p, dir);
   }
@@ -33,7 +33,7 @@ vec4 $main(vec4 color, vec2 uv) {
     const float cellSize = 5.0;
     vec2 pixel = uv * xt_resolution / cellSize;
     vec2 cell = floor(pixel);
-    vec3 h = xt_hash3(cell);
+    vec3 h = xt_hash3(xt_seeded(cell, $seed));
     float point = smoothstep(0.35, 0.0, length(fract(pixel) - (0.25 + h.zy * 0.5)));
     float glint = step(1.0 - $sparkle * 0.2, h.x) * point;
     float twinkle = pow(max(0.0, cos(6.28318530718 * (h.y + dot($tilt, h.zx - 0.5) * 1.5 + t * 0.2))), 24.0);

@@ -30,11 +30,12 @@ Every parameter is also a property: `effect.strength = 4`. Uniform changes take 
 
 ## Parameters
 
-| Parameter  | Type   | Default | Range     | Description                                          |
-| ---------- | ------ | ------- | --------- | ---------------------------------------------------- |
-| `strength` | number | `4`     | 0 – 20    | How far the flow carries the image.                  |
-| `scale`    | number | `2`     | 0.25 – 10 | Size of the swirls: higher values make smaller ones. |
-| `speed`    | number | `0.5`   | 0 – 3     | How fast the flow changes.                           |
+| Parameter  | Type    | Default | Range     | Description                                                             |
+| ---------- | ------- | ------- | --------- | ----------------------------------------------------------------------- |
+| `strength` | number  | `4`     | 0 – 20    | How far the flow carries the image.                                     |
+| `scale`    | number  | `2`     | 0.25 – 10 | Size of the swirls: higher values make smaller ones.                    |
+| `speed`    | number  | `0.5`   | 0 – 3     | How fast the flow changes.                                              |
+| `seed`     | integer | `0`     | 0 – 9999  | Picks the random pattern: the same seed always renders the same frames. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

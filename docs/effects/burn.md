@@ -40,14 +40,15 @@ Every parameter is also a property: `effect.scale = 3`. Uniform changes take eff
 
 ## Parameters
 
-| Parameter   | Type   | Default | Range        | Description                                                                                                                            |
-| ----------- | ------ | ------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `scale`     | number | `3`     | 0.5 – 20     | Size of the burning patches: higher values make smaller ones.                                                                          |
-| `direction` | number | `0.3`   | 0 – 1        | How much the burn rises from the bottom instead of spreading in patches.                                                               |
-| `edgeWidth` | number | `0.01`  | 0.002 – 0.05 | Width of the glowing edge, as a fraction of the transition; kept thin so the glow never covers much of the frame at once (WCAG 2.3.1). |
-| `glow`      | number | `3`     | 0 – 10       | Brightness of the edge, in linear units (above 1 blooms).                                                                              |
-| `charWidth` | number | `0.06`  | 0 – 0.3      | Width of the charred margin ahead of the edge.                                                                                         |
-| `charring`  | number | `0.8`   | 0 – 1        | How dark the charred margin gets.                                                                                                      |
+| Parameter   | Type    | Default | Range        | Description                                                                                                                            |
+| ----------- | ------- | ------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `scale`     | number  | `3`     | 0.5 – 20     | Size of the burning patches: higher values make smaller ones.                                                                          |
+| `direction` | number  | `0.3`   | 0 – 1        | How much the burn rises from the bottom instead of spreading in patches.                                                               |
+| `edgeWidth` | number  | `0.01`  | 0.002 – 0.05 | Width of the glowing edge, as a fraction of the transition; kept thin so the glow never covers much of the frame at once (WCAG 2.3.1). |
+| `glow`      | number  | `3`     | 0 – 10       | Brightness of the edge, in linear units (above 1 blooms).                                                                              |
+| `charWidth` | number  | `0.06`  | 0 – 0.3      | Width of the charred margin ahead of the edge.                                                                                         |
+| `charring`  | number  | `0.8`   | 0 – 1        | How dark the charred margin gets.                                                                                                      |
+| `seed`      | integer | `0`     | 0 – 9999     | Picks the random pattern: the same seed always renders the same frames.                                                                |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

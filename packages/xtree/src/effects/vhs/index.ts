@@ -1,4 +1,4 @@
-import { bool, defineEffect, float } from '../../effect/index.js';
+import { bool, defineEffect, float, seed } from '../../effect/index.js';
 import {
   colorSpaceChunks,
   noiseHashChunks,
@@ -68,6 +68,7 @@ export const vhs = defineEffect({
       default: true,
       description: 'Show PLAY and a tape counter.',
     }),
+    seed: seed(),
   },
   presets: {
     rental: { wobble: 1, tracking: 0.8, noise: 0.5 },

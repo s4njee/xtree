@@ -28,14 +28,15 @@ Every parameter is also a property: `effect.blur = 4`. Uniform changes take effe
 
 ## Parameters
 
-| Parameter    | Type                                                       | Default     | Range     | Description                                        |
-| ------------ | ---------------------------------------------------------- | ----------- | --------- | -------------------------------------------------- |
-| `blur`       | integer                                                    | `4`         | 1 – 8     | Blur passes; each roughly doubles the blur radius. |
-| `distortion` | number                                                     | `6`         | 0 – 30 px | How far the frost ripples bend the view.           |
-| `frostScale` | number                                                     | `6`         | 1 – 40 px | Size of the ripples.                               |
-| `tint`       | hex color (theme: [`surface`](/guide/holocss#theme-roles)) | `'#dfe8f5'` |           | Color of the glass.                                |
-| `tintAmount` | number                                                     | `0.25`      | 0 – 1     | How strongly the glass color shows.                |
-| `grain`      | number                                                     | `0.03`      | 0 – 0.2   | Fine frost texture.                                |
+| Parameter    | Type                                                       | Default     | Range     | Description                                                             |
+| ------------ | ---------------------------------------------------------- | ----------- | --------- | ----------------------------------------------------------------------- |
+| `blur`       | integer                                                    | `4`         | 1 – 8     | Blur passes; each roughly doubles the blur radius.                      |
+| `distortion` | number                                                     | `6`         | 0 – 30 px | How far the frost ripples bend the view.                                |
+| `frostScale` | number                                                     | `6`         | 1 – 40 px | Size of the ripples.                                                    |
+| `tint`       | hex color (theme: [`surface`](/guide/holocss#theme-roles)) | `'#dfe8f5'` |           | Color of the glass.                                                     |
+| `tintAmount` | number                                                     | `0.25`      | 0 – 1     | How strongly the glass color shows.                                     |
+| `grain`      | number                                                     | `0.03`      | 0 – 0.2   | Fine frost texture.                                                     |
+| `seed`       | integer                                                    | `0`         | 0 – 9999  | Picks the random pattern: the same seed always renders the same frames. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

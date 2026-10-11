@@ -1,4 +1,9 @@
-import { defineMaterialEffect, float, select } from '../../effect/index.js';
+import {
+  defineMaterialEffect,
+  float,
+  seed,
+  select,
+} from '../../effect/index.js';
 import { colorSpectralChunks, noiseSimplexChunks } from '../../shaders/maps.js';
 import fragment from './fragment.glsl';
 
@@ -75,6 +80,7 @@ export const thinFilm = defineMaterialEffect({
       step: 0.01,
       description: 'How fast the film swirls (stops when motion is off).',
     }),
+    seed: seed(),
   },
   presets: {
     soapBubble: {

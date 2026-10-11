@@ -1,4 +1,4 @@
-import { bool, defineEffect, float } from '../../effect/index.js';
+import { bool, defineEffect, float, seed } from '../../effect/index.js';
 import { colorSpaceChunks, noiseHashChunks } from '../../shaders/maps.js';
 import fragment from './shader.glsl';
 
@@ -56,6 +56,7 @@ export const filmGrain = defineEffect({
       unit: 'fps',
       description: 'How often the grain changes.',
     }),
+    seed: seed(),
   },
   presets: {
     fine: { intensity: 0.07, size: 1 },

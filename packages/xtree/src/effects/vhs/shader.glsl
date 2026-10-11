@@ -50,11 +50,11 @@ float $display(vec2 uv) {
 vec4 $main(vec4 color, vec2 uv) {
   float line = floor(uv.y * xt_resolution.y);
   // Tape wobble: slow horizontal drift that varies down the frame.
-  float wobble = (sin(uv.y * 6.0 + xt_time * 1.3) * 0.6 + xt_valueNoise(vec2(line * 0.02, xt_time * 2.0)) - 0.5) * $wobble * 0.004;
+  float wobble = (sin(uv.y * 6.0 + xt_time * 1.3) * 0.6 + xt_valueNoise(xt_seeded(vec2(line * 0.02, xt_time * 2.0), $seed)) - 0.5) * $wobble * 0.004;
   // The tracking band rolls down the frame.
   float bandCenter = 1.0 - fract(xt_time * 0.08);
   float band = $tracking * smoothstep(0.06, 0.0, abs(uv.y - bandCenter));
-  float jitter = (xt_hash1(vec2(line, floor(xt_time * 24.0))) - 0.5) * band * 0.04;
+  float jitter = (xt_hash1(xt_seeded(vec2(line, floor(xt_time * 24.0)), $seed)) - 0.5) * band * 0.04;
   // Head switching: the bottom lines of the frame skew to the right.
   float head = smoothstep(0.03, 0.0, uv.y) * $headSwitching;
   vec2 st = vec2(uv.x + wobble + jitter + head * 0.03, uv.y);
@@ -71,9 +71,9 @@ vec4 $main(vec4 color, vec2 uv) {
   }
   vec3 yiq = vec3(center.x, chroma / weight * $saturation);
   // Luma noise and tracking specks.
-  float n = xt_hash1(vec2(floor(uv * xt_resolution * vec2(0.5, 1.0)) + floor(xt_time * 30.0) * 17.0)) - 0.5;
+  float n = xt_hash1(xt_seeded(vec2(floor(uv * xt_resolution * vec2(0.5, 1.0)) + floor(xt_time * 30.0) * 17.0), $seed)) - 0.5;
   yiq.x += n * $noise * 0.2;
-  float speck = step(1.0 - band * 0.5 - head * 0.3, xt_hash1(vec2(floor(uv.x * xt_resolution.x * 0.25), line + floor(xt_time * 30.0))));
+  float speck = step(1.0 - band * 0.5 - head * 0.3, xt_hash1(xt_seeded(vec2(floor(uv.x * xt_resolution.x * 0.25), line + floor(xt_time * 30.0)), $seed)));
   yiq.x = mix(yiq.x, 0.95, speck);
   vec3 c = xt_yiqToRgb(yiq);
   if ($onScreenDisplay) c = mix(c, vec3(0.95), $display(uv));

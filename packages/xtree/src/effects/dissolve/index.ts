@@ -2,6 +2,7 @@ import {
   color,
   defineMaterialEffect,
   float,
+  seed,
   select,
   vec2,
 } from '../../effect/index.js';
@@ -76,6 +77,7 @@ export const dissolve = defineMaterialEffect({
       description:
         'Brightness of the edge, in linear units (above 1 blooms with HDR effects).',
     }),
+    seed: seed(),
   },
   presets: {
     embers: { edgeColor: '#ff5a1f', edgeIntensity: 6, noiseScale: 3.5 },

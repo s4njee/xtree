@@ -49,6 +49,7 @@ Every parameter is also a property: `effect.pattern = 'noise'`. Uniform changes 
 | `invert`   | boolean                                                            | `false`   |              | Run the pattern backwards, for example radial from the edges in.                                                                                 |
 | `edgeGlow` | number                                                             | `0`       | 0 – 4        | Accent color added along the moving edge. Above about 0.6, a glow sweeping across the screen within a second can count as flashing (WCAG 2.3.1). |
 | `luma`     | 2D texture                                                         | `null`    |              | A grayscale image whose dark areas change first; overrides the pattern when set.                                                                 |
+| `seed`     | integer                                                            | `0`       | 0 – 9999     | Picks the random pattern: the same seed always renders the same frames.                                                                          |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

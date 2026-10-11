@@ -2,6 +2,7 @@ import {
   bool,
   defineTransition,
   float,
+  seed,
   select,
   texture,
 } from '../../effect/index.js';
@@ -69,6 +70,7 @@ export const crossfade = defineTransition({
       description:
         'A grayscale image whose dark areas change first; overrides the pattern when set.',
     }),
+    seed: seed(),
   },
   presets: {
     dissolve: { pattern: 'noise', softness: 0.08, scale: 8 },

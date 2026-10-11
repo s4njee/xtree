@@ -30,12 +30,13 @@ Every parameter is also a property: `effect.strength = 4`. Uniform changes take 
 
 ## Parameters
 
-| Parameter  | Type   | Default | Range      | Description                                               |
-| ---------- | ------ | ------- | ---------- | --------------------------------------------------------- |
-| `strength` | number | `4`     | 0 – 20 px  | How far the haze bends the image.                         |
-| `scale`    | number | `40`    | 5 – 200 px | Size of the ripples.                                      |
-| `speed`    | number | `1`     | 0 – 4      | How fast the ripples rise.                                |
-| `rise`     | number | `0.6`   | 0 – 1      | How much stronger the haze is at the bottom than the top. |
+| Parameter  | Type    | Default | Range      | Description                                                             |
+| ---------- | ------- | ------- | ---------- | ----------------------------------------------------------------------- |
+| `strength` | number  | `4`     | 0 – 20 px  | How far the haze bends the image.                                       |
+| `scale`    | number  | `40`    | 5 – 200 px | Size of the ripples.                                                    |
+| `speed`    | number  | `1`     | 0 – 4      | How fast the ripples rise.                                              |
+| `rise`     | number  | `0.6`   | 0 – 1      | How much stronger the haze is at the bottom than the top.               |
+| `seed`     | integer | `0`     | 0 – 9999   | Picks the random pattern: the same seed always renders the same frames. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

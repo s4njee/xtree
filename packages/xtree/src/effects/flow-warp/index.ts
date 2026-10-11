@@ -1,4 +1,4 @@
-import { defineEffect, float } from '../../effect/index.js';
+import { defineEffect, float, seed } from '../../effect/index.js';
 import { noiseSimplexChunks } from '../../shaders/maps.js';
 import fragment from './shader.glsl';
 
@@ -38,6 +38,7 @@ export const flowWarp = defineEffect({
       step: 0.05,
       description: 'How fast the flow changes.',
     }),
+    seed: seed(),
   },
   presets: {
     ink: { strength: 6, scale: 1.5, speed: 0.3 },

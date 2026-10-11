@@ -1,4 +1,4 @@
-import { defineMaterialEffect, float } from '../../effect/index.js';
+import { defineMaterialEffect, float, seed } from '../../effect/index.js';
 import { noiseValueChunks } from '../../shaders/maps.js';
 import fragment from './fragment.glsl';
 
@@ -66,6 +66,7 @@ export const pearlescent = defineMaterialEffect({
       step: 0.01,
       description: 'How much the hue also colors the surface itself.',
     }),
+    seed: seed(),
   },
   presets: {
     pearl: { saturation: 0.25, sheen: 0.6, flakeVariation: 0.1 },

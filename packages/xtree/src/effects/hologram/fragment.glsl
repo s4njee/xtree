@@ -12,7 +12,7 @@ vec4 $fragment(vec4 color, XtSurface surface) {
     lines = 1.0 - $scanlineStrength * (1.0 - wave);
   }
   // Smooth noise at about 1.5 Hz: a wobble, not a strobe.
-  float flicker = 1.0 - $flicker * (0.5 + 0.5 * xt_simplex(vec2($time * 1.5, 0.0)));
+  float flicker = 1.0 - $flicker * (0.5 + 0.5 * xt_simplex(xt_seeded(vec2($time * 1.5, 0.0), $seed)));
   vec3 light = $color * $intensity * (0.35 * shade + rim) * lines * flicker;
   return vec4(light, 1.0);
 }

@@ -1,4 +1,4 @@
-import { defineTransition, float } from '../../effect/index.js';
+import { defineTransition, float, seed } from '../../effect/index.js';
 import { noiseFbmChunks } from '../../shaders/maps.js';
 import fragment from './transition.glsl';
 
@@ -61,6 +61,7 @@ export const burn = defineTransition({
       step: 0.01,
       description: 'How dark the charred margin gets.',
     }),
+    seed: seed(),
   },
   presets: {
     paper: { direction: 0, scale: 4, charWidth: 0.1 },

@@ -30,19 +30,20 @@ Every parameter is also a property: `effect.curvature = 0.1`. Uniform changes ta
 
 ## Parameters
 
-| Parameter      | Type                                       | Default      | Range     | Description                                                        |
-| -------------- | ------------------------------------------ | ------------ | --------- | ------------------------------------------------------------------ |
-| `curvature`    | number                                     | `0.1`        | 0 – 0.5   | Bulge of the glass.                                                |
-| `phosphor`     | 'aperture' \| 'slot' \| 'shadow' \| 'none' | `'aperture'` |           | Phosphor layout: vertical stripes, staggered slots or a dot triad. |
-| `maskStrength` | number                                     | `0.3`        | 0 – 1     | Visibility of the phosphor mask.                                   |
-| `maskScale`    | number                                     | `1`          | 1 – 4 px  | Size of a phosphor.                                                |
-| `scanlines`    | number                                     | `0.35`       | 0 – 1     | Darkness of the scanlines.                                         |
-| `lineWidth`    | number                                     | `3`          | 1 – 12 px | Scanline period.                                                   |
-| `glow`         | number                                     | `0.25`       | 0 – 1     | Phosphor bleed around bright pixels.                               |
-| `chromatic`    | number                                     | `0.0015`     | 0 – 0.01  | Red/blue convergence error.                                        |
-| `vignette`     | number                                     | `0.35`       | 0 – 1     | Darkening toward the corners of the tube.                          |
-| `flicker`      | number                                     | `0.02`       | 0 – 0.1   | Frame-to-frame brightness variation.                               |
-| `brightness`   | number                                     | `1.15`       | 0.5 – 2   | Compensates for the light the mask and scanlines take away.        |
+| Parameter      | Type                                       | Default      | Range     | Description                                                             |
+| -------------- | ------------------------------------------ | ------------ | --------- | ----------------------------------------------------------------------- |
+| `curvature`    | number                                     | `0.1`        | 0 – 0.5   | Bulge of the glass.                                                     |
+| `phosphor`     | 'aperture' \| 'slot' \| 'shadow' \| 'none' | `'aperture'` |           | Phosphor layout: vertical stripes, staggered slots or a dot triad.      |
+| `maskStrength` | number                                     | `0.3`        | 0 – 1     | Visibility of the phosphor mask.                                        |
+| `maskScale`    | number                                     | `1`          | 1 – 4 px  | Size of a phosphor.                                                     |
+| `scanlines`    | number                                     | `0.35`       | 0 – 1     | Darkness of the scanlines.                                              |
+| `lineWidth`    | number                                     | `3`          | 1 – 12 px | Scanline period.                                                        |
+| `glow`         | number                                     | `0.25`       | 0 – 1     | Phosphor bleed around bright pixels.                                    |
+| `chromatic`    | number                                     | `0.0015`     | 0 – 0.01  | Red/blue convergence error.                                             |
+| `vignette`     | number                                     | `0.35`       | 0 – 1     | Darkening toward the corners of the tube.                               |
+| `flicker`      | number                                     | `0.02`       | 0 – 0.1   | Frame-to-frame brightness variation.                                    |
+| `brightness`   | number                                     | `1.15`       | 0.5 – 2   | Compensates for the light the mask and scanlines take away.             |
+| `seed`         | integer                                    | `0`          | 0 – 9999  | Picks the random pattern: the same seed always renders the same frames. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 
@@ -63,7 +64,7 @@ Apply one with `crt({ preset: 'name' })` or `effect.applyPreset('name')`; preset
 - **Passes:** samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass.
 - **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Settles: when motion is off it switches to still values (`flicker: 0`) without changing your settings.
-- **Size:** 6.1 KB gzip budget for `@mk7s/xtree/effects/crt`, including the shared effect runtime.
+- **Size:** 7.0 KB gzip budget for `@mk7s/xtree/effects/crt`, including the shared effect runtime.
 
 ## Credits
 

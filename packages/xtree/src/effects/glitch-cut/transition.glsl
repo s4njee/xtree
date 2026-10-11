@@ -8,12 +8,12 @@ vec4 $transition(vec2 uv, float progress) {
   // Horizontal slices shift sideways, re-rolled in a few steps across the cut.
   float phase = floor(progress * float($steps));
   float slice = floor(uv.y * $slices);
-  vec2 sliceHash = xt_hash2(vec2(slice, phase));
+  vec2 sliceHash = xt_hash2(xt_seeded(vec2(slice, phase), $seed));
   float shift = (sliceHash.x - 0.5) * 2.0 * $shift * envelope * step(1.0 - $density, sliceHash.y);
   vec2 st = vec2(fract(uv.x + shift), uv.y);
   // Blocks switch to the next image at their own moment, spread around the middle.
   vec2 block = floor(uv * size / $blockSize);
-  float when = 0.5 + (xt_hash1(block + 7.3) - 0.5) * $spread;
+  float when = 0.5 + (xt_hash1(xt_seeded(block + 7.3, $seed)) - 0.5) * $spread;
   bool switched = progress >= when;
   // Channels split horizontally.
   vec2 split = vec2($split * envelope / size.x, 0.0);

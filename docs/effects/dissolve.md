@@ -37,6 +37,7 @@ Every parameter is also a property: `effect.progress = 0.45`. Uniform changes ta
 | `edgeWidth`     | number                                                    | `0.06`      | 0 – 0.3  | Width of the glowing edge, in units of progress.                             |
 | `edgeColor`     | hex color (theme: [`accent`](/guide/holocss#theme-roles)) | `'#ff8a3d'` |          | Color of the burning edge.                                                   |
 | `edgeIntensity` | number                                                    | `4`         | 0 – 20   | Brightness of the edge, in linear units (above 1 blooms with HDR effects).   |
+| `seed`          | integer                                                   | `0`         | 0 – 9999 | Picks the random pattern: the same seed always renders the same frames.      |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

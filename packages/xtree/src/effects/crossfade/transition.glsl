@@ -11,7 +11,7 @@ float $order(vec2 uv) {
   v = dot(texture($luma, uv).rgb, vec3(0.2126, 0.7152, 0.0722));
 #else
   if ($pattern == $pattern_noise) {
-    v = clamp(xt_fbm(uv * $scale, 4, 2.0, 0.5) * 0.6 + 0.5, 0.0, 1.0);
+    v = clamp(xt_fbm(xt_seeded(uv * $scale, $seed), 4, 2.0, 0.5) * 0.6 + 0.5, 0.0, 1.0);
   } else if ($pattern == $pattern_linear) {
     float a = radians($angle);
     vec2 dir = vec2(cos(a), sin(a));

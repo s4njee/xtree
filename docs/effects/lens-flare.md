@@ -28,17 +28,18 @@ Every parameter is also a property: `effect.intensity = 1`. Uniform changes take
 
 ## Parameters
 
-| Parameter    | Type    | Default | Range     | Description                                                |
-| ------------ | ------- | ------- | --------- | ---------------------------------------------------------- |
-| `intensity`  | number  | `1`     | 0 – 4     | Brightness of the flare.                                   |
-| `threshold`  | number  | `1.5`   | 0 – 8     | Linear brightness above which light flares.                |
-| `ghosts`     | integer | `5`     | 1 – 8     | Number of ghost reflections.                               |
-| `spacing`    | number  | `0.35`  | 0.05 – 1  | Distance between ghosts along the line through the center. |
-| `halo`       | number  | `0.6`   | 0 – 2     | Brightness of the ring around the center.                  |
-| `haloWidth`  | number  | `0.45`  | 0.1 – 0.8 | Radius of the ring.                                        |
-| `chromatic`  | number  | `0.006` | 0 – 0.03  | Color fringing of the ghosts.                              |
-| `starburst`  | number  | `0.4`   | 0 – 1     | Rays radiating from the center over the flare.             |
-| `dirtAmount` | number  | `0.3`   | 0 – 1     | Smudges and specks on the lens that light up in the flare. |
+| Parameter    | Type    | Default | Range     | Description                                                             |
+| ------------ | ------- | ------- | --------- | ----------------------------------------------------------------------- |
+| `intensity`  | number  | `1`     | 0 – 4     | Brightness of the flare.                                                |
+| `threshold`  | number  | `1.5`   | 0 – 8     | Linear brightness above which light flares.                             |
+| `ghosts`     | integer | `5`     | 1 – 8     | Number of ghost reflections.                                            |
+| `spacing`    | number  | `0.35`  | 0.05 – 1  | Distance between ghosts along the line through the center.              |
+| `halo`       | number  | `0.6`   | 0 – 2     | Brightness of the ring around the center.                               |
+| `haloWidth`  | number  | `0.45`  | 0.1 – 0.8 | Radius of the ring.                                                     |
+| `chromatic`  | number  | `0.006` | 0 – 0.03  | Color fringing of the ghosts.                                           |
+| `starburst`  | number  | `0.4`   | 0 – 1     | Rays radiating from the center over the flare.                          |
+| `dirtAmount` | number  | `0.3`   | 0 – 1     | Smudges and specks on the lens that light up in the flare.              |
+| `seed`       | integer | `0`     | 0 – 9999  | Picks the random pattern: the same seed always renders the same frames. |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 

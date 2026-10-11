@@ -30,6 +30,6 @@ vec4 $main(vec4 color, vec2 uv) {
   }
   vec2 edge = st * (1.0 - st);
   c *= mix(1.0, clamp(pow(edge.x * edge.y * 16.0, 0.35), 0.0, 1.0), $vignette);
-  c *= 1.0 + $flicker * (xt_hash1(vec2(floor(xt_time * 30.0), 3.0)) - 0.5);
+  c *= 1.0 + $flicker * (xt_hash1(xt_seeded(vec2(floor(xt_time * 30.0), 3.0), $seed)) - 0.5);
   return vec4(c * $brightness, color.a);
 }

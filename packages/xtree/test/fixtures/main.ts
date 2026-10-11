@@ -1300,6 +1300,253 @@ const xt = {
     return log;
   },
   /** Pointer, scroll and audio tracking into composer inputs (X1.11). */
+  /** The animation module's bindings (X14.3–X14.6), driven by synthetic events. */
+  async animationBindings() {
+    const { bindAudio, bindOrientation, bindScroll, followPointer, timeline } =
+      await import('../../src/animation/index.js');
+    const { bulge } = await import('../../src/effects/bulge/index.js');
+    const { vignette } = await import('../../src/effects/vignette/index.js');
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    const frames = (n = 2) =>
+      new Promise<void>((resolve) => {
+        const step = () => (n-- <= 0 ? resolve() : requestAnimationFrame(step));
+        requestAnimationFrame(step);
+      });
+    const rect = canvas.getBoundingClientRect();
+    const move = (u: number, v: number, pointerType = 'mouse') =>
+      canvas.dispatchEvent(
+        new PointerEvent('pointermove', {
+          clientX: rect.left + u * rect.width,
+          clientY: rect.top + (1 - v) * rect.height,
+          pointerType,
+          bubbles: true,
+        }),
+      );
+    // Pointer: follows fine pointers, ignores touch, rests on leave.
+    const lens = bulge();
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const stopPointer = followPointer(lens, 'center', {
+      element: canvas,
+      smoothing: 0,
+      rest: [0.5, 0.5],
+    });
+    move(0.8, 0.25);
+    await frames();
+    const followed = [...lens.center];
+    move(0.1, 0.9, 'touch');
+    await frames();
+    const touched = [...lens.center];
+    canvas.dispatchEvent(new PointerEvent('pointerleave'));
+    await frames();
+    const rested = [...lens.center];
+    stopPointer();
+    // Orientation: the pointer until orientation arrives, then tilt around the first reading.
+    const tilt = bulge();
+    const stopTilt = bindOrientation(tilt, 'center', {
+      element: canvas,
+      smoothing: 0,
+      rest: [0.5, 0.5],
+      range: 30,
+    });
+    const orient = (beta: number, gamma: number) =>
+      window.dispatchEvent(
+        new DeviceOrientationEvent('deviceorientation', {
+          beta,
+          gamma,
+          alpha: 0,
+        }),
+      );
+    orient(40, 0);
+    await frames();
+    const neutral = [...tilt.center];
+    orient(40, 15);
+    await frames();
+    const tilted = [...tilt.center];
+    stopTilt();
+    const restored = [...tilt.center];
+    // Scroll: a scroller's range, natively and with the sampled fallback.
+    const scroller = document.createElement('div');
+    scroller.style.cssText =
+      'position:fixed;left:0;top:0;width:200px;height:100px;overflow:auto';
+    const tall = document.createElement('div');
+    tall.style.height = '1100px';
+    scroller.append(tall);
+    document.body.append(scroller);
+    const native = 'ScrollTimeline' in window;
+    const shade = vignette();
+    const story = timeline([
+      {
+        target: shade,
+        keyframes: [
+          { at: 0, values: { darkness: 0 } },
+          { at: 1, values: { darkness: 1 } },
+        ],
+      },
+    ]);
+    const scrollTo = async (top: number) => {
+      scroller.scrollTop = top;
+      scroller.dispatchEvent(new Event('scroll'));
+      await frames(3);
+    };
+    const stopScroll = bindScroll(story, { scroller });
+    await scrollTo(500);
+    const scrolled = story.progress;
+    stopScroll();
+    const saved = (window as { ScrollTimeline?: unknown }).ScrollTimeline;
+    delete (window as { ScrollTimeline?: unknown }).ScrollTimeline;
+    const param = vignette();
+    const stopFallback = bindScroll(param, 'darkness', { scroller });
+    await scrollTo(250);
+    const sampled = param.darkness;
+    stopFallback();
+    if (saved) (window as { ScrollTimeline?: unknown }).ScrollTimeline = saved;
+    scroller.remove();
+    // Audio: a 110 Hz tone drives a bass-reactive parameter.
+    const context = new AudioContext();
+    const oscillator = context.createOscillator();
+    oscillator.frequency.value = 110;
+    const analyser = context.createAnalyser();
+    oscillator.connect(analyser);
+    oscillator.start();
+    const pulse = vignette({ darkness: 0 });
+    const stopAudio = bindAudio(pulse, analyser, {
+      param: 'darkness',
+      band: 'bass',
+      gain: 1,
+      smoothing: 0,
+    });
+    window.dispatchEvent(new KeyboardEvent('keydown'));
+    const settle = (promise: Promise<unknown>) =>
+      Promise.race([promise.catch(() => {}), wait(200)]);
+    await settle(context.resume());
+    await wait(300);
+    const audio = pulse.darkness;
+    stopAudio();
+    const audioStopped = pulse.darkness;
+    oscillator.stop();
+    await settle(context.close());
+    for (const e of [lens, tilt, shade, param, pulse]) e.dispose();
+    return {
+      fine,
+      followed,
+      touched,
+      rested,
+      neutral,
+      tilted,
+      restored,
+      native,
+      scrolled,
+      sampled,
+      audio,
+      audioStopped,
+    };
+  },
+  /** xtree effects on a HoloCSS Stage and an ambient scene (X15.4, X15.5). */
+  async holocssStage() {
+    const { createStage, scene } = await import('@holocss/three');
+    const { gradient } = await import('@holocss-src/three/scenes/gradient');
+    const { stageEffects, withEffects } =
+      await import('../../src/holocss/index.js');
+    const { vignette } = await import('../../src/effects/vignette/index.js');
+    const { invertThreshold } =
+      await import('../../src/effects/invert-threshold/index.js');
+    // Count WebGL contexts created from here on.
+    let contexts = 0;
+    const original = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (
+      this: HTMLCanvasElement,
+      type: string,
+      ...rest: unknown[]
+    ) {
+      if (type.startsWith('webgl')) contexts++;
+      return (original as (...a: unknown[]) => unknown).call(
+        this,
+        type,
+        ...rest,
+      );
+    } as typeof original;
+    const host = document.createElement('div');
+    host.style.cssText = 'position:fixed;left:0;top:0;width:160px;height:90px';
+    document.body.append(host);
+    try {
+      const stage = (await createStage(host, { placement: 'inside' }))!;
+      const contextsWithStage = contexts;
+      const read = (target: HTMLCanvasElement) => {
+        const c = target.getContext('2d')!;
+        return Array.from(
+          c.getImageData(0, 0, target.width, target.height).data,
+        );
+      };
+      stage.render(studio.scene, studio.camera);
+      const plain = read(stage.canvas);
+      const composer = new EffectComposer(stage.renderer).add(
+        invertThreshold({ mode: 'invert' }),
+      );
+      let disposed = false;
+      const dispose = composer.dispose.bind(composer);
+      composer.dispose = () => {
+        disposed = true;
+        dispose();
+      };
+      const render = stageEffects(stage, composer);
+      const drew = render(studio.scene, studio.camera);
+      const effected = read(stage.canvas);
+      const extraContexts = contexts - contextsWithStage;
+      const size = [stage.canvas.width, stage.canvas.height];
+      stage.destroy();
+      const afterDestroy = render(studio.scene, studio.camera);
+      // An ambient scene with effects, frozen at one progress for a stable frame.
+      const ambientHost = document.createElement('div');
+      ambientHost.style.cssText =
+        'position:fixed;left:0;top:100px;width:160px;height:90px';
+      document.body.append(ambientHost);
+      const settle = () =>
+        new Promise<void>((resolve) => {
+          let n = 4;
+          const step = () =>
+            n-- <= 0 ? resolve() : requestAnimationFrame(step);
+          requestAnimationFrame(step);
+        });
+      const plainScene = (await scene(ambientHost, gradient))!;
+      // The scene draws once it is visible; then freeze it at one progress.
+      await settle();
+      plainScene.progress = 0.3;
+      await settle();
+      const ambientPlain = read(plainScene.stage.canvas);
+      plainScene.destroy();
+      const withVignette = (await scene(
+        ambientHost,
+        withEffects(gradient, (r) =>
+          new EffectComposer(r).add(vignette({ darkness: 1, offset: 0.2 })),
+        ),
+      ))!;
+      await settle();
+      withVignette.progress = 0.3;
+      await settle();
+      const ambientEffected = read(withVignette.stage.canvas);
+      withVignette.destroy();
+      ambientHost.remove();
+      const differs = (a: number[], b: number[]) => {
+        let n = 0;
+        for (let i = 0; i < a.length; i += 4)
+          if (Math.abs(a[i]! - b[i]!) > 8) n++;
+        return n / (a.length / 4);
+      };
+      return {
+        drew,
+        size,
+        extraContexts,
+        stageDiffers: differs(plain, effected),
+        disposed,
+        afterDestroy,
+        ambientDiffers: differs(ambientPlain, ambientEffected),
+        ambientCorner: [ambientPlain.slice(0, 3), ambientEffected.slice(0, 3)],
+      };
+    } finally {
+      HTMLCanvasElement.prototype.getContext = original;
+      host.remove();
+    }
+  },
   async interaction() {
     const { trackPointer, trackScroll, trackAudio } =
       await import('../../src/core/index.js');

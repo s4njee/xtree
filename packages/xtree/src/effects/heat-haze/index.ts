@@ -1,4 +1,4 @@
-import { defineEffect, float } from '../../effect/index.js';
+import { defineEffect, float, seed } from '../../effect/index.js';
 import { noiseSimplexChunks } from '../../shaders/maps.js';
 import fragment from './shader.glsl';
 
@@ -47,6 +47,7 @@ export const heatHaze = defineEffect({
       step: 0.01,
       description: 'How much stronger the haze is at the bottom than the top.',
     }),
+    seed: seed(),
   },
   presets: {
     desert: { strength: 8, scale: 60, speed: 0.8 },

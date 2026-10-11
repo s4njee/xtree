@@ -2,6 +2,7 @@ import {
   color,
   defineEffect,
   float,
+  seed,
   select,
   vec2,
 } from '../../effect/index.js';
@@ -117,6 +118,7 @@ export const holographicFoil = defineEffect({
       default: '#ffffff',
       description: 'Color multiplied into the foil.',
     }),
+    seed: seed(),
   },
   presets: {
     card: { pattern: 'cosmos', intensity: 0.75, sheen: 0.25, sparkle: 0.5 },

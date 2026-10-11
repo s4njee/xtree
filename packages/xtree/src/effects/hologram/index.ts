@@ -1,4 +1,9 @@
-import { color, defineMaterialEffect, float } from '../../effect/index.js';
+import {
+  color,
+  defineMaterialEffect,
+  float,
+  seed,
+} from '../../effect/index.js';
 import {
   colorLuminanceChunks,
   noiseHashChunks,
@@ -98,6 +103,7 @@ export const hologram = defineMaterialEffect({
       description:
         'Sideways shift of occasional horizontal slices, in object units.',
     }),
+    seed: seed(),
   },
   presets: {
     projection: { color: '#5ad8ff', intensity: 1.4 },

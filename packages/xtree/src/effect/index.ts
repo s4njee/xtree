@@ -63,6 +63,7 @@ export {
   type ThemeRole,
   type Vec2Param,
   type Vec3Param,
+  seed,
 } from './params.js';
 export {
   maskKind,

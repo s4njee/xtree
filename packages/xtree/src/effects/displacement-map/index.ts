@@ -1,6 +1,7 @@
 import {
   defineEffect,
   float,
+  seed,
   select,
   texture,
   vec2,
@@ -86,6 +87,7 @@ export const displacementMap = defineEffect({
       unit: '°',
       description: 'Luminance: direction of the offset.',
     }),
+    seed: seed(),
   },
   presets: {
     heatHaze: { map: 'noise', strength: 0.008, scale: 3, scroll: [0, 0.12] },
