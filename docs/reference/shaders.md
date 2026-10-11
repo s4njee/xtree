@@ -258,6 +258,23 @@ White balance by von Kries adaptation to D65 in Bradford cone space. The tempera
 
 **Credits:** Original implementation (MIT). References: Kim et al., Design of advanced color temperature control system for HDTV applications, 2002; Lam, Metamerism and Colour Constancy, 1985 (Bradford transform).
 
+### spectral
+
+```glsl
+#include <xtree/color/spectral>
+```
+
+Spectral helpers: wavelengths to color and thin-film interference. The CIE 1931 2° color-matching functions use the multi-lobe Gaussian fit of Wyman, Sloan and Shirley ("Simple Analytic Approximations to the CIE XYZ Color Matching Functions", JCGT 2013).
+
+| Function                                                       | Description                                                                                                                                                                                                          |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `vec3 xt_wavelengthToXyz(float nm)`                            | CIE 1931 2° color-matching functions (x̄, ȳ, z̄) at a wavelength in nanometres.                                                                                                                                        |
+| `vec3 xt_xyzToLinearSrgb(vec3 xyz)`                            | CIE XYZ to linear sRGB (D65).                                                                                                                                                                                        |
+| `vec3 xt_wavelengthToLinearSrgb(float nm)`                     | Linear sRGB color of light at one wavelength, scaled so the brightest wavelengths reach about 1; may be out of gamut (negative).                                                                                     |
+| `vec3 xt_thinFilm(float thickness, float ior, float cosTheta)` | Reflected color of a thin film (a soap bubble or oil slick in air): thickness in nm, film IOR, and the cosine of the angle to the normal. Integrated over 16 wavelengths and normalized so a flat spectrum is white. |
+
+**Credits:** Original implementation (MIT). References: Wyman, Sloan and Shirley, Simple Analytic Approximations to the CIE XYZ Color Matching Functions, JCGT 2013; Two-beam thin-film interference with a half-wave phase shift (Born and Wolf, Principles of Optics).
+
 ### tonemap
 
 ```glsl

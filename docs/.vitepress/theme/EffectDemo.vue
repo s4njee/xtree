@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type {
   Effect,
+  MaterialEffect,
   EffectFactory,
   Param,
   ParamSchema,
@@ -31,6 +32,8 @@ const values = reactive<Record<string, Value>>({});
 const playing = ref(true);
 const motion = ref(true);
 const compare = ref(false);
+/** Material effects are patched into the studio's materials instead of the composer. */
+const isMaterial = computed(() => definition.value?.kind === 'material');
 const divider = ref(50);
 const followPointer = ref(true);
 const pointerParams = ['tilt', 'center'];
@@ -110,8 +113,26 @@ const code = computed(() => {
     xray: `mask: { selection: ${selectionNames.value.length === 1 ? '[hero]' : 'hero'}, xray: true }`,
     distance: 'mask: { depth: [9, 1000], feather: 2 }',
   }[maskChoice.value];
-  const all = mask ? [...changed, mask] : changed;
+  const all = mask && !isMaterial.value ? [...changed, mask] : changed;
   const options = all.length ? `{ ${all.join(', ')} }` : '';
+  if (isMaterial.value) {
+    const targets = selectionNames.value
+      .map((n) => `scene.getObjectByName('${n}').material`)
+      .join(', ');
+    return [
+      "import { patchMaterial } from '@mk7s/xtree/core';",
+      `import { ${factoryName.value} } from '@mk7s/xtree/effects/${props.effect}';`,
+      '',
+      `const effect = ${factoryName.value}(${options});`,
+      `for (const material of [${targets}])`,
+      '  patchMaterial(material, effect);',
+      'const clock = new THREE.Clock();',
+      'renderer.setAnimationLoop(() => {',
+      '  effect.tick(clock.getDelta());',
+      '  renderer.render(scene, camera);',
+      '});',
+    ].join('\n');
+  }
   return [
     "import { EffectComposer } from '@mk7s/xtree/core';",
     `import { ${factoryName.value} } from '@mk7s/xtree/effects/${props.effect}';`,
@@ -254,9 +275,21 @@ onMounted(async () => {
   composer.setScene(studio.scene, studio.camera);
   findObject = (name) => studio.scene.getObjectByName(name);
   effect = factory();
-  composer.add(effect);
   definition.value = factory.definition;
-  setMask(factory.definition.meta.demo?.selection ? 'selection' : 'none');
+  const materialEffect =
+    factory.definition.kind === 'material'
+      ? (effect as unknown as MaterialEffect)
+      : null;
+  if (materialEffect) {
+    for (const name of selectionNames.value) {
+      const mesh = findObject(name) as { material?: unknown } | undefined;
+      if (mesh?.material)
+        core.patchMaterial(mesh.material as never, materialEffect);
+    }
+  } else {
+    composer.add(effect);
+    setMask(factory.definition.meta.demo?.selection ? 'selection' : 'none');
+  }
   syncValues();
 
   const resize = () => {
@@ -280,9 +313,10 @@ onMounted(async () => {
       sceneTime += delta;
       studio.update(sceneTime);
     }
+    if (animating) materialEffect?.tick(delta);
     composer.render(animating ? delta : 0);
     passes.value = composer.passes.length;
-    if (compare.value) {
+    if (compare.value && !materialEffect) {
       // "Before": the plain scene over the left part of the canvas.
       const cut = Math.round((canvas.clientWidth * divider.value) / 100);
       renderer.setScissorTest(true);
@@ -305,9 +339,11 @@ onMounted(async () => {
   motion.value = runtime.motionAllowed(element);
   playing.value = motion.value;
   composer.motion = motion.value;
+  materialEffect?.setMotion(motion.value);
   const stopWatching = runtime.watchMotion(element, (allowed: boolean) => {
     motion.value = allowed;
     composer.motion = allowed;
+    materialEffect?.setMotion(allowed);
     if (!allowed) playing.value = false;
     requestRender();
   });
@@ -351,6 +387,7 @@ onMounted(async () => {
     stopWatching();
     canvas.removeEventListener('pointermove', onPointer);
     composer.dispose();
+    materialEffect?.dispose();
     studio.dispose();
     renderer.dispose();
     renderer.forceContextLoss();
@@ -400,7 +437,7 @@ onBeforeUnmount(() => teardown?.());
       >
         {{ playing ? 'Pause' : 'Play' }}
       </button>
-      <label class="hcss-choice">
+      <label v-if="!isMaterial" class="hcss-choice">
         <input
           v-model="compare"
           class="hcss-switch"
@@ -420,7 +457,10 @@ onBeforeUnmount(() => teardown?.());
         aria-label="Divider position"
         @input="requestRender()"
       />
-      <span class="xt-demo-meta"
+      <span v-if="isMaterial" class="xt-demo-meta"
+        >Patched into the {{ selectionNames.join(' and ') }}</span
+      >
+      <span v-else class="xt-demo-meta"
         >{{ passes }} {{ passes === 1 ? 'pass' : 'passes' }}</span
       >
       <span v-if="!motion" class="xt-demo-meta">Motion is off</span>
@@ -456,7 +496,7 @@ onBeforeUnmount(() => teardown?.());
     </div>
 
     <form v-if="definition" class="xt-demo-controls" @submit.prevent>
-      <div class="hcss-field xt-demo-mask">
+      <div v-if="!isMaterial" class="hcss-field xt-demo-mask">
         <fieldset class="hcss-segmented">
           <legend>Mask</legend>
           <label v-for="(label, choice) in maskOptions" :key="choice">

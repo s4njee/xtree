@@ -95,6 +95,45 @@ export function passSignature(
   ]);
 }
 
+/**
+ * Declares an effect's parameters with `prefix`: uniforms, `#define`s for
+ * structural parameters and select options, and texture samplers with their
+ * `has_` defines. Fills `uniforms` with the effect's shared uniform objects.
+ */
+export function declareParams(
+  effect: Effect,
+  prefix: string,
+  uniforms: Record<string, { value: unknown }>,
+): string[] {
+  const lines: string[] = [];
+  const structural = effect.structuralValues();
+  for (const [name, param] of Object.entries(effect.definition.params) as [
+    string,
+    Param,
+  ][]) {
+    if (param.kind === 'select') {
+      param.options.forEach((option, i) =>
+        lines.push(`#define ${prefix}${name}_${identifier(option)} ${i}`),
+      );
+    }
+    if (param.kind === 'texture') {
+      lines.push(
+        `uniform ${samplerType(param)} ${prefix}${name};`,
+        `#define ${prefix}has_${name} ${structural[`has_${name}`] ? 1 : 0}`,
+      );
+      uniforms[prefix + name] = effect.uniforms[name]!;
+    } else if (param.structural) {
+      lines.push(
+        `#define ${prefix}${name} ${literal(param, structural[name]!)}`,
+      );
+    } else {
+      lines.push(`uniform ${glslTypes[param.kind]} ${prefix}${name};`);
+      uniforms[prefix + name] = effect.uniforms[name]!;
+    }
+  }
+  return lines;
+}
+
 /** Geometry buffers any effect in the list needs. */
 export function passBuffers(
   effects: readonly Effect[],
@@ -224,33 +263,9 @@ export function compilePass(
   effects.forEach((effect, index) => {
     const prefix = effectPrefix(index);
     const { definition } = effect;
-    const structural = effect.structuralValues();
     maps.push(...(definition.chunks ?? []));
     lines.push(`// ${definition.name}`);
-    for (const [name, param] of Object.entries(definition.params) as [
-      string,
-      Param,
-    ][]) {
-      if (param.kind === 'select') {
-        param.options.forEach((option, i) =>
-          lines.push(`#define ${prefix}${name}_${identifier(option)} ${i}`),
-        );
-      }
-      if (param.kind === 'texture') {
-        lines.push(
-          `uniform ${samplerType(param)} ${prefix}${name};`,
-          `#define ${prefix}has_${name} ${structural[`has_${name}`] ? 1 : 0}`,
-        );
-        uniforms[prefix + name] = effect.uniforms[name]!;
-      } else if (param.structural) {
-        lines.push(
-          `#define ${prefix}${name} ${literal(param, structural[name]!)}`,
-        );
-      } else {
-        lines.push(`uniform ${glslTypes[param.kind]} ${prefix}${name};`);
-        uniforms[prefix + name] = effect.uniforms[name]!;
-      }
-    }
+    lines.push(...declareParams(effect, prefix, uniforms));
     for (const texture of definition.textures ?? []) {
       lines.push(`uniform sampler2D ${prefix}${texture};`);
       uniforms[prefix + texture] = effect.uniforms[texture]!;

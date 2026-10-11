@@ -1,4 +1,5 @@
 export {
+  buildFactory,
   defineEffect,
   Effect,
   effectFamilies,
@@ -60,3 +61,12 @@ export {
   type TextureMask,
 } from './mask.js';
 export { fullscreenVertex } from './fullscreen-vertex.js';
+export {
+  defineMaterialEffect,
+  isMaterialDefinition,
+  MaterialEffect,
+  type MaterialEffectDefinition,
+  type MaterialEffectFactory,
+  type MaterialEffectInstance,
+  type MaterialSettings,
+} from './material.js';

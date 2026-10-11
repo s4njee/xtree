@@ -70,6 +70,7 @@ export default defineConfig({
             { text: 'Introduction', link: '/guide/' },
             { text: 'Getting started', link: '/guide/getting-started' },
             { text: 'Masks and geometry buffers', link: '/guide/masks' },
+            { text: 'Material effects', link: '/guide/materials' },
           ],
         },
       ],

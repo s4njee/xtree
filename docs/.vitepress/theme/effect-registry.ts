@@ -54,6 +54,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/displacement-map').then(
       (m) => m.displacementMap as unknown as EffectFactory<ParamSchema>,
     ),
+  dissolve: () =>
+    import('@mk7s/xtree/effects/dissolve').then(
+      (m) => m.dissolve as unknown as EffectFactory<ParamSchema>,
+    ),
   dither: () =>
     import('@mk7s/xtree/effects/dither').then(
       (m) => m.dither as unknown as EffectFactory<ParamSchema>,
@@ -66,6 +70,14 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/film-grain').then(
       (m) => m.filmGrain as unknown as EffectFactory<ParamSchema>,
     ),
+  'foil-material': () =>
+    import('@mk7s/xtree/effects/foil-material').then(
+      (m) => m.foilMaterial as unknown as EffectFactory<ParamSchema>,
+    ),
+  'fresnel-glow': () =>
+    import('@mk7s/xtree/effects/fresnel-glow').then(
+      (m) => m.fresnelGlow as unknown as EffectFactory<ParamSchema>,
+    ),
   glow: () =>
     import('@mk7s/xtree/effects/glow').then(
       (m) => m.glow as unknown as EffectFactory<ParamSchema>,
@@ -77,6 +89,10 @@ export const effectLoaders: Record<
   halftone: () =>
     import('@mk7s/xtree/effects/halftone').then(
       (m) => m.halftone as unknown as EffectFactory<ParamSchema>,
+    ),
+  hologram: () =>
+    import('@mk7s/xtree/effects/hologram').then(
+      (m) => m.hologram as unknown as EffectFactory<ParamSchema>,
     ),
   'holographic-foil': () =>
     import('@mk7s/xtree/effects/holographic-foil').then(
@@ -129,6 +145,10 @@ export const effectLoaders: Record<
   'selective-bloom': () =>
     import('@mk7s/xtree/effects/selective-bloom').then(
       (m) => m.selectiveBloom as unknown as EffectFactory<ParamSchema>,
+    ),
+  'thin-film': () =>
+    import('@mk7s/xtree/effects/thin-film').then(
+      (m) => m.thinFilm as unknown as EffectFactory<ParamSchema>,
     ),
   'tilt-shift': () =>
     import('@mk7s/xtree/effects/tilt-shift').then(

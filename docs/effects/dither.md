@@ -56,7 +56,7 @@ Apply one with `dither({ preset: 'name' })` or `effect.applyPreset('name')`; pre
 - **Passes:** reads only its own pixel, so it merges into the pass before it.
 - **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Static: nothing animates.
-- **Size:** 7.0 KB gzip budget for `@mk7s/xtree/effects/dither`, including the shared effect runtime.
+- **Size:** 7.9 KB gzip budget for `@mk7s/xtree/effects/dither`, including the shared effect runtime.
 
 ## Credits
 

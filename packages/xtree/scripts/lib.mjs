@@ -27,7 +27,7 @@ export const families = [
   {
     id: 'color',
     title: 'Color',
-    order: ['luminance', 'space', 'white-balance', 'tonemap'],
+    order: ['luminance', 'space', 'white-balance', 'spectral', 'tonemap'],
   },
   { id: 'blend', title: 'Blend', order: ['modes'] },
   { id: 'depth', title: 'Depth', order: ['reconstruct'] },

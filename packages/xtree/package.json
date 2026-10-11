@@ -78,6 +78,10 @@
       "types": "./dist/effects/displacement-map/index.d.ts",
       "import": "./dist/effects/displacement-map/index.js"
     },
+    "./effects/dissolve": {
+      "types": "./dist/effects/dissolve/index.d.ts",
+      "import": "./dist/effects/dissolve/index.js"
+    },
     "./effects/dither": {
       "types": "./dist/effects/dither/index.d.ts",
       "import": "./dist/effects/dither/index.js"
@@ -90,6 +94,14 @@
       "types": "./dist/effects/film-grain/index.d.ts",
       "import": "./dist/effects/film-grain/index.js"
     },
+    "./effects/foil-material": {
+      "types": "./dist/effects/foil-material/index.d.ts",
+      "import": "./dist/effects/foil-material/index.js"
+    },
+    "./effects/fresnel-glow": {
+      "types": "./dist/effects/fresnel-glow/index.d.ts",
+      "import": "./dist/effects/fresnel-glow/index.js"
+    },
     "./effects/glow": {
       "types": "./dist/effects/glow/index.d.ts",
       "import": "./dist/effects/glow/index.js"
@@ -101,6 +113,10 @@
     "./effects/halftone": {
       "types": "./dist/effects/halftone/index.d.ts",
       "import": "./dist/effects/halftone/index.js"
+    },
+    "./effects/hologram": {
+      "types": "./dist/effects/hologram/index.d.ts",
+      "import": "./dist/effects/hologram/index.js"
     },
     "./effects/holographic-foil": {
       "types": "./dist/effects/holographic-foil/index.d.ts",
@@ -153,6 +169,10 @@
     "./effects/selective-bloom": {
       "types": "./dist/effects/selective-bloom/index.d.ts",
       "import": "./dist/effects/selective-bloom/index.js"
+    },
+    "./effects/thin-film": {
+      "types": "./dist/effects/thin-film/index.d.ts",
+      "import": "./dist/effects/thin-film/index.js"
     },
     "./effects/tilt-shift": {
       "types": "./dist/effects/tilt-shift/index.d.ts",

@@ -131,6 +131,8 @@ export type Masking = 'opacity' | 'custom';
 export interface EffectDefinition<S extends ParamSchema> {
   /** Kebab-case id, also the export path: `@mk7s/xtree/effects/<name>`. */
   readonly name: string;
+  /** Set to `material` by `defineMaterialEffect`; post effects leave it out. */
+  readonly kind?: 'post' | 'material';
   readonly meta: EffectMeta;
   readonly params: S;
   /** Named parameter sets; each is applied over the defaults. */
@@ -220,6 +222,9 @@ const reserved = new Set([
   'maskAt',
   'requiredBuffers',
   'maskKind',
+  'onStructureChange',
+  'time',
+  'tick',
   'xtMask',
   'xtMaskChannel',
   'xtMaskRange',
@@ -246,6 +251,7 @@ export class Effect<S extends ParamSchema = ParamSchema> {
   #disposers: (() => void)[] = [];
   #samples = new Map<string, TextureLike & { dispose(): void }>();
   #mask: EffectMask | null = null;
+  readonly #listeners = new Set<() => void>();
 
   constructor(
     definition: EffectDefinition<S>,
@@ -298,7 +304,7 @@ export class Effect<S extends ParamSchema = ParamSchema> {
       );
     if (mode !== this.#blend) {
       this.#blend = mode;
-      this.#version++;
+      this.#bump();
     }
   }
 
@@ -321,7 +327,7 @@ export class Effect<S extends ParamSchema = ParamSchema> {
   set enabled(value: boolean) {
     if (value !== this.#enabled) {
       this.#enabled = Boolean(value);
-      this.#version++;
+      this.#bump();
     }
   }
 
@@ -348,7 +354,7 @@ export class Effect<S extends ParamSchema = ParamSchema> {
       mask && 'depth' in mask
         ? [mask.depth[0], mask.depth[1], mask.feather ?? 0]
         : [0, 0, 0];
-    if (this.maskKind !== before) this.#version++;
+    if (this.maskKind !== before) this.#bump();
   }
 
   /** The kind of the current mask, or null. */
@@ -389,10 +395,10 @@ export class Effect<S extends ParamSchema = ParamSchema> {
       this.#values[name] = Array.isArray(value)
         ? Object.freeze([...value])
         : value;
-      if (param.structural && !sameValue(previous, value)) this.#version++;
+      if (param.structural && !sameValue(previous, value)) this.#bump();
       // A texture parameter's presence ($has_<name>) is compiled in.
       if (param.kind === 'texture' && (previous === null) !== (value === null))
-        this.#version++;
+        this.#bump();
       if (!this.#settled(name))
         this.uniforms[name]!.value = toUniformValue(param, value);
     }
@@ -489,7 +495,7 @@ export class Effect<S extends ParamSchema = ParamSchema> {
       if (param.structural) structural = true;
       this.uniforms[name]!.value = toUniformValue(param, value);
     }
-    if (structural) this.#version++;
+    if (structural) this.#bump();
   }
 
   /** Values of structural parameters as compiled, after motion settling. */
@@ -512,6 +518,20 @@ export class Effect<S extends ParamSchema = ParamSchema> {
     return out;
   }
 
+  /**
+   * Calls `listener` whenever `structureVersion` changes (the compiled
+   * shader must change). Returns a function that removes the listener.
+   */
+  onStructureChange(listener: () => void): () => void {
+    this.#listeners.add(listener);
+    return () => this.#listeners.delete(listener);
+  }
+
+  #bump(): void {
+    this.#version++;
+    for (const listener of [...this.#listeners]) listener();
+  }
+
   /** Registers cleanup to run once on dispose. */
   onDispose(callback: () => void): void {
     this.#disposers.push(callback);
@@ -526,6 +546,7 @@ export class Effect<S extends ParamSchema = ParamSchema> {
     for (const texture of this.#samples.values()) texture.dispose();
     this.#samples.clear();
     for (const dispose of this.#disposers.splice(0)) dispose();
+    this.#listeners.clear();
   }
 
   #settleValues(): Partial<ParamValues<S>> | null {
@@ -555,6 +576,26 @@ const identifierPattern = /^[A-Za-z][A-Za-z0-9]*$/;
 export function defineEffect<const S extends ParamSchema>(
   definition: EffectDefinition<S>,
 ): EffectFactory<S> {
+  return buildFactory(definition, Effect, {
+    pattern: /\$main\s*\(/,
+    message: 'fragment must define $main(vec4 color, vec2 uv)',
+  }) as EffectFactory<S>;
+}
+
+/**
+ * Validates a definition (parameter names, defaults, presets and its GLSL
+ * entry point) and returns a factory of `Base` instances with a typed
+ * accessor per parameter. Shared by post and material effects.
+ * @internal
+ */
+export function buildFactory<S extends ParamSchema>(
+  definition: EffectDefinition<S>,
+  Base: new (
+    definition: EffectDefinition<S>,
+    values?: Partial<ParamValues<S>> & EffectOptions,
+  ) => Effect<S>,
+  entry: { readonly pattern: RegExp; readonly message: string },
+): (values?: Partial<ParamValues<S>> & EffectOptions) => Effect<S> {
   const { name } = definition;
   if (!namePattern.test(name))
     throw new TypeError(`defineEffect: "${name}" must be kebab-case`);
@@ -588,13 +629,11 @@ export function defineEffect<const S extends ParamSchema>(
       validateParam(`${name} preset ${preset}`, param, spec, value);
     }
   }
-  if (!/\$main\s*\(/.test(definition.fragment))
-    throw new TypeError(
-      `${name}: fragment must define $main(vec4 color, vec2 uv)`,
-    );
+  if (!entry.pattern.test(definition.fragment))
+    throw new TypeError(`${name}: ${entry.message}`);
 
   // One subclass per definition carries a typed accessor for each parameter.
-  class Instance extends Effect<S> {}
+  class Instance extends Base {}
   for (const param of Object.keys(definition.params)) {
     Object.defineProperty(Instance.prototype, param, {
       get(this: Effect<S>) {
@@ -607,10 +646,10 @@ export function defineEffect<const S extends ParamSchema>(
     });
   }
   const factory = (values?: Partial<ParamValues<S>> & EffectOptions) =>
-    new Instance(definition, values) as EffectInstance<S>;
+    new Instance(definition, values);
   Object.defineProperty(factory, 'definition', {
     value: definition,
     enumerable: true,
   });
-  return factory as EffectFactory<S>;
+  return factory;
 }

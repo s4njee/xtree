@@ -8,6 +8,16 @@ import {
   CineonToneMapping,
   DataTexture,
   LinearFilter,
+  type Material,
+  Mesh,
+  MeshBasicMaterial,
+  MeshLambertMaterial,
+  MeshMatcapMaterial,
+  MeshPhongMaterial,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  MeshToonMaterial,
+  SphereGeometry,
   RGBAFormat,
   FloatType,
   WebGLRenderTarget,
@@ -22,8 +32,17 @@ import {
 import { EffectComposer as ThreeEffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { EffectComposer, EffectPass } from '../../src/core/index.js';
-import { defineEffect, type Effect } from '../../src/effect/index.js';
+import {
+  EffectComposer,
+  EffectPass,
+  patchMaterial,
+  unpatchMaterial,
+} from '../../src/core/index.js';
+import {
+  defineEffect,
+  MaterialEffect,
+  type Effect,
+} from '../../src/effect/index.js';
 import { createSampleTexture } from '../../src/core/index.js';
 import type { EffectFactory, ParamSchema } from '../../src/effect/index.js';
 
@@ -58,6 +77,8 @@ export interface EffectSpec {
    */
   mask?: MaskSpec | 'demo' | 'shared';
   enabled?: boolean;
+  /** Material effects: studio objects to patch (default: the effect's demo selection, or the knot). */
+  targets?: string[];
 }
 
 export type MaskSpec =
@@ -210,12 +231,31 @@ function withComposer<T>(
   const composer = new EffectComposer(renderer, { merge: spec.merge ?? true });
   composer.setScene(studio.scene, studio.camera);
   const effects = createEffects(spec.effects, spec.sharedMask);
-  composer.setItems(effects);
+  // Material effects patch studio materials for this render only.
+  const patched: [Material, MaterialEffect][] = [];
+  effects.forEach((effect, i) => {
+    if (!(effect instanceof MaterialEffect)) return;
+    effect.time = spec.time ?? 0;
+    effect.setMotion(spec.motion ?? true);
+    const names = spec.effects![i]!.targets ??
+      effect.definition.meta.demo?.selection ?? ['knot'];
+    for (const name of names) {
+      const mesh = studio.scene.getObjectByName(name) as Mesh | undefined;
+      if (!mesh) throw new Error(`no studio object named ${name}`);
+      const material = mesh.material as Material;
+      patchMaterial(material, effect);
+      patched.push([material, effect]);
+    }
+  });
+  composer.setItems(effects.filter((e) => !(e instanceof MaterialEffect)));
   composer.time = spec.time ?? 0;
   composer.motion = spec.motion ?? true;
   try {
     return run(composer, effects);
   } finally {
+    for (const [material, effect] of patched) unpatchMaterial(material, effect);
+    for (const effect of effects)
+      if (effect instanceof MaterialEffect) effect.dispose();
     composer.dispose();
   }
 }
@@ -361,6 +401,92 @@ const xt = {
     );
   },
   /** Counts GPU resources before, during and after a composer's life. */
+  /**
+   * Patches fresnel glow into a sphere with each supported material type and
+   * reports whether the glow changed the image, with any shader errors.
+   */
+  materialTypes() {
+    const types = {
+      MeshBasicMaterial,
+      MeshLambertMaterial,
+      MeshPhongMaterial,
+      MeshStandardMaterial,
+      MeshPhysicalMaterial,
+      MeshToonMaterial,
+      MeshMatcapMaterial,
+    };
+    const errors: string[] = [];
+    const log = console.error;
+    console.error = (...args: unknown[]) => {
+      errors.push(args.map(String).join(' ').slice(0, 300));
+    };
+    try {
+      return Object.entries(types).map(([name, Type]) => {
+        const material = new Type({ color: '#335' });
+        const mesh = new Mesh(new SphereGeometry(0.6, 32, 16), material);
+        mesh.position.set(0, 1.25, 1.5);
+        studio.scene.add(mesh);
+        const plain = withComposer({}, (composer) => {
+          composer.render(0);
+          return readPixels();
+        });
+        const glow = factories['fresnel-glow']!() as unknown as MaterialEffect;
+        patchMaterial(material, glow);
+        const patched = withComposer({}, (composer) => {
+          composer.render(0);
+          return readPixels();
+        });
+        unpatchMaterial(material, glow);
+        const restored = withComposer({}, (composer) => {
+          composer.render(0);
+          return readPixels();
+        });
+        studio.scene.remove(mesh);
+        mesh.geometry.dispose();
+        material.dispose();
+        glow.dispose();
+        const differing = (a: number[], b: number[]) =>
+          a.filter((v, i) => Math.abs(v - b[i]!) > 8).length;
+        return {
+          name,
+          changed: differing(plain, patched),
+          restored: differing(plain, restored),
+          errors: [...errors.splice(0)],
+        };
+      });
+    } finally {
+      console.error = log;
+    }
+  },
+  /** Program counts around float and structural changes to a patched material effect. */
+  materialRecompiles() {
+    const knot = studio.scene.getObjectByName('knot') as Mesh;
+    const material = knot.material as Material;
+    const film = factories['thin-film']!() as unknown as MaterialEffect & {
+      intensity: number;
+      variation: string;
+    };
+    const programs = () => renderer.info.programs?.length ?? 0;
+    const frame = () =>
+      withComposer({}, (composer) => {
+        composer.render(0);
+      });
+    patchMaterial(material, film);
+    frame();
+    const start = programs();
+    film.intensity = 0.3;
+    frame();
+    const afterFloat = programs();
+    const version = material.version;
+    film.set({ variation: 'height' } as never);
+    const flagged = material.version > version;
+    frame();
+    const afterStructural = programs();
+    unpatchMaterial(material, film);
+    film.dispose();
+    frame();
+    return { start, afterFloat, flagged, afterStructural };
+  },
   lifecycle() {
     const memory = () => ({
       textures: renderer.info.memory.textures,
@@ -375,6 +501,14 @@ const xt = {
           { id: 'vignette' },
           { id: 'rgb-split-glitch' },
           { id: 'holographic-foil' },
+        ],
+      },
+      // Material effects patched into studio materials and removed again.
+      {
+        effects: [
+          { id: 'hologram' },
+          { id: 'dissolve', targets: ['box'] },
+          { id: 'thin-film', targets: ['box'] },
         ],
       },
       // Geometry buffers and selection prepasses, including x-ray.

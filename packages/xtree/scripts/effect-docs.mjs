@@ -84,6 +84,7 @@ function page(factory) {
     ? readFileSync(notesFile, 'utf8').trim()
     : '';
   const exampleParams = Object.entries(definition.presets ?? {})[0];
+  const material = definition.kind === 'material';
   const motion = definition.motion ?? 'static';
   const lines = [
     '---',
@@ -103,20 +104,43 @@ function page(factory) {
     '## Usage',
     '',
     '```ts',
-    "import { EffectComposer } from '@mk7s/xtree/core';",
-    `import { ${factoryName} } from '@mk7s/xtree/effects/${name}';`,
-    '',
-    'const composer = new EffectComposer(renderer);',
-    'composer.setScene(scene, camera);',
-    meta.demo?.selection
-      ? `const hero = scene.getObjectByName('hero'); // the objects to select\ncomposer.add(${factoryName}({ mask: { selection: [hero] } }));`
-      : exampleParams
-        ? `composer.add(${factoryName}({ preset: '${exampleParams[0]}' }));`
-        : `composer.add(${factoryName}());`,
-    'renderer.setAnimationLoop(() => composer.render());',
+    ...(material
+      ? [
+          "import { patchMaterial } from '@mk7s/xtree/core';",
+          `import { ${factoryName} } from '@mk7s/xtree/effects/${name}';`,
+          '',
+          exampleParams
+            ? `const effect = ${factoryName}({ preset: '${exampleParams[0]}' });`
+            : `const effect = ${factoryName}();`,
+          'patchMaterial(mesh.material, effect);',
+          ...(motion === 'static'
+            ? [
+                'renderer.setAnimationLoop(() => renderer.render(scene, camera));',
+              ]
+            : [
+                'const clock = new THREE.Clock();',
+                'renderer.setAnimationLoop(() => {',
+                '  effect.tick(clock.getDelta());',
+                '  renderer.render(scene, camera);',
+                '});',
+              ]),
+        ]
+      : [
+          "import { EffectComposer } from '@mk7s/xtree/core';",
+          `import { ${factoryName} } from '@mk7s/xtree/effects/${name}';`,
+          '',
+          'const composer = new EffectComposer(renderer);',
+          'composer.setScene(scene, camera);',
+          meta.demo?.selection
+            ? `const hero = scene.getObjectByName('hero'); // the objects to select\ncomposer.add(${factoryName}({ mask: { selection: [hero] } }));`
+            : exampleParams
+              ? `composer.add(${factoryName}({ preset: '${exampleParams[0]}' }));`
+              : `composer.add(${factoryName}());`,
+          'renderer.setAnimationLoop(() => composer.render());',
+        ]),
     '```',
     '',
-    `Every parameter is also a property: \`effect.${Object.keys(params)[0]} = ${formatValue(Object.values(params)[0], Object.values(params)[0].default)}\`. Uniform changes take effect on the next frame without recompiling${Object.values(params).some((p) => p.structural) ? '; parameters marked *structural* recompile the pass that contains the effect' : ''}.`,
+    `Every parameter is also a property: \`effect.${Object.keys(params)[0]} = ${formatValue(Object.values(params)[0], Object.values(params)[0].default)}\`. Uniform changes take effect on the next frame without recompiling${Object.values(params).some((p) => p.structural) ? `; parameters marked *structural* recompile ${material ? 'the materials the effect is patched into' : 'the pass that contains the effect'}` : ''}.`,
     '',
     '## Parameters',
     '',
@@ -152,7 +176,7 @@ function page(factory) {
     motion === 'static'
       ? 'Static: nothing animates.'
       : motion === 'freeze'
-        ? 'Freezes: when motion is off (reduced motion, high contrast or `composer.motion = false`) the effect holds its current frame.'
+        ? `Freezes: when motion is off (reduced motion, high contrast or ${material ? '`effect.setMotion(false)`' : '`composer.motion = false`'}) the effect holds its current frame.`
         : `Settles: when motion is off it switches to still values (${Object.entries(
             motion.settle,
           )
@@ -170,17 +194,43 @@ function page(factory) {
     (definition.masking ?? 'opacity') === 'custom'
       ? 'reads its `mask` itself rather than fading by it (see the description); any [mask kind](/guide/masks) works.'
       : 'set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).';
+  const settings = definition.settings;
+  const settingsText = settings
+    ? [
+        settings.transparent && 'transparent',
+        settings.blending === 'additive' && 'additive blending',
+        settings.depthWrite === false && 'no depth writes',
+        settings.doubleSided && 'both faces drawn',
+      ]
+        .filter(Boolean)
+        .join(', ')
+    : '';
+  const materialLines = [
+    `- **Kind:** material effect. \`patchMaterial(material, effect)\` splices it into MeshBasic, Lambert, Phong, Standard, Physical, Toon and Matcap materials, so lighting, fog and shadows keep working; \`unpatchMaterial\` removes it. See [material effects](/guide/materials).`,
+    ...(settingsText
+      ? [
+          `- **Material settings:** while patched in, the material is set to ${settingsText}; they are restored when it is removed.`,
+        ]
+      : []),
+  ];
   lines.push(
     '## Details',
     '',
     `- **Family:** ${effectFamilies[meta.family]} · tracked as story ${meta.story} in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).`,
-    `- **Passes:** ${
-      sampling === 'pixel'
-        ? 'reads only its own pixel, so it merges into the pass before it.'
-        : 'samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass.'
-    }${definition.setup ? ' It also renders its own intermediate passes before the merged pass.' : ''}`,
-    ...(buffersText ? [`- **Geometry buffers:** ${buffersText}`] : []),
-    `- **Masks:** ${maskText}`,
+    ...(material ? materialLines : []),
+    ...(material
+      ? []
+      : [
+          `- **Passes:** ${
+            sampling === 'pixel'
+              ? 'reads only its own pixel, so it merges into the pass before it.'
+              : 'samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass.'
+          }${definition.setup ? ' It also renders its own intermediate passes before the merged pass.' : ''}`,
+        ]),
+    ...(buffersText && !material
+      ? [`- **Geometry buffers:** ${buffersText}`]
+      : []),
+    ...(material ? [] : [`- **Masks:** ${maskText}`]),
     `- **Motion:** ${motionText}`,
     `- **Size:** ${(budgets[`./effects/${name}`] / 1024).toFixed(1)} KB gzip budget for \`@mk7s/xtree/effects/${name}\`, including the shared effect runtime.`,
     '',

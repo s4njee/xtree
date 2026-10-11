@@ -20,3 +20,10 @@ export {
 } from './plan.js';
 export { Fullscreen } from './fullscreen.js';
 export { createSampleTexture } from './textures.js';
+export { patchMaterial, unpatchMaterial, materialEffects } from './material.js';
+export {
+  compileMaterial,
+  materialPrefix,
+  materialSignature,
+  type MaterialInjection,
+} from './material-compile.js';

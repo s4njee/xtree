@@ -100,6 +100,14 @@
       ]
     },
     {
+      "id": "effects/dissolve",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Noise-threshold dissolve with an emissive burn edge, a common real-time technique"
+      ]
+    },
+    {
       "id": "effects/dither",
       "kind": "original",
       "licence": "MIT",
@@ -124,6 +132,22 @@
       ]
     },
     {
+      "id": "effects/foil-material",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "View-angle-driven spectral bands and glints, after the xtree holographic foil post effect"
+      ]
+    },
+    {
+      "id": "effects/fresnel-glow",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Rim term after Schlick, An Inexpensive BRDF Model for Physically-based Rendering, 1994"
+      ]
+    },
+    {
       "id": "effects/glow",
       "kind": "original",
       "licence": "MIT",
@@ -143,6 +167,14 @@
       "licence": "MIT",
       "references": [
         "Traditional CMYK screen angles (C 15°, M 75°, Y 0°, K 45°) with area-proportional dots"
+      ]
+    },
+    {
+      "id": "effects/hologram",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Additive fresnel rim with world-space scanlines, slow noise flicker and sliced vertex glitches"
       ]
     },
     {
@@ -243,6 +275,14 @@
       ]
     },
     {
+      "id": "effects/thin-film",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Thin-film interference integrated over 16 wavelengths with the CIE 1931 color-matching functions"
+      ]
+    },
+    {
       "id": "effects/tilt-shift",
       "kind": "original",
       "licence": "MIT",
@@ -281,6 +321,15 @@
         "IEC 61966-2-1 (sRGB)",
         "Ottosson, A perceptual color space for image processing, 2020",
         "FCC NTSC YIQ; ITU-R BT.709 YUV"
+      ]
+    },
+    {
+      "id": "xtree/color/spectral",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Wyman, Sloan and Shirley, Simple Analytic Approximations to the CIE XYZ Color Matching Functions, JCGT 2013",
+        "Two-beam thin-film interference with a half-wave phase shift (Born and Wolf, Principles of Optics)"
       ]
     },
     {

@@ -6,7 +6,7 @@ title: Effects
 
 # Effects
 
-33 effects so far, out of the 141 planned. Each page has a live demo you can adjust, compare and copy.
+38 effects so far, out of the 141 planned. Each page has a live demo you can adjust, compare and copy.
 
 ## Color & tone
 
@@ -82,7 +82,17 @@ title: Effects
 ## Holographic & iridescent
 
 <div class="xt-effect-grid">
+<a class="hcss-card xt-effect-card" href="./foil-material"><strong>Holographic foil material</strong><span>The holographic foil as a material: the rainbow and glints follow the true viewing angle at each point of the surface, so a card, sticker or logo shimmers as it or the camera moves, with no pointer input needed.</span></a>
+<a class="hcss-card xt-effect-card" href="./hologram"><strong>Hologram</strong><span>Turns a mesh into a projected hologram: see-through additive light with moving scanlines, a bright fresnel rim, a gentle flicker and occasional glitch slices.</span></a>
 <a class="hcss-card xt-effect-card" href="./holographic-foil"><strong>Holographic foil</strong><span>An iridescent rainbow sheen, like a holographic trading card.</span></a>
+<a class="hcss-card xt-effect-card" href="./thin-film"><strong>Thin-film iridescence</strong><span>Soap-bubble and oil-slick colors from thin-film interference: a film whose thickness varies across the surface reflects different wavelengths, and the colors slide as the viewing angle changes.</span></a>
+</div>
+
+## Materials
+
+<div class="xt-effect-grid">
+<a class="hcss-card xt-effect-card" href="./dissolve"><strong>Dissolve</strong><span>Burns the surface away as `progress` goes from 0 to 1, in noisy patches or as a front sweeping up the object, with a glowing edge.</span></a>
+<a class="hcss-card xt-effect-card" href="./fresnel-glow"><strong>Fresnel glow</strong><span>Adds light where a surface turns away from the camera, the rim lighting of force fields, energy shields and selected objects.</span></a>
 </div>
 
 ## Utilities

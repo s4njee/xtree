@@ -1,12 +1,12 @@
 {
   ".": 1088,
   "./glsl": 1088,
-  "./shaders": 8384,
+  "./shaders": 9472,
   "./shaders/noise": 2944,
-  "./shaders/color": 3520,
+  "./shaders/color": 4096,
   "./shaders/blend": 1984,
   "./effect": 4928,
-  "./core": 16832,
+  "./core": 18944,
   "./effects/vignette": 5120,
   "./effects/chromatic-aberration": 5376,
   "./effects/bloom": 6784,
@@ -25,7 +25,7 @@
   "./effects/crt": 6272,
   "./effects/digital-noise": 7040,
   "./effects/displacement-map": 7744,
-  "./effects/dither": 7168,
+  "./effects/dither": 8128,
   "./effects/film-grain": 7104,
   "./effects/halftone": 7296,
   "./effects/lens-distortion": 5120,
@@ -40,5 +40,10 @@
   "./effects/glow": 6080,
   "./effects/outline": 5568,
   "./effects/selective-bloom": 7232,
-  "./shaders/depth": 640
+  "./shaders/depth": 640,
+  "./effects/dissolve": 7360,
+  "./effects/foil-material": 8960,
+  "./effects/fresnel-glow": 5440,
+  "./effects/hologram": 7616,
+  "./effects/thin-film": 7936
 }

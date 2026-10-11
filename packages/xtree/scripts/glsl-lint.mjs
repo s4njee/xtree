@@ -33,10 +33,10 @@ if (!hasValidator && process.env.XT_REQUIRE_GLSLANG === '1') {
   );
 }
 /** Returns the validator log on failure, null on success or when the validator is missing. */
-const validate = (source) => {
+const validate = (source, stage = 'frag') => {
   if (!hasValidator) return null;
   try {
-    execFileSync('glslangValidator', ['--stdin', '-S', 'frag'], {
+    execFileSync('glslangValidator', ['--stdin', '-S', stage], {
       input: source,
       encoding: 'utf8',
       stdio: 'pipe',
@@ -118,12 +118,58 @@ for (const chunk of chunks) {
 
 const effects = await loadEffects();
 const { compilePass } = await loadSource('src/core/compile.ts');
+const { compileMaterial } = await loadSource('src/core/material-compile.ts');
+
+// Stand-ins for the prefixes three.js puts in front of a built-in material's shaders.
+const materialVertex = (code) => `#version 300 es
+precision highp float;
+precision highp int;
+precision highp sampler2D;
+precision highp sampler3D;
+#define varying out
+in vec3 position;
+in vec3 normal;
+in vec2 uv;
+uniform mat4 modelMatrix;
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+uniform mat3 normalMatrix;
+${code.vertexPars}
+void main() {
+  vec3 transformed = position;
+${code.vertexBeforeProject}
+  vec4 mvPosition = modelViewMatrix * vec4(transformed, 1.0);
+  gl_Position = projectionMatrix * mvPosition;
+${code.vertexAfterProject}
+}
+`;
+const materialFragment = (code) => `#version 300 es
+precision highp float;
+precision highp int;
+precision highp sampler2D;
+precision highp sampler3D;
+#define varying in
+out highp vec4 pc_fragColor;
+#define gl_FragColor pc_fragColor
+uniform bool isOrthographic;
+${code.fragmentPars}
+void main() {
+  vec3 normal = vec3(0.0, 0.0, 1.0);
+  gl_FragColor = vec4(1.0);
+${code.fragmentMain}
+}
+`;
 let variants = 0;
 for (const { id, factory } of effects) {
   const { definition } = factory;
   const folder = `src/effects/${id}`;
+  const material = definition.kind === 'material';
+  const sources = [definition.fragment, definition.vertex ?? ''].join('\n');
   const known = new Set([
     'main',
+    'fragment',
+    'vertex',
+    'time',
     'maskAt',
     'has_mask',
     'maskKind',
@@ -136,15 +182,14 @@ for (const { id, factory } of effects) {
         known.add(`${name}_${option.replace(/\W+/g, '_')}`);
     if (param.kind === 'texture') known.add(`has_${name}`);
   }
-  for (const [, fn] of definition.fragment.matchAll(/\b\w+\s+\$(\w+)\s*\(/g))
-    known.add(fn);
-  for (const [, used] of definition.fragment.matchAll(/\$(\w+)/g)) {
+  for (const [, fn] of sources.matchAll(/\b\w+\s+\$(\w+)\s*\(/g)) known.add(fn);
+  for (const [, used] of sources.matchAll(/\$(\w+)/g)) {
     if (!known.has(used))
       problems.push(
         `${folder}: $${used} is not a parameter, texture, option constant or $function`,
       );
   }
-  if (/^\s*(?!return\b)\w+\s+xt_\w+\s*\(/m.test(definition.fragment)) {
+  if (/^\s*(?!return\b)\w+\s+xt_\w+\s*\(/m.test(sources)) {
     problems.push(
       `${folder}: helper functions in effects must use $names so merged copies don't clash`,
     );
@@ -167,12 +212,31 @@ for (const { id, factory } of effects) {
   for (const preset of Object.keys(definition.presets ?? {}))
     settings.push({ preset });
   // Every mask kind, which also adds the depth buffer for depth masks.
-  settings.push(
-    { mask: { texture: { isTexture: true }, channel: 'a' } },
-    { mask: { depth: [1, 10], feather: 1 } },
-    { mask: { selection: { layer: 1 } } },
-  );
-  for (const setting of settings) {
+  if (!material)
+    settings.push(
+      { mask: { texture: { isTexture: true }, channel: 'a' } },
+      { mask: { depth: [1, 10], feather: 1 } },
+      { mask: { selection: { layer: 1 } } },
+    );
+  for (const setting of material ? settings : []) {
+    for (const lit of [true, false]) {
+      const code = compileMaterial([factory(setting), factory(setting)], {
+        lit,
+      });
+      variants++;
+      for (const [stage, source] of [
+        ['vert', materialVertex(code)],
+        ['frag', materialFragment(code)],
+      ]) {
+        const log = validate(source, stage);
+        if (log)
+          problems.push(
+            `${folder} ${JSON.stringify(setting)} ${lit ? 'lit' : 'unlit'} ${stage}: glslangValidator failed\n${log.trim()}`,
+          );
+      }
+    }
+  }
+  for (const setting of material ? [] : settings) {
     const pass = compilePass([factory(setting), factory(setting)], {
       toneMapping: 'aces',
       colorSpace: 'srgb',

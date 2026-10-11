@@ -167,8 +167,33 @@
     "text": "Holographic & iridescent",
     "items": [
       {
+        "text": "Holographic foil material",
+        "link": "/effects/foil-material"
+      },
+      {
+        "text": "Hologram",
+        "link": "/effects/hologram"
+      },
+      {
         "text": "Holographic foil",
         "link": "/effects/holographic-foil"
+      },
+      {
+        "text": "Thin-film iridescence",
+        "link": "/effects/thin-film"
+      }
+    ]
+  },
+  {
+    "text": "Materials",
+    "items": [
+      {
+        "text": "Dissolve",
+        "link": "/effects/dissolve"
+      },
+      {
+        "text": "Fresnel glow",
+        "link": "/effects/fresnel-glow"
       }
     ]
   },

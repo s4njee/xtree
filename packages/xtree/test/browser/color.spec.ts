@@ -334,3 +334,57 @@ vec4 xt_test(vec4 c, int index) {
     });
   }
 });
+
+test.describe('spectral', () => {
+  test('color-matching functions match the CIE 1931 table', async ({
+    page,
+  }) => {
+    // Tabulated CIE 1931 2° values; the analytic fit is within a few percent.
+    const table: [number, number, number, number][] = [
+      [450, 0.3362, 0.038, 1.7721],
+      [500, 0.0049, 0.323, 0.272],
+      [555, 0.5121, 1.0, 0.0057],
+      [600, 1.0622, 0.631, 0.0008],
+      [650, 0.2835, 0.107, 0.0],
+    ];
+    const out = vec4s(
+      await runShader(page, {
+        source: `#include <xtree/color/spectral>
+vec4 xt_test(vec4 v, int index) {
+  return vec4(xt_wavelengthToXyz(v.x), 0.0);
+}`,
+        inputs: table.flatMap(([nm]) => [nm, 0, 0, 0]),
+      }),
+    );
+    out.forEach(([x, y, z], i) => {
+      const [, rx, ry, rz] = table[i]!;
+      expect(Math.abs(x! - rx)).toBeLessThan(0.04);
+      expect(Math.abs(y! - ry)).toBeLessThan(0.04);
+      expect(Math.abs(z! - rz)).toBeLessThan(0.08);
+    });
+  });
+
+  test('thin films: zero thickness is black, many thicknesses average to grey', async ({
+    page,
+  }) => {
+    const inputs: number[] = [];
+    for (let i = 0; i < 512; i++)
+      inputs.push(i * 9.7, 1.33, 1 - (i % 7) / 10, 0);
+    const out = vec4s(
+      await runShader(page, {
+        source: `#include <xtree/color/spectral>
+vec4 xt_test(vec4 v, int index) {
+  return vec4(xt_thinFilm(v.x, v.y, v.z), 0.0);
+}`,
+        inputs,
+      }),
+    );
+    expect(Math.max(...out[0]!.slice(0, 3))).toBeLessThan(1e-3);
+    const mean = [0, 1, 2].map(
+      (c) => out.reduce((sum, v) => sum + v[c]!, 0) / out.length,
+    );
+    for (const m of mean) expect(Math.abs(m - 0.5)).toBeLessThan(0.06);
+    for (const v of out)
+      expect(Math.min(...v.slice(0, 3))).toBeGreaterThanOrEqual(0);
+  });
+});
