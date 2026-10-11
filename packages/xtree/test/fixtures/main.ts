@@ -684,6 +684,21 @@ const xt = {
   },
   /** Renders a stack at two times and reports whether the frames differ. */
   /** Renders `frames` frames 0.5 s apart while playing with motion off; reports whether any frame changed. */
+  /** Plays a transition from 0 to 1 over `seconds` at `fps` and runs the photosensitivity analyser on it. */
+  transitionFlashCheck(
+    spec: Omit<TransitionSpec, 'progress'>,
+    seconds = 1,
+    fps = 30,
+  ) {
+    const frames: FlashFrame[] = [];
+    const count = Math.round(seconds * fps);
+    for (let i = 0; i <= count; i++) {
+      const { pixels } = renderTransition({ ...spec, progress: i / count });
+      frames.push({ width, height, pixels });
+    }
+    const { flashFrames, ...report } = analyseFlashes(frames, { fps });
+    return { ...report, flashes: flashFrames.length };
+  },
   motionOff(spec: RenderSpec, frames = 4) {
     return withComposer({ ...spec, motion: false }, (composer, effects) => {
       composer.play();

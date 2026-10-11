@@ -158,6 +158,7 @@ uniform mat4 modelMatrix;
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat3 normalMatrix;
+out vec3 vNormal;
 ${code.vertexPars}
 void main() {
   vec3 transformed = position;

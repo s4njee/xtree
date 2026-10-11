@@ -1,4 +1,7 @@
 import {
+  AlwaysDepth,
+  GreaterDepth,
+  LessEqualDepth,
   MeshBasicMaterial,
   MeshNormalMaterial,
   MeshStandardMaterial,
@@ -18,6 +21,9 @@ import { dissolve } from '../../src/effects/dissolve/index.js';
 import { fresnelGlow } from '../../src/effects/fresnel-glow/index.js';
 import { hologram } from '../../src/effects/hologram/index.js';
 import { thinFilm } from '../../src/effects/thin-film/index.js';
+import { wireframe } from '../../src/effects/wireframe/index.js';
+import { wobble } from '../../src/effects/wobble/index.js';
+import { xRay } from '../../src/effects/x-ray/index.js';
 
 /** Runs a material's onBeforeCompile on its ShaderLib source, as three.js would. */
 function compile(material: MeshStandardMaterial | MeshBasicMaterial) {
@@ -101,11 +107,31 @@ describe('compileMaterial', () => {
   it('uses the vertex normal on unlit materials and only adds vertex calls when needed', () => {
     const unlit = compileMaterial([fresnelGlow()], { lit: false });
     expect(unlit.fragmentMain).toContain('normalize(xt_vViewNormal)');
-    expect(unlit.vertexBeforeProject).toBe('');
+    expect(unlit.vertexBeforeProject).not.toContain('_vertex(');
     const holo = compileMaterial([hologram()], { lit: true });
     expect(holo.vertexBeforeProject).toContain(
-      'xtm0_vertex(transformed, normal);',
+      'xtm0_vertex(transformed, xt_objectNormal);',
     );
+    // Hologram only reads the normal, so lit shading keeps three.js's own.
+    expect(holo.vertexAfterProject).not.toContain('vNormal');
+  });
+
+  it('writes a new normal from a vertex hook into lit shading, and reads barycentrics on request', () => {
+    const lit = compileMaterial([wobble()], { lit: true });
+    expect(lit.vertexAfterProject).toContain(
+      'vNormal = normalize(normalMatrix * xt_normal);',
+    );
+    expect(
+      compileMaterial([wobble()], { lit: false }).vertexAfterProject,
+    ).not.toContain('vNormal');
+    const lines = compileMaterial([wireframe()], { lit: true });
+    expect(lines.vertexPars).toContain('in vec3 xtBarycentric;');
+    expect(lines.fragmentMain).toContain(
+      'xt_surface.barycentric = xt_vBarycentric;',
+    );
+    expect(
+      compileMaterial([fresnelGlow()], { lit: true }).fragmentMain,
+    ).toContain('xt_surface.barycentric = vec3(0.0);');
   });
 
   it('compiles structural parameters as defines', () => {
@@ -118,6 +144,20 @@ describe('compileMaterial', () => {
 });
 
 describe('patchMaterial', () => {
+  it('applies settings computed from values, re-applies them on structural changes and restores them', () => {
+    const material = new MeshStandardMaterial();
+    const ray = xRay({ occlusion: 'hidden' });
+    patchMaterial(material, ray);
+    expect(material.depthFunc).toBe(GreaterDepth);
+    expect(material.depthWrite).toBe(false);
+    ray.occlusion = 'always';
+    expect(material.depthFunc).toBe(AlwaysDepth);
+    unpatchMaterial(material, ray);
+    expect(material.depthFunc).toBe(LessEqualDepth);
+    expect(material.depthWrite).toBe(true);
+    ray.dispose();
+  });
+
   it('splices code into the material shader and restores it when removed', () => {
     const material = new MeshStandardMaterial();
     const glow = fresnelGlow();

@@ -1,7 +1,15 @@
-import { AdditiveBlending, DoubleSide, NormalBlending } from 'three';
+import {
+  AdditiveBlending,
+  AlwaysDepth,
+  DoubleSide,
+  GreaterDepth,
+  LessEqualDepth,
+  NormalBlending,
+} from 'three';
 import type { Material, WebGLProgramParametersWithUniforms } from 'three';
 import type { MaterialEffect } from '../effect/material.js';
 import { compileMaterial, materialSignature } from './material-compile.js';
+import { createSampleTexture } from './textures.js';
 
 /** Built-in materials that patches can hook into. */
 const supported = new Set([
@@ -16,12 +24,20 @@ const supported = new Set([
 
 interface Original {
   readonly onBeforeCompile: Material['onBeforeCompile'];
+  readonly onBeforeRender: Material['onBeforeRender'];
   readonly customProgramCacheKey: Material['customProgramCacheKey'];
   readonly transparent: boolean;
   readonly depthWrite: boolean;
   readonly blending: Material['blending'];
   readonly side: Material['side'];
+  readonly depthFunc: Material['depthFunc'];
 }
+
+const depthFuncs = {
+  'less-equal': LessEqualDepth,
+  greater: GreaterDepth,
+  always: AlwaysDepth,
+} as const;
 
 interface PatchState {
   effects: MaterialEffect[];
@@ -135,9 +151,21 @@ function inject(
 /** Applies the last patched effect's settings, or the material's own. */
 function applySettings(material: Material, state: PatchState): void {
   const { original } = state;
-  const settings = [...state.effects]
+  const effect = [...state.effects]
     .reverse()
-    .find((e) => e.materialDefinition.settings)?.materialDefinition.settings;
+    .find((e) => e.materialDefinition.settings);
+  const declared = effect?.materialDefinition.settings;
+  const settings =
+    typeof declared === 'function'
+      ? declared(
+          Object.fromEntries(
+            Object.keys(effect!.definition.params).map((name) => [
+              name,
+              (effect as unknown as Record<string, unknown>)[name],
+            ]),
+          ) as never,
+        )
+      : declared;
   material.transparent = settings?.transparent ?? original.transparent;
   material.depthWrite = settings?.depthWrite ?? original.depthWrite;
   material.blending =
@@ -147,16 +175,21 @@ function applySettings(material: Material, state: PatchState): void {
         ? NormalBlending
         : original.blending;
   material.side = settings?.doubleSided ? DoubleSide : original.side;
+  material.depthFunc = settings?.depthFunc
+    ? depthFuncs[settings.depthFunc]
+    : original.depthFunc;
 }
 
 function snapshot(material: Material): Original {
   return {
     onBeforeCompile: material.onBeforeCompile,
+    onBeforeRender: material.onBeforeRender,
     customProgramCacheKey: material.customProgramCacheKey,
     transparent: material.transparent,
     depthWrite: material.depthWrite,
     blending: material.blending,
     side: material.side,
+    depthFunc: material.depthFunc,
   };
 }
 
@@ -164,6 +197,12 @@ function install(material: Material, state: PatchState): void {
   const original = snapshot(material);
   state.original = original;
   state.installed = true;
+  // Gradients, curves and named samples become textures before each draw (a no-op unless a value changed).
+  material.onBeforeRender = (...args) => {
+    for (const effect of state.effects)
+      effect.resolveSamples(createSampleTexture);
+    original.onBeforeRender.apply(material, args);
+  };
   material.onBeforeCompile = (shader, renderer) => {
     original.onBeforeCompile.call(material, shader, renderer);
     inject(material, state, shader);
@@ -216,6 +255,7 @@ export function patchMaterial(
     state.unsubscribe.set(
       effect,
       effect.onStructureChange(() => {
+        applySettings(material, states.get(material)!);
         material.needsUpdate = true;
       }),
     );
@@ -246,6 +286,7 @@ export function unpatchMaterial(
   rebind(state);
   if (state.effects.length === 0 && state.installed) {
     material.onBeforeCompile = state.original.onBeforeCompile;
+    material.onBeforeRender = state.original.onBeforeRender;
     material.customProgramCacheKey = state.original.customProgramCacheKey;
     state.installed = false;
   }

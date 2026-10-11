@@ -408,12 +408,40 @@
         "link": "/effects/dissolve"
       },
       {
+        "text": "Force field",
+        "link": "/effects/force-field"
+      },
+      {
         "text": "Fresnel glow",
         "link": "/effects/fresnel-glow"
       },
       {
+        "text": "Matcap swap",
+        "link": "/effects/matcap"
+      },
+      {
         "text": "Pearlescent & opal",
         "link": "/effects/pearlescent"
+      },
+      {
+        "text": "Toon shading",
+        "link": "/effects/toon"
+      },
+      {
+        "text": "Triplanar mapping",
+        "link": "/effects/triplanar"
+      },
+      {
+        "text": "Wireframe glow",
+        "link": "/effects/wireframe"
+      },
+      {
+        "text": "Vertex wobble",
+        "link": "/effects/wobble"
+      },
+      {
+        "text": "X-ray",
+        "link": "/effects/x-ray"
       }
     ]
   },
@@ -421,8 +449,40 @@
     "text": "Transitions",
     "items": [
       {
+        "text": "Burn",
+        "link": "/effects/burn"
+      },
+      {
         "text": "Crossfade & luma wipe",
         "link": "/effects/crossfade"
+      },
+      {
+        "text": "Glitch cut",
+        "link": "/effects/glitch-cut"
+      },
+      {
+        "text": "Holographic sweep",
+        "link": "/effects/holo-sweep"
+      },
+      {
+        "text": "Morph",
+        "link": "/effects/morph"
+      },
+      {
+        "text": "Pixelate transition",
+        "link": "/effects/pixelate-transition"
+      },
+      {
+        "text": "Pixel-sort wipe",
+        "link": "/effects/sort-wipe"
+      },
+      {
+        "text": "Wipe",
+        "link": "/effects/wipe"
+      },
+      {
+        "text": "Zoom / warp speed",
+        "link": "/effects/zoom-transition"
       }
     ]
   },

@@ -31,9 +31,15 @@ const varyings = [
   'varying vec3 xt_vViewPosition;',
   'varying vec3 xt_vViewNormal;',
   'varying vec3 xt_vWorldPosition;',
+  'varying vec3 xt_vWorldNormal;',
   'varying vec3 xt_vObjectPosition;',
+  'varying vec3 xt_vObjectNormal;',
   'varying vec2 xt_vUv;',
 ];
+
+/** A vertex hook whose second parameter is `inout` writes a new normal. */
+const writesNormal = (source: string) =>
+  /\$vertex\s*\(\s*inout\s+vec3\s+\w+\s*,\s*inout\s+vec3/.test(source);
 
 const surfaceStruct = [
   '/// What a material effect knows about the fragment it shades (view space unless named otherwise).',
@@ -42,8 +48,12 @@ const surfaceStruct = [
   '  vec3 viewDirection;',
   '  vec3 viewNormal;',
   '  vec3 worldPosition;',
+  '  vec3 worldNormal;',
   '  vec3 objectPosition;',
+  '  vec3 objectNormal;',
   '  vec2 uv;',
+  '  /// Barycentric coordinates of the fragment in its triangle, for effects that ask for them; zero otherwise.',
+  '  vec3 barycentric;',
   '};',
 ];
 
@@ -65,8 +75,17 @@ export function compileMaterial(
 ): MaterialInjection {
   const uniforms: Record<string, { value: unknown }> = {};
   const maps: ChunkMap[] = [];
-  const vertexSources: string[] = [...varyings];
-  const fragmentSources: string[] = [...varyings, ...surfaceStruct];
+  const barycentric = effects.some(
+    (e) => e.materialDefinition.barycentric === true,
+  );
+  const extra = barycentric ? ['varying vec3 xt_vBarycentric;'] : [];
+  const vertexSources: string[] = [
+    ...varyings,
+    ...extra,
+    ...(barycentric ? ['in vec3 xtBarycentric;'] : []),
+  ];
+  const fragmentSources: string[] = [...varyings, ...extra, ...surfaceStruct];
+  let normalWritten = false;
   const vertexCalls: string[] = [];
   const fragmentCalls: string[] = [];
   effects.forEach((effect, index) => {
@@ -91,18 +110,22 @@ export function compileMaterial(
         ...declarations,
         renameEffectSource(definition.vertex, prefix),
       );
-      vertexCalls.push(`  ${prefix}vertex(transformed, normal);`);
+      vertexCalls.push(`  ${prefix}vertex(transformed, xt_objectNormal);`);
+      if (writesNormal(definition.vertex)) normalWritten = true;
     }
   });
   const resolve = (source: string, name: string) =>
     resolveIncludes(source, maps, { name, lineDirectives: false }).code;
   return {
     vertexPars: resolve(vertexSources.join('\n'), 'xtree-material-vertex'),
-    vertexBeforeProject: vertexCalls.join('\n'),
+    vertexBeforeProject: [
+      '  vec3 xt_objectNormal = normal;',
+      ...vertexCalls,
+    ].join('\n'),
     vertexAfterProject: [
       '  xt_vViewPosition = mvPosition.xyz;',
       '  vec4 xt_world = vec4(transformed, 1.0);',
-      '  vec3 xt_normal = normal;',
+      '  vec3 xt_normal = xt_objectNormal;',
       '  #ifdef USE_BATCHING',
       '    xt_world = batchingMatrix * xt_world;',
       '    xt_normal = mat3(batchingMatrix) * xt_normal;',
@@ -113,8 +136,22 @@ export function compileMaterial(
       '  #endif',
       '  xt_vWorldPosition = (modelMatrix * xt_world).xyz;',
       '  xt_vViewNormal = normalize(normalMatrix * xt_normal);',
+      '  xt_vWorldNormal = normalize(mat3(modelMatrix) * xt_normal);',
       '  xt_vObjectPosition = transformed;',
+      '  xt_vObjectNormal = xt_objectNormal;',
       '  xt_vUv = uv;',
+      ...(barycentric ? ['  xt_vBarycentric = xtBarycentric;'] : []),
+      // Lit materials shade with vNormal: follow a normal a vertex hook rewrote.
+      ...(normalWritten && options.lit
+        ? [
+            '  #ifndef FLAT_SHADED',
+            '    vNormal = normalize(normalMatrix * xt_normal);',
+            '    #ifdef FLIP_SIDED',
+            '      vNormal = -vNormal;',
+            '    #endif',
+            '  #endif',
+          ]
+        : []),
     ].join('\n'),
     fragmentPars: resolve(
       fragmentSources.join('\n'),
@@ -129,8 +166,13 @@ export function compileMaterial(
         ? '  xt_surface.viewNormal = normal;'
         : '  xt_surface.viewNormal = normalize(xt_vViewNormal) * (gl_FrontFacing ? 1.0 : -1.0);',
       '  xt_surface.worldPosition = xt_vWorldPosition;',
+      '  xt_surface.worldNormal = normalize(xt_vWorldNormal);',
       '  xt_surface.objectPosition = xt_vObjectPosition;',
+      '  xt_surface.objectNormal = normalize(xt_vObjectNormal);',
       '  xt_surface.uv = xt_vUv;',
+      barycentric
+        ? '  xt_surface.barycentric = xt_vBarycentric;'
+        : '  xt_surface.barycentric = vec3(0.0);',
       ...fragmentCalls,
       '}',
     ].join('\n'),

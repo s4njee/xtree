@@ -61,7 +61,8 @@ export const crossfade = defineTransition({
       min: 0,
       max: 4,
       step: 0.05,
-      description: 'Accent color added along the moving edge.',
+      description:
+        'Accent color added along the moving edge. Above about 0.6, a glow sweeping across the screen within a second can count as flashing (WCAG 2.3.1).',
     }),
     luma: texture({
       dimension: '2d',
@@ -71,7 +72,7 @@ export const crossfade = defineTransition({
   },
   presets: {
     dissolve: { pattern: 'noise', softness: 0.08, scale: 8 },
-    iris: { pattern: 'radial', softness: 0.1, edgeGlow: 1.2 },
+    iris: { pattern: 'radial', softness: 0.1, edgeGlow: 0.6 },
     sweep: { pattern: 'linear', angle: -20, softness: 0.25 },
     vortex: { pattern: 'spiral', scale: 2, softness: 0.2 },
   },

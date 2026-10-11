@@ -107,5 +107,20 @@
   "./effects/prism": 6528,
   "./effects/screen-rim": 5952,
   "./effects/ssao": 8256,
-  "./effects/volumetric-fog": 9088
+  "./effects/volumetric-fog": 9088,
+  "./effects/burn": 7744,
+  "./effects/force-field": 7552,
+  "./effects/glitch-cut": 6656,
+  "./effects/holo-sweep": 6848,
+  "./effects/matcap": 7552,
+  "./effects/morph": 7488,
+  "./effects/pixelate-transition": 5888,
+  "./effects/sort-wipe": 6208,
+  "./effects/toon": 6336,
+  "./effects/triplanar": 7808,
+  "./effects/wipe": 6208,
+  "./effects/wireframe": 6208,
+  "./effects/wobble": 7424,
+  "./effects/x-ray": 5952,
+  "./effects/zoom-transition": 6144
 }

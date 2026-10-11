@@ -9,7 +9,8 @@ test.describe('transitions (X13.1)', () => {
   test('every transition and preset shows from at 0 and to at 1', async ({
     page,
   }) => {
-    test.slow();
+    // Two compiles per preset of every transition.
+    test.setTimeout(600_000);
     const images = await page.evaluate(() => window.xt.transitionImages());
     const ids = await page.evaluate(() =>
       window.xt.factories.filter((id) => window.xt.kind(id) === 'transition'),

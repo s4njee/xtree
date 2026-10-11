@@ -22,6 +22,12 @@ export interface MaterialSettings {
   readonly blending?: 'normal' | 'additive';
   /** Draw both faces, for see-through effects. */
   readonly doubleSided?: boolean;
+  /**
+   * Depth test: `less-equal` (three.js's default), `greater` to draw only
+   * where something nearer hides the surface, or `always` to draw over
+   * everything.
+   */
+  readonly depthFunc?: 'less-equal' | 'greater' | 'always';
 }
 
 /** Everything `defineMaterialEffect` needs to describe a material effect. */
@@ -38,16 +44,30 @@ export interface MaterialEffectDefinition<S extends ParamSchema> {
    * It receives the material's lit color in linear HDR (before tone mapping)
    * and returns a new one; it may `discard`. `XtSurface` holds the view-space
    * position, direction to the camera and normal, the world and object
-   * positions, and the first UV set. `$time` is the effect's clock.
+   * positions and normals, the first UV set and, when `barycentric` is set,
+   * the barycentric coordinates. `$time` is the effect's clock.
    */
   readonly fragment: string;
   /**
    * Optional GLSL defining `void $vertex(inout vec3 position, vec3 normal)`,
-   * which moves object-space vertices before projection.
+   * which moves object-space vertices before projection. Declared as
+   * `inout vec3 normal`, it may also write a new normal, which lit
+   * materials then shade with.
    */
   readonly vertex?: string;
-  /** Applied to the material while the effect is patched in, and restored after. */
-  readonly settings?: MaterialSettings;
+  /**
+   * Reads the geometry's `xtBarycentric` attribute into
+   * `surface.barycentric` (see `withBarycentric` in the wireframe effect).
+   */
+  readonly barycentric?: boolean;
+  /**
+   * Applied to the material while the effect is patched in, and restored
+   * after. A function receives the effect's values; make the parameters it
+   * reads structural so a change re-applies it.
+   */
+  readonly settings?:
+    | MaterialSettings
+    | ((values: Readonly<Record<string, unknown>>) => MaterialSettings);
 }
 
 /** A configured material effect. Patch it into materials with `patchMaterial(material, effect)`. */

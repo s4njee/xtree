@@ -50,6 +50,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/bulge').then(
       (m) => m.bulge as unknown as EffectFactory<ParamSchema>,
     ),
+  burn: () =>
+    import('@mk7s/xtree/effects/burn').then(
+      (m) => m.burn as unknown as EffectFactory<ParamSchema>,
+    ),
   'channel-mixer': () =>
     import('@mk7s/xtree/effects/channel-mixer').then(
       (m) => m.channelMixer as unknown as EffectFactory<ParamSchema>,
@@ -146,6 +150,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/foil-material').then(
       (m) => m.foilMaterial as unknown as EffectFactory<ParamSchema>,
     ),
+  'force-field': () =>
+    import('@mk7s/xtree/effects/force-field').then(
+      (m) => m.forceField as unknown as EffectFactory<ParamSchema>,
+    ),
   'fresnel-glow': () =>
     import('@mk7s/xtree/effects/fresnel-glow').then(
       (m) => m.fresnelGlow as unknown as EffectFactory<ParamSchema>,
@@ -153,6 +161,10 @@ export const effectLoaders: Record<
   'frosted-glass': () =>
     import('@mk7s/xtree/effects/frosted-glass').then(
       (m) => m.frostedGlass as unknown as EffectFactory<ParamSchema>,
+    ),
+  'glitch-cut': () =>
+    import('@mk7s/xtree/effects/glitch-cut').then(
+      (m) => m.glitchCut as unknown as EffectFactory<ParamSchema>,
     ),
   glitter: () =>
     import('@mk7s/xtree/effects/glitter').then(
@@ -181,6 +193,10 @@ export const effectLoaders: Record<
   'heat-haze': () =>
     import('@mk7s/xtree/effects/heat-haze').then(
       (m) => m.heatHaze as unknown as EffectFactory<ParamSchema>,
+    ),
+  'holo-sweep': () =>
+    import('@mk7s/xtree/effects/holo-sweep').then(
+      (m) => m.holoSweep as unknown as EffectFactory<ParamSchema>,
     ),
   hologram: () =>
     import('@mk7s/xtree/effects/hologram').then(
@@ -238,6 +254,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/lut').then(
       (m) => m.lut as unknown as EffectFactory<ParamSchema>,
     ),
+  matcap: () =>
+    import('@mk7s/xtree/effects/matcap').then(
+      (m) => m.matcap as unknown as EffectFactory<ParamSchema>,
+    ),
   mirror: () =>
     import('@mk7s/xtree/effects/mirror').then(
       (m) => m.mirror as unknown as EffectFactory<ParamSchema>,
@@ -249,6 +269,10 @@ export const effectLoaders: Record<
   monochrome: () =>
     import('@mk7s/xtree/effects/monochrome').then(
       (m) => m.monochrome as unknown as EffectFactory<ParamSchema>,
+    ),
+  morph: () =>
+    import('@mk7s/xtree/effects/morph').then(
+      (m) => m.morph as unknown as EffectFactory<ParamSchema>,
     ),
   mosaic: () =>
     import('@mk7s/xtree/effects/mosaic').then(
@@ -285,6 +309,10 @@ export const effectLoaders: Record<
   pixelate: () =>
     import('@mk7s/xtree/effects/pixelate').then(
       (m) => m.pixelate as unknown as EffectFactory<ParamSchema>,
+    ),
+  'pixelate-transition': () =>
+    import('@mk7s/xtree/effects/pixelate-transition').then(
+      (m) => m.pixelateTransition as unknown as EffectFactory<ParamSchema>,
     ),
   posterize: () =>
     import('@mk7s/xtree/effects/posterize').then(
@@ -330,6 +358,10 @@ export const effectLoaders: Record<
     import('@mk7s/xtree/effects/slice-shift').then(
       (m) => m.sliceShift as unknown as EffectFactory<ParamSchema>,
     ),
+  'sort-wipe': () =>
+    import('@mk7s/xtree/effects/sort-wipe').then(
+      (m) => m.sortWipe as unknown as EffectFactory<ParamSchema>,
+    ),
   'split-toning': () =>
     import('@mk7s/xtree/effects/split-toning').then(
       (m) => m.splitToning as unknown as EffectFactory<ParamSchema>,
@@ -353,6 +385,14 @@ export const effectLoaders: Record<
   'tilt-shift': () =>
     import('@mk7s/xtree/effects/tilt-shift').then(
       (m) => m.tiltShift as unknown as EffectFactory<ParamSchema>,
+    ),
+  toon: () =>
+    import('@mk7s/xtree/effects/toon').then(
+      (m) => m.toon as unknown as EffectFactory<ParamSchema>,
+    ),
+  triplanar: () =>
+    import('@mk7s/xtree/effects/triplanar').then(
+      (m) => m.triplanar as unknown as EffectFactory<ParamSchema>,
     ),
   twirl: () =>
     import('@mk7s/xtree/effects/twirl').then(
@@ -381,6 +421,26 @@ export const effectLoaders: Record<
   'white-balance': () =>
     import('@mk7s/xtree/effects/white-balance').then(
       (m) => m.whiteBalance as unknown as EffectFactory<ParamSchema>,
+    ),
+  wipe: () =>
+    import('@mk7s/xtree/effects/wipe').then(
+      (m) => m.wipe as unknown as EffectFactory<ParamSchema>,
+    ),
+  wireframe: () =>
+    import('@mk7s/xtree/effects/wireframe').then(
+      (m) => m.wireframe as unknown as EffectFactory<ParamSchema>,
+    ),
+  wobble: () =>
+    import('@mk7s/xtree/effects/wobble').then(
+      (m) => m.wobble as unknown as EffectFactory<ParamSchema>,
+    ),
+  'x-ray': () =>
+    import('@mk7s/xtree/effects/x-ray').then(
+      (m) => m.xRay as unknown as EffectFactory<ParamSchema>,
+    ),
+  'zoom-transition': () =>
+    import('@mk7s/xtree/effects/zoom-transition').then(
+      (m) => m.zoomTransition as unknown as EffectFactory<ParamSchema>,
     ),
 };
 

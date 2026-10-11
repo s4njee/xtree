@@ -7,6 +7,6 @@ description: Every xtree effect, with stills, grouped by family and filterable b
 
 # Effects
 
-94 effects so far, out of the 141 planned. Each page has a live demo you can adjust, compare and copy. Filter by family, type, cost, the geometry buffers an effect reads, or whether it moves.
+109 effects so far, out of the 141 planned. Each page has a live demo you can adjust, compare and copy. Filter by family, type, cost, the geometry buffers an effect reads, or whether it moves.
 
 <EffectCatalogue />

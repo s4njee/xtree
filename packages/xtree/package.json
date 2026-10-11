@@ -75,6 +75,10 @@
       "types": "./dist/effects/bulge/index.d.ts",
       "import": "./dist/effects/bulge/index.js"
     },
+    "./effects/burn": {
+      "types": "./dist/effects/burn/index.d.ts",
+      "import": "./dist/effects/burn/index.js"
+    },
     "./effects/channel-mixer": {
       "types": "./dist/effects/channel-mixer/index.d.ts",
       "import": "./dist/effects/channel-mixer/index.js"
@@ -171,6 +175,10 @@
       "types": "./dist/effects/foil-material/index.d.ts",
       "import": "./dist/effects/foil-material/index.js"
     },
+    "./effects/force-field": {
+      "types": "./dist/effects/force-field/index.d.ts",
+      "import": "./dist/effects/force-field/index.js"
+    },
     "./effects/fresnel-glow": {
       "types": "./dist/effects/fresnel-glow/index.d.ts",
       "import": "./dist/effects/fresnel-glow/index.js"
@@ -178,6 +186,10 @@
     "./effects/frosted-glass": {
       "types": "./dist/effects/frosted-glass/index.d.ts",
       "import": "./dist/effects/frosted-glass/index.js"
+    },
+    "./effects/glitch-cut": {
+      "types": "./dist/effects/glitch-cut/index.d.ts",
+      "import": "./dist/effects/glitch-cut/index.js"
     },
     "./effects/glitter": {
       "types": "./dist/effects/glitter/index.d.ts",
@@ -206,6 +218,10 @@
     "./effects/heat-haze": {
       "types": "./dist/effects/heat-haze/index.d.ts",
       "import": "./dist/effects/heat-haze/index.js"
+    },
+    "./effects/holo-sweep": {
+      "types": "./dist/effects/holo-sweep/index.d.ts",
+      "import": "./dist/effects/holo-sweep/index.js"
     },
     "./effects/hologram": {
       "types": "./dist/effects/hologram/index.d.ts",
@@ -263,6 +279,10 @@
       "types": "./dist/effects/lut/index.d.ts",
       "import": "./dist/effects/lut/index.js"
     },
+    "./effects/matcap": {
+      "types": "./dist/effects/matcap/index.d.ts",
+      "import": "./dist/effects/matcap/index.js"
+    },
     "./effects/mirror": {
       "types": "./dist/effects/mirror/index.d.ts",
       "import": "./dist/effects/mirror/index.js"
@@ -274,6 +294,10 @@
     "./effects/monochrome": {
       "types": "./dist/effects/monochrome/index.d.ts",
       "import": "./dist/effects/monochrome/index.js"
+    },
+    "./effects/morph": {
+      "types": "./dist/effects/morph/index.d.ts",
+      "import": "./dist/effects/morph/index.js"
     },
     "./effects/mosaic": {
       "types": "./dist/effects/mosaic/index.d.ts",
@@ -306,6 +330,10 @@
     "./effects/pixel-sort": {
       "types": "./dist/effects/pixel-sort/index.d.ts",
       "import": "./dist/effects/pixel-sort/index.js"
+    },
+    "./effects/pixelate-transition": {
+      "types": "./dist/effects/pixelate-transition/index.d.ts",
+      "import": "./dist/effects/pixelate-transition/index.js"
     },
     "./effects/pixelate": {
       "types": "./dist/effects/pixelate/index.d.ts",
@@ -355,6 +383,10 @@
       "types": "./dist/effects/slice-shift/index.d.ts",
       "import": "./dist/effects/slice-shift/index.js"
     },
+    "./effects/sort-wipe": {
+      "types": "./dist/effects/sort-wipe/index.d.ts",
+      "import": "./dist/effects/sort-wipe/index.js"
+    },
     "./effects/split-toning": {
       "types": "./dist/effects/split-toning/index.d.ts",
       "import": "./dist/effects/split-toning/index.js"
@@ -378,6 +410,14 @@
     "./effects/tilt-shift": {
       "types": "./dist/effects/tilt-shift/index.d.ts",
       "import": "./dist/effects/tilt-shift/index.js"
+    },
+    "./effects/toon": {
+      "types": "./dist/effects/toon/index.d.ts",
+      "import": "./dist/effects/toon/index.js"
+    },
+    "./effects/triplanar": {
+      "types": "./dist/effects/triplanar/index.d.ts",
+      "import": "./dist/effects/triplanar/index.js"
     },
     "./effects/twirl": {
       "types": "./dist/effects/twirl/index.d.ts",
@@ -406,6 +446,26 @@
     "./effects/white-balance": {
       "types": "./dist/effects/white-balance/index.d.ts",
       "import": "./dist/effects/white-balance/index.js"
+    },
+    "./effects/wipe": {
+      "types": "./dist/effects/wipe/index.d.ts",
+      "import": "./dist/effects/wipe/index.js"
+    },
+    "./effects/wireframe": {
+      "types": "./dist/effects/wireframe/index.d.ts",
+      "import": "./dist/effects/wireframe/index.js"
+    },
+    "./effects/wobble": {
+      "types": "./dist/effects/wobble/index.d.ts",
+      "import": "./dist/effects/wobble/index.js"
+    },
+    "./effects/x-ray": {
+      "types": "./dist/effects/x-ray/index.d.ts",
+      "import": "./dist/effects/x-ray/index.js"
+    },
+    "./effects/zoom-transition": {
+      "types": "./dist/effects/zoom-transition/index.d.ts",
+      "import": "./dist/effects/zoom-transition/index.js"
     },
     "./glsl": {
       "types": "./dist/glsl/index.d.ts",

@@ -40,15 +40,15 @@ Every parameter is also a property: `effect.pattern = 'noise'`. Uniform changes 
 
 ## Parameters
 
-| Parameter  | Type                                                               | Default   | Range        | Description                                                                      |
-| ---------- | ------------------------------------------------------------------ | --------- | ------------ | -------------------------------------------------------------------------------- |
-| `pattern`  | 'fade' \| 'noise' \| 'linear' \| 'radial' \| 'diamond' \| 'spiral' | `'noise'` |              | Order in which pixels change: all at once, in noisy patches, or along a shape.   |
-| `softness` | number                                                             | `0.15`    | 0.001 – 1    | Width of the blend edge, as a fraction of the wipe.                              |
-| `angle`    | number                                                             | `0`       | -180 – 180 ° | Linear: direction the wipe travels.                                              |
-| `scale`    | number                                                             | `4`       | 0.5 – 32     | Noise: size of the patches (higher is finer). Spiral: number of turns.           |
-| `invert`   | boolean                                                            | `false`   |              | Run the pattern backwards, for example radial from the edges in.                 |
-| `edgeGlow` | number                                                             | `0`       | 0 – 4        | Accent color added along the moving edge.                                        |
-| `luma`     | 2D texture                                                         | `null`    |              | A grayscale image whose dark areas change first; overrides the pattern when set. |
+| Parameter  | Type                                                               | Default   | Range        | Description                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------ | --------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `pattern`  | 'fade' \| 'noise' \| 'linear' \| 'radial' \| 'diamond' \| 'spiral' | `'noise'` |              | Order in which pixels change: all at once, in noisy patches, or along a shape.                                                                   |
+| `softness` | number                                                             | `0.15`    | 0.001 – 1    | Width of the blend edge, as a fraction of the wipe.                                                                                              |
+| `angle`    | number                                                             | `0`       | -180 – 180 ° | Linear: direction the wipe travels.                                                                                                              |
+| `scale`    | number                                                             | `4`       | 0.5 – 32     | Noise: size of the patches (higher is finer). Spiral: number of turns.                                                                           |
+| `invert`   | boolean                                                            | `false`   |              | Run the pattern backwards, for example radial from the edges in.                                                                                 |
+| `edgeGlow` | number                                                             | `0`       | 0 – 4        | Accent color added along the moving edge. Above about 0.6, a glow sweeping across the screen within a second can count as flashing (WCAG 2.3.1). |
+| `luma`     | 2D texture                                                         | `null`    |              | A grayscale image whose dark areas change first; overrides the pattern when set.                                                                 |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 
@@ -57,7 +57,7 @@ Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#mo
 | Preset     | Settings                                              |
 | ---------- | ----------------------------------------------------- |
 | `dissolve` | `pattern: 'noise'`, `softness: 0.08`, `scale: 8`      |
-| `iris`     | `pattern: 'radial'`, `softness: 0.1`, `edgeGlow: 1.2` |
+| `iris`     | `pattern: 'radial'`, `softness: 0.1`, `edgeGlow: 0.6` |
 | `sweep`    | `pattern: 'linear'`, `angle: -20`, `softness: 0.25`   |
 | `vortex`   | `pattern: 'spiral'`, `scale: 2`, `softness: 0.2`      |
 

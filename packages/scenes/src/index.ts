@@ -1,5 +1,7 @@
 import {
   BoxGeometry,
+  BufferAttribute,
+  type BufferGeometry,
   Color,
   DataTexture,
   DirectionalLight,
@@ -18,6 +20,17 @@ import {
   TorusGeometry,
   TorusKnotGeometry,
 } from 'three';
+
+/** Non-indexed geometry with the barycentric attribute xtree's wireframe effect reads. */
+function withBarycentric(geometry: BufferGeometry): BufferGeometry {
+  const flat = geometry.index ? geometry.toNonIndexed() : geometry;
+  if (flat !== geometry) geometry.dispose();
+  const count = flat.getAttribute('position').count;
+  const data = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) data[i * 3 + (i % 3)] = 1;
+  flat.setAttribute('xtBarycentric', new BufferAttribute(data, 3));
+  return flat;
+}
 
 export interface SampleScene {
   readonly scene: Scene;
@@ -86,7 +99,7 @@ export function createStudio(aspect = 16 / 9): SampleScene {
   scene.add(floor);
 
   const knot = new Mesh(
-    own(new TorusKnotGeometry(0.75, 0.26, 160, 24)),
+    own(withBarycentric(new TorusKnotGeometry(0.75, 0.26, 160, 24))),
     own(
       new MeshStandardMaterial({
         color: '#6b7cff',
@@ -114,7 +127,7 @@ export function createStudio(aspect = 16 / 9): SampleScene {
   scene.add(orb);
 
   const box = new Mesh(
-    own(new BoxGeometry(0.9, 0.9, 0.9)),
+    own(withBarycentric(new BoxGeometry(0.9, 0.9, 0.9))),
     own(new MeshStandardMaterial({ color: '#3ddc97', roughness: 0.5 })),
   );
   box.position.set(2.1, 0.45, 0.3);

@@ -40,6 +40,7 @@ vec4 $transition(vec2 uv, float progress) {
   float t = clamp((progress * (1.0 + $softness) - $order(uv)) / $softness, 0.0, 1.0);
   t = t * t * (3.0 - 2.0 * t);
   vec4 color = mix(from, to, t);
-  color.rgb += xt_accent * (4.0 * t * (1.0 - t)) * $edgeGlow;
+  // The glow is a thin line at the middle of the edge: a wide glowing band would flash every area it crosses (WCAG 2.3.1).
+  color.rgb += xt_accent * pow(4.0 * t * (1.0 - t), 12.0) * $edgeGlow;
   return color;
 }

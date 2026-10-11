@@ -92,6 +92,14 @@
       "references": ["Radial magnification with a smooth falloff"]
     },
     {
+      "id": "effects/burn",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Noise-ordered burn with a charred margin and an accent-colored edge"
+      ]
+    },
+    {
       "id": "effects/channel-mixer",
       "kind": "original",
       "licence": "MIT",
@@ -282,6 +290,15 @@
       ]
     },
     {
+      "id": "effects/force-field",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Fresnel rim with a hexagon lattice (hexagonal cell distance after Inigo Quilez) and expanding hit ripples",
+        "Intersection highlight from a scene depth texture"
+      ]
+    },
+    {
       "id": "effects/fresnel-glow",
       "kind": "original",
       "licence": "MIT",
@@ -295,6 +312,14 @@
       "licence": "MIT",
       "references": [
         "Kawase blur seen through value-noise refraction, with tint and grain"
+      ]
+    },
+    {
+      "id": "effects/glitch-cut",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Hashed block switching staggered around the midpoint, with slice shifts and channel splits under a sin² envelope"
       ]
     },
     {
@@ -346,6 +371,14 @@
       "kind": "original",
       "licence": "MIT",
       "references": ["Refraction offsets from rising simplex noise"]
+    },
+    {
+      "id": "effects/holo-sweep",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "A swept band of spectral color (CIE 1931 matching functions via the spectral chunk) with per-channel refraction"
+      ]
     },
     {
       "id": "effects/hologram",
@@ -457,6 +490,14 @@
       ]
     },
     {
+      "id": "effects/matcap",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Material capture lookup (Sloan et al., The lit sphere, 2001) with three.js MeshMatcapMaterial’s perspective correction"
+      ]
+    },
+    {
       "id": "effects/mirror",
       "kind": "original",
       "licence": "MIT",
@@ -475,6 +516,14 @@
       "references": [
         "Rec. 709 luma",
         "Widely published sepia tone matrix (0.393/0.769/0.189 …)"
+      ]
+    },
+    {
+      "id": "effects/morph",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Opposed displacement of both images along a noise or map field, crossfaded"
       ]
     },
     {
@@ -547,6 +596,14 @@
       "kind": "original",
       "licence": "MIT",
       "references": ["Cell-center sampling on square and hexagonal grids"]
+    },
+    {
+      "id": "effects/pixelate-transition",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Cell size following sin(πt), switching images at the coarsest point"
+      ]
     },
     {
       "id": "effects/posterize",
@@ -633,6 +690,14 @@
       ]
     },
     {
+      "id": "effects/sort-wipe",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Single-pass approximation of a pixel-sort front: brightest-above-threshold sample carried along the direction of travel"
+      ]
+    },
+    {
       "id": "effects/split-toning",
       "kind": "original",
       "licence": "MIT",
@@ -678,6 +743,22 @@
       "licence": "MIT",
       "references": [
         "Variable-radius blur masked by distance from a focus line (miniature-faking)"
+      ]
+    },
+    {
+      "id": "effects/toon",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Cel shading by banding lit brightness, after Decaudin, Cartoon-looking rendering of 3D scenes, 1996"
+      ]
+    },
+    {
+      "id": "effects/triplanar",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Triplanar projection with normal-power blend weights, after Geiss, Generating complex procedural terrains using the GPU, GPU Gems 3, ch. 1"
       ]
     },
     {
@@ -735,6 +816,42 @@
       "references": [
         "Bradford chromatic adaptation from a Planckian white point (Kim et al., 2002) to D65, using the xtree/color/white-balance chunk"
       ]
+    },
+    {
+      "id": "effects/wipe",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Linear, radial and clock wipes with a smoothstep edge"]
+    },
+    {
+      "id": "effects/wireframe",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Barycentric wireframe with screen-space derivatives, after Bærentzen et al., Single-pass wireframe rendering, 2006"
+      ]
+    },
+    {
+      "id": "effects/wobble",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Simplex-noise displacement along normals with normals rebuilt from displaced tangent neighbors"
+      ]
+    },
+    {
+      "id": "effects/x-ray",
+      "kind": "original",
+      "licence": "MIT",
+      "references": [
+        "Fresnel-weighted additive shell with a reversed depth test for hidden parts"
+      ]
+    },
+    {
+      "id": "effects/zoom-transition",
+      "kind": "original",
+      "licence": "MIT",
+      "references": ["Radial zoom-blur streaks peaking at the midpoint"]
     },
     {
       "id": "xtree/blend/modes",
