@@ -63,6 +63,26 @@ jobs:
         env:
           XT_BROWSERS: ${{ matrix.browser }}
           XT_HEADED: ${{ matrix.browser == 'firefox' && '1' || '' }}
+          # Line coverage of the library source, from Chromium (X18.1).
+          XT_COVERAGE: ${{ matrix.browser == 'chromium' && '1' || '' }}
+      - name: Coverage (src/core ≥ 90% of lines)
+        if: matrix.browser == 'chromium'
+        run: node packages/xtree/scripts/coverage-report.mjs --check
+      - uses: actions/upload-artifact@v4
+        if: matrix.browser == 'chromium' && !cancelled()
+        with:
+          name: coverage
+          path: artifacts/coverage.json
+      # Visual regression diffs: expected, actual and diff images (X18.3).
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: visual-diffs-${{ matrix.browser }}
+          path: |
+            test-results/**/*-actual.png
+            test-results/**/*-expected.png
+            test-results/**/*-diff.png
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

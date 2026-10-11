@@ -33,6 +33,8 @@ Requires Node 22.12 or newer and pnpm 11.15.1 (`corepack enable`).
 pnpm install --frozen-lockfile
 pnpm check            # format, lint, GLSL lint, credits, typecheck, build, size, docs freshness, unit tests
 pnpm test:browser     # GPU, integration and visual tests; Chromium by default, XT_BROWSERS=chromium,firefox,webkit for all
+pnpm test:visual      # visual regression only; --update writes new or changed baselines for the browser
+pnpm test:coverage    # the browser tests with line coverage (Chromium); src/core must stay at 90% or more
 pnpm test:docs        # site tests (theme contrast, demos, navigation) after pnpm docs:build
 pnpm docs:dev         # docs site at http://localhost:5173/xtree/
 pnpm docs:build       # static site in docs/.vitepress/dist
@@ -41,6 +43,8 @@ pnpm release:dry      # pack the library and check the tarball against the expor
 
 - **GLSL lint** compiles every chunk with `glslangValidator` when it is installed (`apt install glslang-tools`); CI requires it.
 - **HoloCSS** is fetched at the pinned commit into `.cache/holocss` the first time the docs build. Set `HOLOCSS_DIR=../holocss` to use your own checkout. See [ADR 0005](docs/adr/0005-holocss-relationship.md).
+- **Visual baselines** are per browser, in `packages/xtree/test/browser/__baselines__/<browser>/`. A browser without its own baselines is compared with Chromium's. To update every browser on CI's machines, run the "Visual baselines" workflow on your branch; it commits the images for review. CI uploads expected, actual and diff images when a comparison fails.
+- **Nightly:** the "Nightly" workflow runs 1,000 create, render and dispose cycles of every effect in every browser (`XT_NIGHTLY=1`). Run it by hand before a release.
 - **Changesets:** run `pnpm changeset` for every user-visible library change.
 
 ## Licence

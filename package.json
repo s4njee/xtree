@@ -18,6 +18,8 @@
     "shaders:docs": "pnpm --filter @mk7s/xtree shaders:docs",
     "test": "pnpm --filter @mk7s/xtree test",
     "test:browser": "playwright test",
+    "test:coverage": "XT_COVERAGE=1 XT_BROWSERS=chromium playwright test && node packages/xtree/scripts/coverage-report.mjs --check",
+    "test:visual": "node scripts/test-visual.mjs",
     "holocss:setup": "node scripts/holocss.mjs",
     "docs:dev": "pnpm --filter xtree-docs dev",
     "docs:build": "pnpm --filter xtree-docs build",

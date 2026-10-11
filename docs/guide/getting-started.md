@@ -112,6 +112,7 @@ export const tintEffect = defineEffect({
 pnpm install
 pnpm check          # format, lint, GLSL lint, credits, types, build, size, generated files, unit tests
 pnpm test:browser   # GPU and visual tests in Chromium (XT_BROWSERS=chromium,firefox,webkit for all)
+pnpm test:visual    # visual regression; --update writes new or changed baselines
 pnpm docs:dev       # this site, with HoloCSS fetched at the pinned commit
 pnpm test:docs      # site tests, after pnpm docs:build
 ```

@@ -1,0 +1,47 @@
+name: Nightly
+
+# Long-running checks (X18.4): 1,000 create, render and dispose cycles of
+# every effect and repeated context loss, in every browser. Also run it by
+# hand before a release.
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lifecycle:
+    name: Leaks and lifecycle (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: actions/cache@v4
+        with:
+          path: .cache/holocss
+          key: holocss-${{ hashFiles('holocss.json') }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+      - run: xvfb-run -a pnpm test:browser packages/xtree/test/browser/lifecycle.spec.ts
+        env:
+          XT_NIGHTLY: '1'
+          XT_BROWSERS: ${{ matrix.browser }}
+          XT_HEADED: ${{ matrix.browser == 'firefox' && '1' || '' }}
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: nightly-${{ matrix.browser }}
+          path: |
+            playwright-report/
+            test-results/

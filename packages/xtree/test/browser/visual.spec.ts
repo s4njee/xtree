@@ -1,18 +1,17 @@
 import { readdirSync } from 'node:fs';
-import { expect, test } from '@playwright/test';
-import { openFixture, png, type RenderSpec } from './fixture.js';
+import { expect, test } from './test.js';
+import { expectImage, openFixture, png, type RenderSpec } from './fixture.js';
 
-// Baselines live in __baselines__ and are shared by every browser. Regenerate
-// them with `pnpm test:browser visual --update-snapshots` (Chromium) after an
-// intentional visual change, and review the images.
+// Baselines live in __baselines__/<browser>/; a browser without its own
+// compares with Chromium's. After an intentional visual change run
+// `pnpm test:visual --update` (or the "Visual baselines" workflow, which
+// updates every browser in CI) and review the images.
 const effects = readdirSync(new URL('../../src/effects/', import.meta.url), {
   withFileTypes: true,
 })
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
   .sort();
-
-const tolerance = { maxDiffPixelRatio: 0.01, threshold: 0.12 };
 
 test.describe('visual baselines', () => {
   test.beforeEach(async ({ page }) => openFixture(page));
@@ -32,9 +31,7 @@ test.describe('visual baselines', () => {
             (s) => window.xt.renderTransition(s),
             { id, ...(preset ? { preset } : {}), progress: 0.5 },
           );
-          expect
-            .soft(png(image), `${id} ${preset ?? 'default'}`)
-            .toMatchSnapshot(`${id}-${preset ?? 'default'}.png`, tolerance);
+          expectImage(png(image), `${id}-${preset ?? 'default'}.png`);
         }
         return;
       }
@@ -53,10 +50,22 @@ test.describe('visual baselines', () => {
           (s) => window.xt.render(s),
           spec,
         );
-        expect
-          .soft(png(image), `${id} ${preset ?? 'default'}`)
-          .toMatchSnapshot(`${id}-${preset ?? 'default'}.png`, tolerance);
+        expectImage(png(image), `${id}-${preset ?? 'default'}.png`);
       }
+      // The test card: image, gradient ramps and text behind a 3D model.
+      const { png: cardImage } = await page.evaluate(
+        (s) => window.xt.render(s),
+        {
+          scene: 'card',
+          effects: [
+            {
+              id: id as never,
+              params: id === 'rgb-split-glitch' ? { trigger: 'always' } : {},
+            },
+          ],
+        } satisfies RenderSpec,
+      );
+      expectImage(png(cardImage), `${id}-testcard.png`);
     });
   }
 
@@ -111,13 +120,25 @@ test.describe('visual baselines', () => {
         (s) => window.xt.render(s),
         spec,
       );
-      expect(png(image)).toMatchSnapshot(`${name}.png`, tolerance);
+      expectImage(png(image), `${name}.png`);
     });
   }
 
   test('the scene without effects', async ({ page }) => {
     const { png: image } = await page.evaluate(() => window.xt.render({}));
-    expect(png(image)).toMatchSnapshot('scene.png', tolerance);
+    expectImage(png(image), 'scene.png');
+    const { png: cardImage } = await page.evaluate(() =>
+      window.xt.render({ scene: 'card' }),
+    );
+    expectImage(png(cardImage), 'testcard.png');
+  });
+
+  test('every blend mode, as a grid (X1.8)', async ({ page }) => {
+    const { png: image, modes } = await page.evaluate(() =>
+      window.xt.blendGrid(),
+    );
+    expect(modes).toBeGreaterThanOrEqual(16);
+    expectImage(png(image), 'blend-grid.png');
   });
 
   test('a full stack', async ({ page }) => {
@@ -136,6 +157,6 @@ test.describe('visual baselines', () => {
       }),
     );
     expect(passes).toBe(3);
-    expect(png(image)).toMatchSnapshot('stack.png', tolerance);
+    expectImage(png(image), 'stack.png');
   });
 });

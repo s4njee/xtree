@@ -306,7 +306,6 @@ export class EffectComposer {
     subscribe(callback: (progress: number) => void): () => void;
   }): () => void {
     this.#unsubscribe?.();
-    this.#timer?.dispose();
     if (source.value !== undefined) this.progress = source.value;
     const stop = source.subscribe((value) => {
       this.progress = value;
@@ -326,7 +325,6 @@ export class EffectComposer {
     this.#time = seconds;
   }
 
-  /** The passes the last render used, in order (for inspection and tests). */
   /** Whether GPU timing is on; turning it on takes effect from the next render. */
   get timing(): boolean {
     return this.#timing;
@@ -381,6 +379,7 @@ export class EffectComposer {
     });
   }
 
+  /** The passes the last render used, in order (for inspection and tests). */
   get passes(): readonly (EffectPass | ForeignPass)[] {
     return this.#plan.map((p) => p.pass);
   }
@@ -612,7 +611,7 @@ export class EffectComposer {
       this.#items.map((item) =>
         isEffect(item)
           ? [item.id, item.enabled, item.definition.sampling ?? 'pixel']
-          : foreignId(item),
+          : [foreignId(item), item.enabled !== false],
       ),
     ]);
     if (key === this.#planKey) return;

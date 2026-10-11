@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "node ../scripts/holocss.mjs && vitepress dev",
-    "build": "node ../scripts/holocss.mjs && vitepress build",
+    "build": "node ../scripts/holocss.mjs && node ../scripts/demo-parity.mjs && vitepress build",
     "preview": "vitepress preview"
   },
   "devDependencies": {

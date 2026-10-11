@@ -36,9 +36,11 @@ const projects = {
 
 export default defineConfig({
   testDir: 'packages/xtree/test/browser',
-  // One set of visual baselines for every browser: effects must render the
-  // same everywhere, within the tolerance each comparison allows.
+  // Visual baselines are per browser, in __baselines__/<browser>/ (see
+  // expectImage in test/browser/fixture.ts).
   snapshotPathTemplate: '{testDir}/__baselines__/{arg}{ext}',
+  // Writes every effect variant's shaders for the compile tests.
+  globalSetup: './packages/xtree/test/browser/global-setup.ts',
   webServer: {
     command: 'pnpm --filter @mk7s/xtree fixtures',
     url: 'http://localhost:5179/',

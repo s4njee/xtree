@@ -1,4 +1,5 @@
-import { expect, type Page } from '@playwright/test';
+import { existsSync } from 'node:fs';
+import { expect, test, type Page } from '@playwright/test';
 import type { EffectSpec, MaskSpec, RenderSpec } from '../fixtures/main.js';
 
 export type { EffectSpec, MaskSpec, RenderSpec };
@@ -74,4 +75,25 @@ export function diff(
   deltas.sort((x, y) => y - x);
   const deltaE999 = deltas[Math.floor(pixels * 0.001)] ?? 0;
   return { maxDeltaE, deltaE999, maxChannel, over2: over2 / pixels };
+}
+
+const baselineRoot = new URL('./__baselines__/', import.meta.url);
+
+/** Pixelmatch's perceptual (YIQ) threshold and the share of pixels allowed past it. */
+const tolerance = { maxDiffPixelRatio: 0.01, threshold: 0.12 };
+
+/**
+ * Compares a PNG with its visual baseline in `__baselines__/<browser>/`
+ * (X18.3). A browser without its own baseline yet is compared with
+ * Chromium's. `pnpm test:visual --update` writes the running browser's own.
+ */
+export function expectImage(image: Buffer, name: string): void {
+  const info = test.info();
+  const browser = info.project.name;
+  const updating =
+    info.config.updateSnapshots === 'all' ||
+    info.config.updateSnapshots === 'changed';
+  const own = existsSync(new URL(`${browser}/${name}`, baselineRoot));
+  const folder = updating || own ? browser : 'chromium';
+  expect.soft(image, name).toMatchSnapshot([folder, name], tolerance);
 }

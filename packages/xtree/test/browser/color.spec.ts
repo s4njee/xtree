@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test.js';
 import { random, runShader, vec4s } from './harness.js';
 import {
   linearToOklab,

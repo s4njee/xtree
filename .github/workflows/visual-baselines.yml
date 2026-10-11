@@ -1,0 +1,81 @@
+name: Visual baselines
+
+# The baseline update flow (X18.3): runs `pnpm test:visual --update` in each
+# chosen browser on CI's machines and commits the new or changed baselines in
+# packages/xtree/test/browser/__baselines__/<browser>/ to the branch it ran
+# on. Review the commit's images before merging.
+on:
+  workflow_dispatch:
+    inputs:
+      browsers:
+        description: Browsers to update (JSON list)
+        default: '["chromium", "firefox", "webkit"]'
+      mode:
+        description: '`changed` rewrites missing and failing baselines; `all` rewrites every one'
+        default: changed
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    name: Update (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: ${{ fromJSON(inputs.browsers) }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: actions/cache@v4
+        with:
+          path: .cache/holocss
+          key: holocss-${{ hashFiles('holocss.json') }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+      - run: xvfb-run -a pnpm test:visual ${{ inputs.mode == 'all' && '--update=all' || '--update' }}
+        env:
+          XT_BROWSERS: ${{ matrix.browser }}
+          XT_HEADED: ${{ matrix.browser == 'firefox' && '1' || '' }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: baselines-${{ matrix.browser }}
+          path: packages/xtree/test/browser/__baselines__/${{ matrix.browser }}/
+          if-no-files-found: ignore
+
+  commit:
+    name: Commit baselines
+    needs: update
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: baselines-*
+          path: baselines
+      - name: Copy into __baselines__
+        run: |
+          for dir in baselines/baselines-*; do
+            browser="${dir#baselines/baselines-}"
+            mkdir -p "packages/xtree/test/browser/__baselines__/$browser"
+            cp "$dir"/*.png "packages/xtree/test/browser/__baselines__/$browser/"
+          done
+      - name: Commit and push
+        run: |
+          git add packages/xtree/test/browser/__baselines__
+          if git diff --cached --quiet; then
+            echo "Baselines are up to date."
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "Update visual baselines (${{ join(fromJSON(inputs.browsers), ', ') }})"
+          git push

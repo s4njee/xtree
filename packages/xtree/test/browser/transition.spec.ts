@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test.js';
 import { diff, openFixture } from './fixture.js';
 
 test.beforeEach(async ({ page }) => openFixture(page));

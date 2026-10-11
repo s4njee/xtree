@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test';
-import { openFixture, png } from './fixture.js';
+import { expect, test } from './test.js';
+import { openFixture } from './fixture.js';
 
 test.beforeEach(async ({ page }) => openFixture(page));
 
@@ -67,17 +67,6 @@ test.describe('debug tooling (X1.14)', () => {
     expect(passes[0]!.sourceLength).toBeGreaterThan(1000);
     // Timer queries are optional; when present every pass is measured.
     if (timings) expect(timings['pass 0']).toBeGreaterThanOrEqual(0);
-  });
-});
-
-test('every blend mode, as a grid (X1.8)', async ({ page }) => {
-  const { png: image, modes } = await page.evaluate(() =>
-    window.xt.blendGrid(),
-  );
-  expect(modes).toBeGreaterThanOrEqual(16);
-  expect(png(image)).toMatchSnapshot('blend-grid.png', {
-    maxDiffPixelRatio: 0.01,
-    threshold: 0.12,
   });
 });
 

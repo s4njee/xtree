@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test.js';
 import { random, runShader, vec4s } from './harness.js';
 
 test.describe('sampling chunk (X2.4)', () => {

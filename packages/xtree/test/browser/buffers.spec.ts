@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './test.js';
 import { openFixture, type MaskSpec, type RenderSpec } from './fixture.js';
 
 test.beforeEach(async ({ page }) => openFixture(page));

@@ -5,6 +5,12 @@ import { createStudio } from '@xtree/scenes';
 import { blendModes } from '../../src/shaders/blend/constants.js';
 import { analyseFlashes, type FlashFrame } from '../../src/safety/index.js';
 import {
+  fontCharacters,
+  fontTexels,
+  tileHeight,
+  tileWidth,
+} from '../../src/effects/ascii/font.js';
+import {
   ACESFilmicToneMapping,
   AgXToneMapping,
   CineonToneMapping,
@@ -21,6 +27,10 @@ import {
   MeshToonMaterial,
   SphereGeometry,
   Color,
+  DirectionalLight,
+  HemisphereLight,
+  PerspectiveCamera,
+  TorusKnotGeometry,
   OrthographicCamera,
   PlaneGeometry,
   Scene,
@@ -39,6 +49,7 @@ import {
 import { EffectComposer as ThreeEffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import {
   createTransition,
   toHoloEffect,
@@ -111,6 +122,11 @@ export interface RenderSpec {
   colorSpace?: 'srgb' | 'linear';
   time?: number;
   motion?: boolean;
+  /**
+   * `studio` (the docs demo scene) or `card`: a test card with an image, a
+   * gradient ramp and bitmap text behind a lit 3D model (X18.3).
+   */
+  scene?: 'studio' | 'card';
 }
 
 const toneMappings = {
@@ -138,6 +154,126 @@ renderer.setSize(width, height);
 const studio = createStudio(width / height);
 
 const studioBackground = studio.scene.background;
+
+/**
+ * The test card's backdrop, 640×360 sRGB, computed per pixel so it is the
+ * same in every browser: a landscape "photo" (left), a gray ramp and a hue
+ * ramp (top right) and text in the ASCII effect's bitmap font (bottom right).
+ */
+function cardImage(): DataTexture {
+  const w = 640;
+  const h = 360;
+  const data = new Uint8Array(w * h * 4);
+  const smooth = (a: number, b: number, x: number) => {
+    const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+    return t * t * (3 - 2 * t);
+  };
+  const mix = (a: number[], b: number[], t: number) =>
+    a.map((v, i) => v + (b[i]! - v) * t);
+  const hue = (t: number) =>
+    [0, 2, 4].map(
+      (k) => 255 * (0.5 + 0.5 * Math.cos(2 * Math.PI * (t - k / 6))),
+    );
+  // Rows from the top (y = 0); the texture is flipped when written.
+  for (let y = 0; y < h; y++)
+    for (let x = 0; x < w; x++) {
+      let rgb: number[];
+      if (x < 320) {
+        const sky = mix([40, 70, 160], [250, 170, 120], y / 200);
+        const sun = 1 - smooth(28, 31, Math.hypot(x - 210, y - 110));
+        const hill = 230 + 30 * Math.sin(x / 37) + 12 * Math.sin(x / 11);
+        const far = 205 + 22 * Math.sin(x / 23 + 1.3);
+        rgb = mix(sky, [255, 236, 170], sun);
+        rgb = mix(rgb, [70, 90, 120], smooth(far - 1, far + 1, y));
+        rgb = mix(rgb, [40, 110, 60], smooth(hill - 1, hill + 1, y));
+        // A striped field, for fine detail.
+        if (y > hill + 20 && Math.floor(x / 6 + y / 9) % 2 === 0)
+          rgb = mix(rgb, [210, 190, 80], 0.6);
+      } else if (y < 60) rgb = Array(3).fill(((x - 320) / 319) * 255);
+      else if (y < 120) rgb = hue((x - 320) / 320);
+      else if (y < 250) rgb = [18, 20, 28];
+      else rgb = [236, 232, 220];
+      data.set([...rgb.map(Math.round), 255], ((h - 1 - y) * w + x) * 4);
+    }
+  // Text: rows of glyphs at 2× and 3×, light on dark and dark on light.
+  const font = fontTexels();
+  const stripWidth = tileWidth * fontCharacters.length;
+  const write = (
+    text: string,
+    left: number,
+    top: number,
+    scale: number,
+    ink: number[],
+  ) =>
+    [...text].forEach((char, n) => {
+      const index = fontCharacters.indexOf(char);
+      for (let ty = 0; ty < tileHeight; ty++)
+        for (let tx = 0; tx < tileWidth; tx++) {
+          const texel =
+            ((tileHeight - 1 - ty) * stripWidth + index * tileWidth + tx) * 4;
+          if (!font[texel]) continue;
+          for (let sy = 0; sy < scale; sy++)
+            for (let sx = 0; sx < scale; sx++) {
+              const x = left + (n * tileWidth + tx) * scale + sx;
+              const y = top + ty * scale + sy;
+              if (x < w && y < h) data.set(ink, ((h - 1 - y) * w + x) * 4);
+            }
+        }
+    });
+  write('10:01 +-=*#%@', 334, 134, 3, [240, 240, 240, 255]);
+  write('0110 1001 .:-=+*#', 334, 170, 2, [124, 196, 255, 255]);
+  write('@%#*+=-:. 01', 334, 196, 2, [255, 209, 102, 255]);
+  write('1010 #@# 0101', 334, 268, 3, [20, 22, 30, 255]);
+  write('.:-=+*#%@ 10', 334, 306, 2, [200, 40, 60, 255]);
+  const texture = new DataTexture(data, w, h, RGBAFormat);
+  texture.colorSpace = SRGBColorSpace;
+  texture.magFilter = texture.minFilter = LinearFilter;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+interface Stage {
+  scene: Scene;
+  camera: PerspectiveCamera;
+  update(time: number): void;
+}
+let cardStage: Stage | null = null;
+/** The test card scene, created on first use. */
+function card(): Stage {
+  if (cardStage) return cardStage;
+  const scene = new Scene();
+  scene.background = new Color('#101218');
+  const camera = new PerspectiveCamera(38, width / height, 0.1, 100);
+  camera.position.set(0, 0, 6);
+  camera.lookAt(0, 0, 0);
+  // The backdrop fills the view at z = -1.
+  const tall = 2 * 7 * Math.tan((19 * Math.PI) / 180);
+  const backdrop = new Mesh(
+    new PlaneGeometry((tall * width) / height, tall),
+    new MeshBasicMaterial({ map: cardImage() }),
+  );
+  backdrop.position.z = -1;
+  backdrop.name = 'backdrop';
+  const knot = new Mesh(
+    new TorusKnotGeometry(0.55, 0.19, 160, 24),
+    new MeshStandardMaterial({
+      color: '#6b7cff',
+      roughness: 0.32,
+      metalness: 0.35,
+    }),
+  );
+  knot.position.set(0.2, 0.15, 1.5);
+  knot.rotation.set(0.4, 0.6, 0);
+  knot.name = 'knot';
+  const sun = new DirectionalLight(0xffffff, 2.6);
+  sun.position.set(3, 5, 4);
+  scene.add(new HemisphereLight(0xbcd2ff, 0x1a1a2a, 1.4), sun, backdrop, knot);
+  cardStage = { scene, camera, update() {} };
+  return cardStage;
+}
+
+/** The scene the current render uses. */
+let stage: Stage = studio;
 
 function configure(spec: RenderSpec) {
   studio.scene.background = spec.noBackground ? null : studioBackground;
@@ -175,8 +311,8 @@ function toMask(
     return {
       ...mask,
       selection: mask.selection.map((name) => {
-        const object = studio.scene.getObjectByName(name);
-        if (!object) throw new Error(`no studio object named ${name}`);
+        const object = stage.scene.getObjectByName(name);
+        if (!object) throw new Error(`no object named ${name}`);
         return object;
       }),
     };
@@ -330,9 +466,10 @@ function withComposer<T>(
   run: (composer: EffectComposer, effects: Effect[]) => T,
 ): T {
   configure(spec);
-  studio.update(0);
+  stage = spec.scene === 'card' ? card() : studio;
+  stage.update(0);
   const composer = new EffectComposer(renderer, { merge: spec.merge ?? true });
-  composer.setScene(studio.scene, studio.camera);
+  composer.setScene(stage.scene, stage.camera);
   const effects = createEffects(spec.effects, spec.sharedMask);
   // Material effects patch studio materials for this render only.
   const patched: [Material, MaterialEffect][] = [];
@@ -341,10 +478,12 @@ function withComposer<T>(
     effect.time = spec.time ?? 0;
     effect.setMotion(spec.motion ?? true);
     const names = spec.effects![i]!.targets ??
-      effect.definition.meta.demo?.selection ?? ['knot'];
+      (stage === studio ? effect.definition.meta.demo?.selection : null) ?? [
+        'knot',
+      ];
     for (const name of names) {
-      const mesh = studio.scene.getObjectByName(name) as Mesh | undefined;
-      if (!mesh) throw new Error(`no studio object named ${name}`);
+      const mesh = stage.scene.getObjectByName(name) as Mesh | undefined;
+      if (!mesh) throw new Error(`no object named ${name}`);
       const material = mesh.material as Material;
       patchMaterial(material, effect);
       patched.push([material, effect]);
@@ -360,6 +499,7 @@ function withComposer<T>(
     for (const effect of effects)
       if (effect instanceof MaterialEffect) effect.dispose();
     composer.dispose();
+    stage = studio;
   }
 }
 
@@ -947,7 +1087,7 @@ const xt = {
     frame();
     return { start, afterFloat, flagged, afterStructural };
   },
-  lifecycle() {
+  lifecycle(options: { cycles?: number; everyEffect?: boolean } = {}) {
     const memory = () => ({
       textures: renderer.info.memory.textures,
       geometries: renderer.info.memory.geometries,
@@ -981,30 +1121,418 @@ const xt = {
         ],
       },
     ];
+    // The nightly run (X18.4) also cycles every effect on its own, in turn.
+    const singles = options.everyEffect
+      ? Object.keys(factories).filter((id) => xt.kind(id) !== 'transition')
+      : [];
+    const transitions = options.everyEffect
+      ? Object.keys(factories).filter((id) => xt.kind(id) === 'transition')
+      : [];
+    let turn = 0;
     const cycle = () => {
       let last = memory();
-      for (const stack of stacks)
+      const extra: RenderSpec[] = singles.length
+        ? [{ effects: [{ id: singles[turn % singles.length]! }] }]
+        : [];
+      for (const stack of [...stacks, ...extra])
         last = withComposer(stack, (composer) => {
           composer.render(0);
           return memory();
         });
+      if (transitions.length) {
+        const factory = factories[
+          transitions[turn % transitions.length]!
+        ] as unknown as () => Transition;
+        const transition = factory();
+        const player = createTransition(renderer, transition, {
+          from: transitionImages.from,
+          to: transitionImages.to,
+        });
+        player.progress = 0.5;
+        player.render();
+        last = memory();
+        player.dispose();
+        transition.dispose();
+      }
+      turn++;
       return last;
     };
     // Warm up once: rendering the scene into a buffer compiles the studio's own
     // materials in a second variant, which three.js keeps with those materials.
-    cycle();
+    // A full rotation covers every material effect's variant of each studio
+    // material, which three.js keeps with the material until it is disposed.
+    for (let i = 0; i < Math.max(1, singles.length); i++) cycle();
     configure({});
     renderer.render(studio.scene, studio.camera);
     const before = memory();
     let during = before;
-    for (let i = 0; i < 20; i++) during = cycle();
+    for (let i = 0; i < (options.cycles ?? 20); i++) during = cycle();
     renderer.render(studio.scene, studio.camera);
     return { before, during, after: memory() };
+  },
+  /** The composer's stack, option and error APIs, with a three.js pass in the stack (X18.1). */
+  async composerApi() {
+    configure({});
+    const log: Record<string, unknown> = {};
+    const composer = new EffectComposer(renderer);
+    const error = (run: () => void) => {
+      try {
+        run();
+        return null;
+      } catch (e) {
+        return (e as Error).message;
+      }
+    };
+    log.noScene = error(() => composer.render(0));
+    composer.setScene(studio.scene, studio.camera);
+    const [vignette, mono, aberration, fog, outline, glow] = createEffects([
+      { id: 'vignette' },
+      { id: 'monochrome' },
+      { id: 'chromatic-aberration' },
+      { id: 'depth-fog' },
+      { id: 'buffer-view', params: { buffer: 'normal' } },
+      { id: 'glow', mask: { selection: ['box'] } },
+    ]);
+    composer.add(vignette!, mono!).add(aberration!);
+    log.effects = composer.effects.map((e) => e.name);
+    log.duplicate = error(() => composer.add(vignette!));
+    composer.remove(mono!);
+    log.afterRemove = composer.items.length;
+    // A three.js pass between effects: an invert ShaderPass.
+    const invert = new ShaderPass({
+      uniforms: { tDiffuse: { value: null } },
+      vertexShader:
+        'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader:
+        'uniform sampler2D tDiffuse; varying vec2 vUv; void main() { vec4 c = texture2D(tDiffuse, vUv); gl_FragColor = vec4(1.0 - c.rgb, c.a); }',
+    });
+    composer.setItems([vignette!, invert, aberration!]);
+    composer.render(0);
+    const inverted = readPixels();
+    log.describe = composer.describe().map((p) => ({
+      label: p.label,
+      effects: p.effects,
+      compiles: p.compiles,
+    }));
+    log.passes = composer.passes.length;
+    invert.enabled = false;
+    composer.render(0);
+    log.passesDisabled = composer.passes.length;
+    const plain = readPixels();
+    log.invertChanged = inverted.some((v, i) => i % 4 !== 3 && v !== plain[i]);
+    composer.remove(invert);
+    // Merging off: every effect gets its own pass.
+    composer.setItems([vignette!, mono!]);
+    composer.merge = false;
+    composer.render(0);
+    log.unmerged = { merge: composer.merge, passes: composer.passes.length };
+    composer.merge = true;
+    composer.render(0);
+    log.merged = composer.passes.length;
+    composer.dithering = true;
+    composer.render(0);
+    log.dithering = composer.dithering;
+    composer.dithering = false;
+    // Clock.
+    log.playing = [
+      composer.playing,
+      composer.play().playing,
+      composer.pause().playing,
+    ];
+    composer.progress = Number.NaN;
+    log.progressNaN = composer.progress;
+    composer.progress = 2;
+    log.progressHigh = composer.progress;
+    let listener: ((value: number) => void) | null = null;
+    const stop = composer.drive({
+      value: 0.25,
+      subscribe(callback) {
+        listener = callback;
+        return () => (listener = null);
+      },
+    });
+    log.driveInitial = composer.progress;
+    (listener as ((value: number) => void) | null)?.(0.75);
+    log.driveUpdate = composer.progress;
+    stop();
+    log.driveStopped = listener === null;
+    // Timing reports null where the GPU has no timer queries.
+    composer.timing = true;
+    composer.render(0);
+    composer.render(0);
+    log.timing = {
+      on: composer.timing,
+      timings: composer.timings === null ? null : 'object',
+      gpuMs: composer.describe()[0]?.gpuMs ?? null,
+    };
+    composer.timing = false;
+    log.timingOff = composer.timings;
+    log.bufferSize = composer.bufferSize;
+    // Buffers and prepasses come and go with the effects that need them.
+    composer.setItems([fog!, outline!, glow!]);
+    composer.render(0);
+    log.withBuffers = { ...composer.stats };
+    composer.setItems([vignette!]);
+    composer.render(0);
+    log.withoutBuffers = { ...composer.stats };
+    composer.dispose();
+    composer.dispose();
+    log.afterDispose = error(() => composer.render(0));
+    for (const effect of [mono, aberration, fog, outline, glow])
+      effect!.dispose();
+    invert.dispose();
+    return log;
+  },
+  /** Pointer, scroll and audio tracking into composer inputs (X1.11). */
+  async interaction() {
+    const { trackPointer, trackScroll, trackAudio } =
+      await import('../../src/core/index.js');
+    const target = {
+      inputs: {
+        pointer: [0.5, 0.5] as [number, number],
+        pointerVelocity: [0, 0] as [number, number],
+        scroll: 0,
+        audio: [0, 0, 0, 0] as [number, number, number, number],
+      },
+    };
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    const rect = canvas.getBoundingClientRect();
+    const move = (u: number, v: number) =>
+      window.dispatchEvent(
+        new PointerEvent('pointermove', {
+          clientX: rect.left + u * rect.width,
+          clientY: rect.top + (1 - v) * rect.height,
+        }),
+      );
+    const stopPointer = trackPointer(target, canvas);
+    move(0.25, 0.75);
+    const pointer = [...target.inputs.pointer];
+    await wait(30);
+    move(0.5, 0.75);
+    const velocity = [...target.inputs.pointerVelocity];
+    await wait(150);
+    const settled = [...target.inputs.pointerVelocity];
+    stopPointer();
+    move(0.9, 0.1);
+    const afterStop = [...target.inputs.pointer];
+    // Scroll: the page, then an element passing through the viewport.
+    const spacer = document.createElement('div');
+    spacer.style.height = `${window.innerHeight * 3}px`;
+    document.body.append(spacer);
+    const stopPage = trackScroll(target);
+    window.scrollTo(
+      0,
+      (document.documentElement.scrollHeight - innerHeight) / 2,
+    );
+    window.dispatchEvent(new Event('scroll'));
+    const pageScroll = target.inputs.scroll;
+    stopPage();
+    const stopElement = trackScroll(target, spacer);
+    window.dispatchEvent(new Event('scroll'));
+    const elementScroll = target.inputs.scroll;
+    stopElement();
+    window.scrollTo(0, 0);
+    spacer.remove();
+    // Audio: a 110 Hz tone into an analyser.
+    const context = new AudioContext();
+    const oscillator = context.createOscillator();
+    oscillator.frequency.value = 110;
+    const analyser = context.createAnalyser();
+    oscillator.connect(analyser);
+    oscillator.start();
+    const stopAudio = trackAudio(target, analyser);
+    window.dispatchEvent(new KeyboardEvent('keydown'));
+    await context.resume().catch(() => {});
+    await wait(300);
+    const audio = [...target.inputs.audio];
+    stopAudio();
+    const audioStopped = [...target.inputs.audio];
+    oscillator.stop();
+    await context.close();
+    return {
+      pointer,
+      velocity,
+      settled,
+      afterStop,
+      pageScroll,
+      elementScroll,
+      audio,
+      audioState: context.state,
+      audioStopped,
+    };
+  },
+  /** The debug overlay over a rendering composer (X1.14). */
+  async debugOverlay() {
+    const { createDebugOverlay } = await import('../../src/core/index.js');
+    configure({});
+    const composer = new EffectComposer(renderer);
+    composer.setScene(studio.scene, studio.camera);
+    composer.setItems(createEffects([{ id: 'bloom' }, { id: 'vignette' }]));
+    const host = document.createElement('div');
+    document.body.append(host);
+    const overlay = createDebugOverlay(composer, host);
+    const timingOn = composer.timing;
+    const start = performance.now();
+    while (performance.now() - start < 600) {
+      composer.render(1 / 60);
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+    const text = overlay.element.textContent ?? '';
+    const source = overlay.shaderSource(0);
+    const missing = overlay.shaderSource(99);
+    overlay.dispose();
+    const removed = !host.contains(overlay.element);
+    host.remove();
+    const timingAfter = composer.timing;
+    composer.dispose();
+    return {
+      text,
+      timingOn,
+      timingAfter,
+      source: source.includes('void main'),
+      missing,
+      removed,
+    };
+  },
+  /** Transition player textures, material patch errors and prepasses across a resize. */
+  async edgeCases() {
+    const { materialEffects } = await import('../../src/core/index.js');
+    const error = (run: () => void) => {
+      try {
+        run();
+        return null;
+      } catch (e) {
+        return (e as Error).message;
+      }
+    };
+    // Transition player textures can be swapped.
+    const transition = (factories.crossfade as unknown as () => Transition)();
+    const player = createTransition(renderer, transition, {
+      from: transitionImages.from,
+      to: transitionImages.to,
+    });
+    player.from = transitionImages.to;
+    player.to = transitionImages.from;
+    const swapped =
+      player.from === transitionImages.to &&
+      player.to === transitionImages.from;
+    player.dispose();
+    transition.dispose();
+    // Material patching rejects unsupported materials and double patches.
+    const [hologram] = createEffects([{ id: 'hologram' }]) as MaterialEffect[];
+    const shader = new ShaderMaterial();
+    const unsupported = error(() => patchMaterial(shader, hologram!));
+    const standard = new MeshStandardMaterial();
+    patchMaterial(standard, hologram!);
+    const listed = materialEffects(standard).map((e) => e.name);
+    const twice = error(() => patchMaterial(standard, hologram!));
+    unpatchMaterial(standard, hologram!);
+    const afterUnpatch = materialEffects(standard).length;
+    const unknown = materialEffects(shader).length;
+    hologram!.dispose();
+    standard.dispose();
+    shader.dispose();
+    // Prepasses follow a resize, and objects that can't be drawn into them
+    // (a sprite) are hidden there and shown again afterwards.
+    const { Sprite, SpriteMaterial } = await import('three');
+    const sprite = new Sprite(new SpriteMaterial({ color: 0xff00ff }));
+    studio.scene.add(sprite);
+    const sizes = withComposer(
+      {
+        effects: [
+          { id: 'outline' },
+          { id: 'glow', mask: { selection: ['box'] } },
+        ],
+      },
+      (composer) => {
+        composer.render(0);
+        renderer.setSize(200, 100);
+        composer.render(0);
+        const resized = { ...composer.bufferSize };
+        renderer.setSize(width, height);
+        composer.render(0);
+        return { resized, restored: { ...composer.bufferSize } };
+      },
+    );
+    const spriteVisible = sprite.visible;
+    studio.scene.remove(sprite);
+    sprite.material.dispose();
+    return {
+      swapped,
+      unsupported,
+      listed,
+      twice,
+      afterUnpatch,
+      unknown,
+      sizes,
+      spriteVisible,
+    };
+  },
+  /** GpuTimer against a stand-in timer extension, since software GL has none. */
+  async gpuTimer() {
+    const { GpuTimer } = await import('../../src/core/index.js');
+    let nextQuery = 1;
+    let current = 0;
+    const results = new Map<number, number>();
+    let available = false;
+    let disjoint = false;
+    const deleted: number[] = [];
+    const ext = { TIME_ELAPSED_EXT: 0x88bf, GPU_DISJOINT_EXT: 0x8fbb };
+    const gl = {
+      QUERY_RESULT_AVAILABLE: 0x8867,
+      QUERY_RESULT: 0x8866,
+      getExtension: () => ext,
+      createQuery: () => (current = nextQuery++),
+      beginQuery() {},
+      endQuery() {},
+      getParameter: () => disjoint,
+      getQueryParameter: (query: number, name: number) =>
+        name === 0x8867 ? available : (results.get(query) ?? 0),
+      deleteQuery: (query: number) => deleted.push(query),
+    } as unknown as WebGL2RenderingContext;
+    const timer = new GpuTimer(gl);
+    const frame = (ms: number[]) => {
+      ms.forEach((value, i) =>
+        timer.measure(`span ${i}`, () => results.set(current, value * 1e6)),
+      );
+      timer.endFrame();
+    };
+    let nested = 0;
+    timer.measure('outer', () => timer.measure('inner', () => nested++));
+    timer.endFrame();
+    frame([1, 2]);
+    const pending = { ...timer.latest };
+    available = true;
+    frame([3, 4]);
+    const ready = { ...timer.latest };
+    available = false;
+    for (let i = 0; i < 8; i++) frame([5]);
+    const capped = deleted.length;
+    disjoint = true;
+    frame([6]);
+    const afterDisjoint = { ...timer.latest };
+    timer.dispose();
+    const unsupported = new GpuTimer({
+      getExtension: () => null,
+    } as unknown as WebGL2RenderingContext);
+    let ran = 0;
+    unsupported.measure('x', () => ran++);
+    unsupported.endFrame();
+    return {
+      supported: timer.supported,
+      nested,
+      pending,
+      ready,
+      capped,
+      afterDisjoint,
+      deleted: deleted.length,
+      unsupported: { supported: unsupported.supported, ran },
+    };
   },
   /** Names of the programs three.js currently holds (for debugging leaks). */
   programNames() {
     return (renderer.info.programs ?? []).map(
-      (p) => `${p.name} x${p.usedTimes}`,
+      (p) => `${p.name || p.cacheKey.slice(0, 120)} x${p.usedTimes}`,
     );
   },
   /** Resizes the canvas between renders and counts buffer allocations. */

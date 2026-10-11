@@ -5,8 +5,10 @@
 // effect's merged pass (each structural variant and preset, two copies merged
 // to catch name clashes) and every standalone shader as GLSL ES 3.00.
 // Set XT_REQUIRE_GLSLANG=1 (CI does) to fail when the validator is missing.
+// With `--emit <file>`, writes every effect variant's shaders to a JSON file
+// instead of validating them, for the browser compile tests (X18.2).
 import { execFileSync, spawnSync } from 'node:child_process';
-import { readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import {
   loadEffects,
   loadGlslTools,
@@ -24,16 +26,23 @@ const problems = [];
 const report = (chunk, line, message) =>
   problems.push(`${chunk.file}:${line}: ${message}`);
 
+const emitIndex = process.argv.indexOf('--emit');
+const emitPath = emitIndex === -1 ? null : process.argv[emitIndex + 1];
+if (emitIndex !== -1 && !emitPath) throw new Error('--emit needs a file path');
+/** Shaders to emit: { name, stage, source }. Shaders with the same name link together. */
+const emitted = [];
 const hasValidator =
+  !emitPath &&
   spawnSync('glslangValidator', ['--version'], { encoding: 'utf8' }).status ===
-  0;
-if (!hasValidator && process.env.XT_REQUIRE_GLSLANG === '1') {
+    0;
+if (!hasValidator && !emitPath && process.env.XT_REQUIRE_GLSLANG === '1') {
   problems.push(
     'glslangValidator is required (XT_REQUIRE_GLSLANG=1) but was not found on PATH',
   );
 }
 /** Returns the validator log on failure, null on success or when the validator is missing. */
-const validate = (source, stage = 'frag') => {
+const validate = (source, stage = 'frag', name = '') => {
+  if (emitPath && name) emitted.push({ name, stage, source });
   if (!hasValidator) return null;
   try {
     execFileSync('glslangValidator', ['--stdin', '-S', stage], {
@@ -257,7 +266,11 @@ for (const { id, factory } of effects) {
         ['vert', materialVertex(code)],
         ['frag', materialFragment(code)],
       ]) {
-        const log = validate(source, stage);
+        const log = validate(
+          source,
+          stage,
+          `${id} ${JSON.stringify(setting)} ${lit ? 'lit' : 'unlit'}`,
+        );
         if (log)
           problems.push(
             `${folder} ${JSON.stringify(setting)} ${lit ? 'lit' : 'unlit'} ${stage}: glslangValidator failed\n${log.trim()}`,
@@ -269,7 +282,11 @@ for (const { id, factory } of effects) {
     for (const srgb of [true, false]) {
       const compiled = compileTransition(factory(setting), { srgb });
       variants++;
-      const log = validate(`#version 300 es\n${compiled.fragment}`);
+      const log = validate(
+        `#version 300 es\n${compiled.fragment}`,
+        'frag',
+        `${id} ${JSON.stringify(setting)} ${srgb ? 'srgb' : 'linear'}`,
+      );
       if (log)
         problems.push(
           `${folder} ${JSON.stringify(setting)}: glslangValidator failed\n${formatShaderError(log, compiled.files).trim()}`,
@@ -281,7 +298,11 @@ for (const { id, factory } of effects) {
     );
     if (textured) continue;
     variants++;
-    const log = validate(holoFragment(compileHoloFragment(factory(setting))));
+    const log = validate(
+      holoFragment(compileHoloFragment(factory(setting))),
+      'frag',
+      `${id} ${JSON.stringify(setting)} HoloCSS`,
+    );
     if (log)
       problems.push(
         `${folder} ${JSON.stringify(setting)} HoloCSS: glslangValidator failed\n${log.trim()}`,
@@ -294,7 +315,11 @@ for (const { id, factory } of effects) {
       dither: true,
     });
     variants++;
-    const log = validate(`#version 300 es\n${pass.fragment}`);
+    const log = validate(
+      `#version 300 es\n${pass.fragment}`,
+      'frag',
+      `${id} ${JSON.stringify(setting)}`,
+    );
     if (log)
       problems.push(
         `${folder} ${JSON.stringify(setting)}: glslangValidator failed\n${formatShaderError(log, pass.files).trim()}`,
@@ -310,7 +335,11 @@ for (const { id, factory } of effects) {
       name: file,
       lineDirectives: false,
     }).code;
-    const log = validate(`#version 300 es\n${resolved}`);
+    const log = validate(
+      `#version 300 es\n${resolved}`,
+      'frag',
+      `${id} ${file}`,
+    );
     if (log)
       problems.push(
         `${folder}/${file}: glslangValidator failed\n${log.trim()}`,
@@ -321,6 +350,11 @@ for (const { id, factory } of effects) {
 if (problems.length) {
   console.error(problems.join('\n'));
   process.exit(1);
+}
+if (emitPath) {
+  writeFileSync(emitPath, JSON.stringify(emitted));
+  console.log(`GLSL lint: wrote ${emitted.length} shaders to ${emitPath}.`);
+  process.exit(0);
 }
 console.log(
   `GLSL lint: ${chunks.length} chunks and ${effects.length} effects (${variants} merged variants) pass${

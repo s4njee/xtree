@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test.js';
 import { blendModes } from '../../src/shaders/blend/constants.js';
 import { random, runShader, vec4s } from './harness.js';
 import { blendReference, type Vec3 } from './reference.js';
