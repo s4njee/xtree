@@ -46,6 +46,42 @@ A color you set on a theme-aware parameter yourself stays until the next theme c
 
 Without HoloCSS, `bindMotion` from `@mk7s/xtree/motion` applies the same rule with xtree's built-in implementation. A test checks that both implementations agree.
 
+## On a HoloCSS stage
+
+HoloCSS's three.js bridge (`@mk7s/holocss/three`) draws every stage on the page with one shared WebGL renderer. `stageEffects` renders a stage through an xtree composer on that same renderer, so effects never cost a second WebGL context. The stage owns the composer: destroying the stage, or losing the context, disposes it and its effects. The composer follows HoloCSS's motion policy for the stage.
+
+```ts
+import { createStage } from '@mk7s/holocss/three';
+import { EffectComposer } from '@mk7s/xtree/core';
+import { stageEffects } from '@mk7s/xtree/holocss';
+import { bloom } from '@mk7s/xtree/effects/bloom';
+
+const stage = await createStage(element, { placement: 'inside' });
+const composer = new EffectComposer(stage.renderer).add(bloom());
+const render = stageEffects(stage, composer); // use instead of stage.render
+render(scene, camera);
+```
+
+### Ambient scenes
+
+`withEffects` wraps HoloCSS's ambient scene builders (`gradient`, `particles`, `litObject`, or your own) so `scene()` draws them through xtree effects. Everything else stays HoloCSS's: theme colors, the motion policy, and pausing while off screen.
+
+```ts
+import { scene } from '@mk7s/holocss/three';
+import { litObject } from '@mk7s/holocss/three/scenes/object';
+import { EffectComposer } from '@mk7s/xtree/core';
+import { withEffects } from '@mk7s/xtree/holocss';
+
+await scene(
+  hero,
+  withEffects(litObject, (renderer) =>
+    new EffectComposer(renderer).add(holographicFoil(), bloom(), filmGrain()),
+  ),
+);
+```
+
+<AmbientEffects />
+
 ## Installing
 
 HoloCSS isn't on npm yet. Until it is, install it from its repository at the pinned commit (see `holocss.json` in the xtree repository), or alias `@mk7s/holocss` to a local checkout in your bundler.

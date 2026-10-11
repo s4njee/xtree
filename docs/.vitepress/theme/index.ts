@@ -2,10 +2,12 @@ import type { Theme } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
 import { h } from 'vue';
 import '@mk7s/holocss/components.css';
+import AmbientEffects from './AmbientEffects.vue';
 import EffectCatalogue from './EffectCatalogue.vue';
 import EffectDemo from './EffectDemo.vue';
 import FamilyCards from './FamilyCards.vue';
 import HeroDemo from './HeroDemo.vue';
+import ScrollStory from './ScrollStory.vue';
 import SiteControls from './SiteControls.vue';
 import { startPreferences } from './preferences';
 import './style.css';
@@ -24,6 +26,8 @@ export default {
     app.component('EffectDemo', EffectDemo);
     app.component('EffectCatalogue', EffectCatalogue);
     app.component('FamilyCards', FamilyCards);
+    app.component('ScrollStory', ScrollStory);
+    app.component('AmbientEffects', AmbientEffects);
     if (!import.meta.env.SSR) void startPreferences();
   },
 } satisfies Theme;

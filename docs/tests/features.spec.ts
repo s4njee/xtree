@@ -183,6 +183,26 @@ test('without WebGL2 a demo shows its poster and a notice', async ({
   ).toBe(320);
 });
 
+test('hovering a gallery card plays a live preview, unless motion is off', async ({
+  page,
+}) => {
+  await page.goto(`${base}/effects/`);
+  const card = page.locator('.xt-effect-card[data-effect="film-grain"]');
+  const preview = card.locator('.xt-effect-media canvas');
+  await card.hover();
+  await expect(preview).toBeVisible({ timeout: 20_000 });
+  // Leaving stops it and hands the still back.
+  await page.mouse.move(0, 0);
+  await expect(preview).toHaveCount(0);
+  // With motion off nothing plays.
+  await page.evaluate(() => {
+    document.documentElement.dataset.hcssMotion = 'none';
+  });
+  await card.hover();
+  await page.waitForTimeout(800);
+  await expect(preview).toHaveCount(0);
+});
+
 test('the gallery filters instantly', async ({ page }) => {
   // Counts come from the generated catalogue, so new effects don't break this.
   const effects = JSON.parse(

@@ -73,11 +73,20 @@ export default defineConfig({
           items: [
             { text: 'Introduction', link: '/guide/' },
             { text: 'Getting started', link: '/guide/getting-started' },
+            { text: 'Composing stacks', link: '/guide/stacks' },
             { text: 'Masks and geometry buffers', link: '/guide/masks' },
             { text: 'Material effects', link: '/guide/materials' },
             { text: 'Transitions', link: '/guide/transitions' },
             { text: 'HoloCSS themes and motion', link: '/guide/holocss' },
+            { text: 'Animation and interaction', link: '/guide/animation' },
             { text: 'Performance', link: '/guide/performance' },
+            {
+              text: 'Motion and accessibility',
+              link: '/guide/accessibility',
+            },
+            { text: 'Writing an effect', link: '/guide/custom-effects' },
+            { text: 'Migrating', link: '/guide/migrating' },
+            { text: 'Recipes', link: '/guide/recipes' },
           ],
         },
       ],
@@ -134,6 +143,14 @@ export default defineConfig({
         {
           find: /^@mk7s\/holocss\/motion$/,
           replacement: resolve(holocss, 'src/motion/index.ts'),
+        },
+        {
+          find: /^@mk7s\/holocss\/three\/scenes\/(\w+)$/,
+          replacement: `${resolve(holocss, 'src/three/scenes')}/$1.ts`,
+        },
+        {
+          find: /^@mk7s\/holocss\/three$/,
+          replacement: resolve(holocss, 'src/three/index.ts'),
         },
       ],
     },

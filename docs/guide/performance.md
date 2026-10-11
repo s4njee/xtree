@@ -70,3 +70,13 @@ pnpm bench --out bench/results/my-laptop.json --label "My laptop (Intel Iris Xe)
 ```
 
 With `--out`, results merge into a JSON file in `bench/results/`, and every effect page lists its cost from each file there. The harness covers post effects; materials and transitions are not benchmarked yet. The numbers published so far come from the CI container, which renders in software (SwiftShader): use them to compare effects with each other, not to predict times on a GPU. Results from reference hardware (a laptop iGPU, a discrete desktop GPU, a mid-range Android phone and an iPhone) are still to come.
+
+## Mobile
+
+Phones have less GPU headroom and higher pixel densities, and they throttle when they get hot. A few defaults help:
+
+- Cap the resolution: the composer's `maxDpr` (default 2) and `maxPixels` (default 4 million) limit the effect buffers whatever the device pixel ratio. A decorative hero can use much less, as this site's does (`maxDpr: 1.5`, `maxPixels: 600_000`).
+- Prefer cheap effects: color, tone, grain and vignettes merge into one pass. Use ambient occlusion, volumetric fog, depth of field and large blurs sparingly, at `quality: 'low'` or under an adaptive composer.
+- Hold a budget with `setAdaptive`, with a target of 30 fps (`targetMs: 33`) if 60 is out of reach.
+- Stop rendering when nothing changes or the canvas is off screen, and respect the [motion policy](./accessibility).
+- Precompile with `compileAsync()`: shader compilation is slower on phones.

@@ -328,14 +328,26 @@
   padding-top: 0;
   overflow: hidden;
 }
-.xt-effect-thumb {
+.xt-effect-media {
+  position: relative;
   display: block;
   width: calc(100% + 2 * var(--hcss-space-large, 16px));
-  max-width: none;
-  height: auto;
   aspect-ratio: 16 / 9;
   margin: 0 calc(-1 * var(--hcss-space-large, 16px)) var(--hcss-space-small);
   background: #0b0d14;
+}
+.xt-effect-thumb {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+}
+/* The live hover preview sits over the still. */
+.xt-effect-media canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 .xt-effect-tags {
   display: flex;

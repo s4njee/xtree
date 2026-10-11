@@ -2,15 +2,21 @@
 
 xtree is a reusable library of three.js effects: screen-space post-processing, multi-pass effects such as bloom, material effects and transitions. The plan is a catalogue of about 140 effects in eleven families, all built on one composer that merges compatible effects into a single pass.
 
-::: warning Status: M0 (foundation)
-The repository has its tooling, documentation site and shader chunk library. The composer and the first effects arrive in M1. Nothing is published to npm yet.
+::: info Status: M3 beta
+About 110 effects across every family, the merging composer, material effects, transitions, animation and interaction helpers, HoloCSS integration and performance tools. The API may still change before 1.0; breaking changes are listed in the changelog. Nothing is published to npm yet.
 :::
 
-## What exists today
+## Guides
 
-- **Shader chunks.** Tested GLSL building blocks for [noise](/reference/shaders#noise), [color](/reference/shaders#color) and [blend modes](/reference/shaders#blend), plus the `resolveIncludes` function that assembles them.
-- **Tooling.** Size budgets for every export, a GLSL lint backed by `glslangValidator`, a check of every shader's licence, and browser tests that check each chunk on the GPU against CPU reference implementations.
-- **This site.** Built with VitePress and styled with [HoloCSS](https://github.com/s4njee/holocss) theme roles.
+- [Getting started](./getting-started): install, the first effect on an existing three.js scene, and the HoloCSS stage path.
+- [Composing stacks](./stacks): order, merging, blend modes, three.js passes and saving stacks.
+- [Masks and geometry buffers](./masks): limit effects to textures, depth ranges or objects, and read depth and normals.
+- [Material effects](./materials) and [transitions](./transitions).
+- [HoloCSS themes and motion](./holocss): theme roles, the motion policy, stages and ambient scenes.
+- [Animation and interaction](./animation): tweens, timelines, and pointer, tilt, audio and scroll bindings.
+- [Performance](./performance): precompiling, adaptive quality, reduced resolution, benchmarks and mobile.
+- [Motion, accessibility and photosensitivity](./accessibility).
+- [Writing an effect](./custom-effects), [migrating](./migrating) from other composers, and [recipes](./recipes).
 
 ## Effect families
 

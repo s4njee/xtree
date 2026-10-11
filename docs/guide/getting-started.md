@@ -118,7 +118,7 @@ bindMotion(composer, renderer.domElement);
 composer.play();
 ```
 
-Transitions between DOM elements go through HoloCSS's `transition3d()` with `toHoloEffect()`; see [Transitions](/guide/transitions#with-holocss). Rendering an xtree composer inside HoloCSS's shared `Stage` (one WebGL context for the whole page) is planned for a later milestone (X15.4); until then the composer uses its own renderer, as above. More in [HoloCSS themes and motion](/guide/holocss).
+Transitions between DOM elements go through HoloCSS's `transition3d()` with `toHoloEffect()`; see [Transitions](/guide/transitions#with-holocss). To render inside HoloCSS's shared `Stage` (one WebGL context for the whole page) instead of a renderer of your own, use `stageEffects`; see [on a HoloCSS stage](/guide/holocss#on-a-holocss-stage). More in [HoloCSS themes and motion](/guide/holocss).
 
 ## Use three.js's own EffectComposer
 
@@ -137,6 +137,8 @@ composer.addPass(new OutputPass());
 ```
 
 ## Write your own effect
+
+The [writing an effect](/guide/custom-effects) guide covers parameters, shader chunks and effects with their own passes. In short:
 
 ```ts
 import { defineEffect, float, color } from '@mk7s/xtree/effect';

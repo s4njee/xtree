@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, ref } from 'vue';
 import { withBase } from 'vitepress';
 import effects from '../effects-meta.json';
+import { startPreview } from './gallery-preview';
 
 /**
  * The effect catalogue and gallery (X19.16, X19.17): a still of every effect,
@@ -70,6 +71,34 @@ const filtered = computed(
     buffers.value !== 'all' ||
     stillOnly.value,
 );
+
+// Hover previews: only fine, hover-capable pointers, after a short pause so
+// sweeping across the grid doesn't start them.
+let hoverTimer = 0;
+let stopPreview: (() => void) | null = null;
+let hovered: HTMLElement | null = null;
+function enter(event: PointerEvent, effect: Entry) {
+  if (event.pointerType !== 'mouse') return;
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const card = event.currentTarget as HTMLElement;
+  const media = card.querySelector<HTMLElement>('.xt-effect-media')!;
+  hovered = card;
+  clearTimeout(hoverTimer);
+  hoverTimer = window.setTimeout(async () => {
+    stopPreview?.();
+    stopPreview = null;
+    const stop = await startPreview(media, effect.id, effect.kind);
+    if (hovered === card) stopPreview = stop;
+    else stop();
+  }, 250);
+}
+function leave() {
+  hovered = null;
+  clearTimeout(hoverTimer);
+  stopPreview?.();
+  stopPreview = null;
+}
+onBeforeUnmount(leave);
 
 function clear() {
   family.value = kind.value = cost.value = buffers.value = 'all';
@@ -159,16 +188,20 @@ function clear() {
           class="hcss-card xt-effect-card"
           :href="withBase(`/effects/${effect.id}`)"
           :data-effect="effect.id"
+          @pointerenter="enter($event, effect)"
+          @pointerleave="leave"
         >
-          <img
-            class="xt-effect-thumb"
-            :src="withBase(`/thumbnails/${effect.id}.png`)"
-            alt=""
-            width="320"
-            height="180"
-            loading="lazy"
-            decoding="async"
-          />
+          <span class="xt-effect-media">
+            <img
+              class="xt-effect-thumb"
+              :src="withBase(`/thumbnails/${effect.id}.png`)"
+              alt=""
+              width="320"
+              height="180"
+              loading="lazy"
+              decoding="async"
+            />
+          </span>
           <strong>{{ effect.title }}</strong>
           <span>{{ effect.summary }}</span>
           <span class="xt-effect-tags">
