@@ -54,7 +54,8 @@ Apply one with `monochrome({ preset: 'name' })` or `effect.applyPreset('name')`;
 - **Passes:** reads only its own pixel, so it merges into the pass before it.
 - **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Static: nothing animates.
-- **Size:** 6.3 KB gzip budget for `@mk7s/xtree/effects/monochrome`, including the shared effect runtime.
+- **Cost:** 0.0 ms added to a 960×540 frame on CI container (SwiftShader software renderer) (2026-10-11). A software renderer: use it to compare effects, not to predict GPU times.
+- **Size:** 7.1 KB gzip budget for `@mk7s/xtree/effects/monochrome`, including the shared effect runtime.
 
 ## Credits
 

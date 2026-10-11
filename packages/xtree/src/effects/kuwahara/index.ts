@@ -32,6 +32,7 @@ export const kuwahara = defineEffect({
       optionLabels: { four: '4 quadrants', eight: '8 sectors' },
     }),
   },
+  quality: { low: { sectors: 'four', radius: 3 }, medium: { radius: 3 } },
   presets: {
     oil: { radius: 6 },
     classic: { sectors: 'four', radius: 5 },

@@ -68,6 +68,8 @@ Apply one with `volumetricFog({ preset: 'name' })` or `effect.applyPreset('name'
 - **Geometry buffers:** reads depth, which the composer renders only while an effect needs them.
 - **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Settles: when motion is off it switches to still values (`windSpeed: 0`) without changing your settings.
+- **Cost:** 220.1 ms added to a 960×540 frame on CI container (SwiftShader software renderer) (2026-10-11). A software renderer: use it to compare effects, not to predict GPU times.
+- **Quality tiers:** low: `steps: 10`, `resolution: 0.25`; medium: `steps: 16`; high keeps the effect's own values. Set `quality`, or leave it `auto` for an [adaptive composer](/guide/performance).
 - **Size:** 8.9 KB gzip budget for `@mk7s/xtree/effects/volumetric-fog`, including the shared effect runtime.
 
 ## Credits

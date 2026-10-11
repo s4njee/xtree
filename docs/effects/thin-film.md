@@ -61,7 +61,7 @@ Apply one with `thinFilm({ preset: 'name' })` or `effect.applyPreset('name')`; p
 - **Family:** Holographic & iridescent · tracked as story X11.2 in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).
 - **Kind:** material effect. `patchMaterial(material, effect)` splices it into MeshBasic, Lambert, Phong, Standard, Physical, Toon and Matcap materials, so lighting, fog and shadows keep working; `unpatchMaterial` removes it. See [material effects](/guide/materials).
 - **Motion:** Freezes: when motion is off (reduced motion, high contrast or `effect.setMotion(false)`) the effect holds its current frame.
-- **Size:** 7.8 KB gzip budget for `@mk7s/xtree/effects/thin-film`, including the shared effect runtime.
+- **Size:** 8.8 KB gzip budget for `@mk7s/xtree/effects/thin-film`, including the shared effect runtime.
 
 ## Credits
 

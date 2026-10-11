@@ -53,6 +53,8 @@ Apply one with `directionalBlur({ preset: 'name' })` or `effect.applyPreset('nam
 - **Passes:** samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass.
 - **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Static: nothing animates.
+- **Cost:** 139.0 ms added to a 960×540 frame on CI container (SwiftShader software renderer) (2026-10-11). A software renderer: use it to compare effects, not to predict GPU times.
+- **Quality tiers:** low: `samples: 10`; medium: `samples: 16`; high keeps the effect's own values. Set `quality`, or leave it `auto` for an [adaptive composer](/guide/performance).
 - **Size:** 5.8 KB gzip budget for `@mk7s/xtree/effects/directional-blur`, including the shared effect runtime.
 
 ## Credits

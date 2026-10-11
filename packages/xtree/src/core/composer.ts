@@ -2,9 +2,13 @@ import {
   ACESFilmicToneMapping,
   AgXToneMapping,
   CineonToneMapping,
+  BufferGeometry,
   DepthTexture,
+  Float32BufferAttribute,
+  Group,
   HalfFloatType,
   LinearToneMapping,
+  Mesh,
   NeutralToneMapping,
   NoToneMapping,
   ReinhardToneMapping,
@@ -22,6 +26,11 @@ import type {
 import type { Effect } from '../effect/define.js';
 import type { EffectMask, SelectionMask } from '../effect/mask.js';
 import { NormalPrepass, SelectionPrepass, VelocityPrepass } from './buffers.js';
+import {
+  FrameGovernor,
+  type GovernorOptions,
+  type GovernorState,
+} from './governor.js';
 import { GpuTimer } from './timing.js';
 import type { OutputStage, ToneMapping } from './compile.js';
 import { describePassError, EffectPass } from './pass.js';
@@ -128,6 +137,9 @@ export class EffectComposer {
   #width = 0;
   #height = 0;
   #lastTime: number | undefined;
+  #resolutionScale = 1;
+  #governor: FrameGovernor | null = null;
+  #lastFrame: number | undefined;
   #time = 0;
   /** The time effects see while motion is off. */
   #frozenTime = 0;
@@ -394,6 +406,61 @@ export class EffectComposer {
   }
 
   /**
+   * Scales the resolution the scene and effects render at, 0.25–1 (in steps
+   * of 0.05); the last pass upscales to the canvas. An adaptive composer
+   * sets it. Defaults to 1.
+   */
+  get resolutionScale(): number {
+    return this.#resolutionScale;
+  }
+  set resolutionScale(value: number) {
+    this.#resolutionScale = Math.min(
+      1,
+      Math.max(0.25, Math.round(value * 20) / 20),
+    );
+  }
+
+  /**
+   * Holds a target frame time (X17.3) by lowering the resolution scale and
+   * then the quality tier of effects whose `quality` is `auto`, and raising
+   * them again when there is time to spare. It measures GPU time where timer
+   * queries are available and frame intervals otherwise. Pass `null` to stop
+   * and return to full resolution and quality.
+   *
+   * ```ts
+   * composer.setAdaptive({ targetMs: 1000 / 60, minScale: 0.5 });
+   * ```
+   */
+  setAdaptive(options: GovernorOptions | null): this {
+    this.#governor = options ? new FrameGovernor(options) : null;
+    this.#lastFrame = undefined;
+    if (!options) {
+      this.resolutionScale = 1;
+      for (const effect of this.effects) effect.adaptQuality('high');
+    }
+    return this;
+  }
+
+  /** What the adaptive governor last chose, or null when it is off. */
+  get adaptive(): GovernorState | null {
+    return this.#governor?.state ?? null;
+  }
+
+  #adapt(now: number): void {
+    const governor = this.#governor;
+    if (!governor) return;
+    const timings = this.timings;
+    const gpu = timings
+      ? Object.values(timings).reduce((sum, ms) => sum + ms, 0)
+      : 0;
+    const interval = this.#lastFrame === undefined ? 0 : now - this.#lastFrame;
+    this.#lastFrame = now;
+    const state = governor.update(gpu > 0 ? gpu : interval);
+    this.resolutionScale = state.scale;
+    for (const effect of this.effects) effect.adaptQuality(state.quality);
+  }
+
+  /**
    * Renders one frame to the canvas, or into `target` (for example to use the
    * result as a texture). `delta` is in seconds; by default it is measured
    * from the previous call.
@@ -410,6 +477,7 @@ export class EffectComposer {
       delta ??
       (this.#lastTime === undefined ? 0 : (now - this.#lastTime) / 1000);
     this.#lastTime = now;
+    this.#adapt(now);
     const seconds = this.#playing ? measured : 0;
     if (this.#motion) this.#time += seconds;
 
@@ -482,6 +550,72 @@ export class EffectComposer {
     this.stats.compiles = this.#countCompiles();
   }
 
+  /**
+   * Compiles every shader the next frame needs without drawing it: the
+   * scene's materials (including patched ones), the effect passes and the
+   * shaders effects render their own passes with. Where the browser supports
+   * `KHR_parallel_shader_compile` the work happens off the main thread, so
+   * awaiting this before a page transition or reveal avoids a first-frame
+   * hitch (X17.5). Call it after `setScene` and adding effects; the stack
+   * shouldn't change before the next render, or the changed passes compile
+   * then as usual. The geometry prepasses (normals, velocity, selections) are
+   * simple built-in materials; they compile by drawing once, off screen.
+   */
+  async compileAsync(): Promise<void> {
+    if (this.#disposed)
+      throw new Error('EffectComposer: compile after dispose');
+    if (!this.scene || !this.camera)
+      throw new Error(
+        'EffectComposer: call setScene(scene, camera) before compileAsync',
+      );
+    const renderer = this.renderer;
+    this.#updateSize();
+    this.#updatePlan();
+    const output = this.#outputStage();
+    const steps: PlannedPass[] =
+      this.#plan.length && this.#plan.at(-1)!.kind === 'effects'
+        ? this.#plan
+        : [...this.#plan, { kind: 'effects', pass: this.#ensureOutputPass() }];
+    // One full-screen triangle per material, never drawn: three.js compiles what it would render.
+    const geometry = new BufferGeometry();
+    geometry.setAttribute(
+      'position',
+      new Float32BufferAttribute([-1, -1, 0, 3, -1, 0, -1, 3, 0], 3),
+    );
+    const group = new Group();
+    steps.forEach((step, index) => {
+      if (step.kind !== 'effects') return;
+      step.pass.output = index === steps.length - 1 ? output : null;
+      for (const material of step.pass.prepareResources())
+        group.add(new Mesh(geometry, material));
+    });
+    const active = this.effects.filter((effect) => effect.enabled);
+    const buffers = new Set(active.flatMap((e) => e.requiredBuffers()));
+    this.#useDepthTexture(buffers.has('depth'));
+    // The geometry prepasses' override materials compile as they draw, off screen.
+    const previousTarget = renderer.getRenderTarget();
+    this.#renderPrepasses(
+      active,
+      buffers.has('normal'),
+      buffers.has('velocity'),
+    );
+    renderer.setRenderTarget(previousTarget);
+    try {
+      // Scene materials compile for the target they render into: three.js keys
+      // programs on its color space. compileAsync compiles before it awaits.
+      const previous = renderer.getRenderTarget();
+      renderer.setRenderTarget(this.#sceneTarget!);
+      const scene = renderer.compileAsync(this.scene, this.camera);
+      renderer.setRenderTarget(previous);
+      await scene;
+      if (group.children.length)
+        await renderer.compileAsync(group, this.camera);
+    } finally {
+      geometry.dispose();
+    }
+    this.stats.compiles = this.#countCompiles();
+  }
+
   /** Disposes passes, buffers and every effect in the stack. Safe to call more than once. */
   dispose(): void {
     if (this.#disposed) return;
@@ -524,7 +658,7 @@ export class EffectComposer {
       1,
       Math.sqrt(maxPixels / Math.max(1, size.x * size.y)),
     );
-    const scale = Math.min(dprScale, pixelScale);
+    const scale = Math.min(dprScale, pixelScale) * this.#resolutionScale;
     const width = Math.max(1, Math.round(size.x * scale));
     const height = Math.max(1, Math.round(size.y * scale));
     if (width === this.#width && height === this.#height && this.#sceneTarget)

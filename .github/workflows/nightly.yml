@@ -2,7 +2,8 @@ name: Nightly
 
 # Long-running checks (X18.4): 1,000 create, render and dispose cycles of
 # every effect and repeated context loss, in every browser. Also run it by
-# hand before a release.
+# hand before a release. Benchmarks (X17.2) run here too and are kept as
+# artifacts.
 on:
   schedule:
     - cron: '17 3 * * *'
@@ -45,3 +46,28 @@ jobs:
           path: |
             playwright-report/
             test-results/
+
+  bench:
+    name: Benchmarks (chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: actions/cache@v4
+        with:
+          path: .cache/holocss
+          key: holocss-${{ hashFiles('holocss.json') }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      # X17.2: each night's results are kept as an artifact, so trends can be compared run to run.
+      - run: xvfb-run -a pnpm bench --frames 20 --size 1280x720 --out bench-results/nightly.json --label "GitHub Actions ubuntu-latest"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bench-${{ github.run_number }}
+          path: bench-results/
+          retention-days: 90

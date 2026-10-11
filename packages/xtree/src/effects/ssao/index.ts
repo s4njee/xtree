@@ -78,6 +78,7 @@ export const ssao = defineEffect({
       description: 'Show the occlusion buffer alone.',
     }),
   },
+  quality: { low: { samples: 6, resolution: 0.25 }, medium: { samples: 10 } },
   presets: {
     subtle: { intensity: 0.8, radius: 0.4 },
     contact: { radius: 0.15, intensity: 2, bias: 0.01 },

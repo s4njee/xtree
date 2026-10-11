@@ -1,0 +1,527 @@
+{
+  "label": "CI container (SwiftShader software renderer)",
+  "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "width": 960,
+  "height": 540,
+  "frames": 8,
+  "baselineMs": 57.7,
+  "date": "2026-10-11",
+  "results": {
+    "anamorphic": {
+      "costMs": 69.9,
+      "medianMs": 127.6,
+      "p95Ms": 153.4,
+      "gpuMs": null
+    },
+    "ascii": {
+      "costMs": 20.8,
+      "medianMs": 78.5,
+      "p95Ms": 83.8,
+      "gpuMs": null
+    },
+    "bit-crush": {
+      "costMs": 3,
+      "medianMs": 60.7,
+      "p95Ms": 70,
+      "gpuMs": null
+    },
+    "bleach-bypass": {
+      "costMs": 0,
+      "medianMs": 51.2,
+      "p95Ms": 58.8,
+      "gpuMs": null
+    },
+    "block-displacement": {
+      "costMs": 10.5,
+      "medianMs": 68.2,
+      "p95Ms": 78.4,
+      "gpuMs": null
+    },
+    "bloom": {
+      "costMs": 81.7,
+      "medianMs": 139.4,
+      "p95Ms": 166.3,
+      "gpuMs": null
+    },
+    "blur": {
+      "costMs": 139.4,
+      "medianMs": 197.1,
+      "p95Ms": 218.4,
+      "gpuMs": null
+    },
+    "bokeh-blur": {
+      "costMs": 200.7,
+      "medianMs": 258.4,
+      "p95Ms": 301.9,
+      "gpuMs": null
+    },
+    "brightness-contrast": {
+      "costMs": 0,
+      "medianMs": 41.1,
+      "p95Ms": 44.3,
+      "gpuMs": null
+    },
+    "buffer-view": {
+      "costMs": 0,
+      "medianMs": 49.5,
+      "p95Ms": 57.2,
+      "gpuMs": null
+    },
+    "bulge": {
+      "costMs": 0,
+      "medianMs": 40.4,
+      "p95Ms": 49.3,
+      "gpuMs": null
+    },
+    "channel-mixer": {
+      "costMs": 0,
+      "medianMs": 35.3,
+      "p95Ms": 37.9,
+      "gpuMs": null
+    },
+    "chromatic-aberration": {
+      "costMs": 0,
+      "medianMs": 44.8,
+      "p95Ms": 47.3,
+      "gpuMs": null
+    },
+    "color-balance": {
+      "costMs": 0,
+      "medianMs": 45.4,
+      "p95Ms": 53.7,
+      "gpuMs": null
+    },
+    "crosshatch": {
+      "costMs": 1.9,
+      "medianMs": 59.6,
+      "p95Ms": 64.5,
+      "gpuMs": null
+    },
+    "crt": {
+      "costMs": 22.8,
+      "medianMs": 80.5,
+      "p95Ms": 89.2,
+      "gpuMs": null
+    },
+    "curves": {
+      "costMs": 0,
+      "medianMs": 52.3,
+      "p95Ms": 65.3,
+      "gpuMs": null
+    },
+    "datamosh": {
+      "costMs": 557.9,
+      "medianMs": 615.6,
+      "p95Ms": 640.1,
+      "gpuMs": null
+    },
+    "depth-fog": {
+      "costMs": 0,
+      "medianMs": 54.2,
+      "p95Ms": 58.5,
+      "gpuMs": null
+    },
+    "depth-of-field": {
+      "costMs": 542.3,
+      "medianMs": 600,
+      "p95Ms": 670.2,
+      "gpuMs": null
+    },
+    "digital-noise": {
+      "costMs": 0,
+      "medianMs": 51,
+      "p95Ms": 55,
+      "gpuMs": null
+    },
+    "directional-blur": {
+      "costMs": 139,
+      "medianMs": 196.7,
+      "p95Ms": 215.7,
+      "gpuMs": null
+    },
+    "displacement-map": {
+      "costMs": 4,
+      "medianMs": 61.7,
+      "p95Ms": 75.8,
+      "gpuMs": null
+    },
+    "dither": {
+      "costMs": 0,
+      "medianMs": 47.5,
+      "p95Ms": 51.6,
+      "gpuMs": null
+    },
+    "edges": {
+      "costMs": 27,
+      "medianMs": 84.7,
+      "p95Ms": 87.1,
+      "gpuMs": null
+    },
+    "emboss": {
+      "costMs": 0,
+      "medianMs": 54.2,
+      "p95Ms": 62,
+      "gpuMs": null
+    },
+    "error-diffusion": {
+      "costMs": 136.7,
+      "medianMs": 194.4,
+      "p95Ms": 204.3,
+      "gpuMs": null
+    },
+    "exposure-gamma": {
+      "costMs": 0,
+      "medianMs": 43.6,
+      "p95Ms": 45.7,
+      "gpuMs": null
+    },
+    "film-grain": {
+      "costMs": 0,
+      "medianMs": 53.3,
+      "p95Ms": 62,
+      "gpuMs": null
+    },
+    "fisheye": {
+      "costMs": 0,
+      "medianMs": 46.6,
+      "p95Ms": 51.5,
+      "gpuMs": null
+    },
+    "flow-warp": {
+      "costMs": 186.5,
+      "medianMs": 244.2,
+      "p95Ms": 318.5,
+      "gpuMs": null
+    },
+    "frosted-glass": {
+      "costMs": 21,
+      "medianMs": 78.7,
+      "p95Ms": 84.8,
+      "gpuMs": null
+    },
+    "glitter": {
+      "costMs": 8.3,
+      "medianMs": 66,
+      "p95Ms": 103.2,
+      "gpuMs": null
+    },
+    "glow": {
+      "costMs": 37.5,
+      "medianMs": 95.2,
+      "p95Ms": 118.8,
+      "gpuMs": null
+    },
+    "god-rays": {
+      "costMs": 339.7,
+      "medianMs": 397.4,
+      "p95Ms": 464.5,
+      "gpuMs": null
+    },
+    "gradient-map": {
+      "costMs": 0,
+      "medianMs": 55.1,
+      "p95Ms": 67.1,
+      "gpuMs": null
+    },
+    "halation": {
+      "costMs": 33.8,
+      "medianMs": 91.5,
+      "p95Ms": 109.6,
+      "gpuMs": null
+    },
+    "halftone": {
+      "costMs": 44.9,
+      "medianMs": 102.6,
+      "p95Ms": 107.8,
+      "gpuMs": null
+    },
+    "heat-haze": {
+      "costMs": 9.3,
+      "medianMs": 67,
+      "p95Ms": 74,
+      "gpuMs": null
+    },
+    "holographic-foil": {
+      "costMs": 13.3,
+      "medianMs": 71,
+      "p95Ms": 89.7,
+      "gpuMs": null
+    },
+    "hud-grid": {
+      "costMs": 1.1,
+      "medianMs": 58.8,
+      "p95Ms": 78.9,
+      "gpuMs": null
+    },
+    "hue-saturation": {
+      "costMs": 0,
+      "medianMs": 41.4,
+      "p95Ms": 47,
+      "gpuMs": null
+    },
+    "invert-threshold": {
+      "costMs": 0,
+      "medianMs": 43,
+      "p95Ms": 48.6,
+      "gpuMs": null
+    },
+    "jpeg": {
+      "costMs": 501.5,
+      "medianMs": 559.2,
+      "p95Ms": 700.7,
+      "gpuMs": null
+    },
+    "kaleidoscope": {
+      "costMs": 27.7,
+      "medianMs": 85.4,
+      "p95Ms": 105.9,
+      "gpuMs": null
+    },
+    "kuwahara": {
+      "costMs": 3479,
+      "medianMs": 3536.7,
+      "p95Ms": 3694.4,
+      "gpuMs": null
+    },
+    "lcd": {
+      "costMs": 12.8,
+      "medianMs": 70.5,
+      "p95Ms": 86.3,
+      "gpuMs": null
+    },
+    "lens-dirt": {
+      "costMs": 93.5,
+      "medianMs": 151.2,
+      "p95Ms": 160.8,
+      "gpuMs": null
+    },
+    "lens-distortion": {
+      "costMs": 0,
+      "medianMs": 56.3,
+      "p95Ms": 68.6,
+      "gpuMs": null
+    },
+    "lens-flare": {
+      "costMs": 32.6,
+      "medianMs": 90.3,
+      "p95Ms": 116.8,
+      "gpuMs": null
+    },
+    "levels": {
+      "costMs": 0,
+      "medianMs": 49.3,
+      "p95Ms": 51.2,
+      "gpuMs": null
+    },
+    "lut": {
+      "costMs": 18.8,
+      "medianMs": 76.5,
+      "p95Ms": 81.8,
+      "gpuMs": null
+    },
+    "mirror": {
+      "costMs": 0,
+      "medianMs": 53.8,
+      "p95Ms": 77.5,
+      "gpuMs": null
+    },
+    "moire": {
+      "costMs": 5.1,
+      "medianMs": 62.8,
+      "p95Ms": 76.8,
+      "gpuMs": null
+    },
+    "monochrome": {
+      "costMs": 0,
+      "medianMs": 56.7,
+      "p95Ms": 83.1,
+      "gpuMs": null
+    },
+    "mosaic": {
+      "costMs": 32.1,
+      "medianMs": 89.8,
+      "p95Ms": 121.7,
+      "gpuMs": null
+    },
+    "motion-blur": {
+      "costMs": 63.8,
+      "medianMs": 121.5,
+      "p95Ms": 139.9,
+      "gpuMs": null
+    },
+    "ntsc": {
+      "costMs": 108.2,
+      "medianMs": 165.9,
+      "p95Ms": 175.7,
+      "gpuMs": null
+    },
+    "outline": {
+      "costMs": 69.3,
+      "medianMs": 127,
+      "p95Ms": 166.7,
+      "gpuMs": null
+    },
+    "palette": {
+      "costMs": 77,
+      "medianMs": 134.7,
+      "p95Ms": 172,
+      "gpuMs": null
+    },
+    "pencil": {
+      "costMs": 100.3,
+      "medianMs": 158,
+      "p95Ms": 191.2,
+      "gpuMs": null
+    },
+    "pixel-sort": {
+      "costMs": 454.4,
+      "medianMs": 512.1,
+      "p95Ms": 538.4,
+      "gpuMs": null
+    },
+    "pixelate": {
+      "costMs": 0,
+      "medianMs": 54.4,
+      "p95Ms": 64.3,
+      "gpuMs": null
+    },
+    "posterize": {
+      "costMs": 18.2,
+      "medianMs": 75.9,
+      "p95Ms": 91.2,
+      "gpuMs": null
+    },
+    "prism": {
+      "costMs": 91.9,
+      "medianMs": 149.6,
+      "p95Ms": 165.4,
+      "gpuMs": null
+    },
+    "radial-blur": {
+      "costMs": 135.8,
+      "medianMs": 193.5,
+      "p95Ms": 197.6,
+      "gpuMs": null
+    },
+    "rgb-split-glitch": {
+      "costMs": 0,
+      "medianMs": 57.2,
+      "p95Ms": 70.7,
+      "gpuMs": null
+    },
+    "ripple": {
+      "costMs": 0,
+      "medianMs": 50.7,
+      "p95Ms": 68.3,
+      "gpuMs": null
+    },
+    "scanline-tear": {
+      "costMs": 0.6,
+      "medianMs": 58.3,
+      "p95Ms": 72.8,
+      "gpuMs": null
+    },
+    "scanlines": {
+      "costMs": 0,
+      "medianMs": 48.6,
+      "p95Ms": 51.2,
+      "gpuMs": null
+    },
+    "screen-rim": {
+      "costMs": 18.6,
+      "medianMs": 76.3,
+      "p95Ms": 90.1,
+      "gpuMs": null
+    },
+    "selective-bloom": {
+      "costMs": 60.8,
+      "medianMs": 118.5,
+      "p95Ms": 152.7,
+      "gpuMs": null
+    },
+    "signal-loss": {
+      "costMs": 11.2,
+      "medianMs": 68.9,
+      "p95Ms": 78.8,
+      "gpuMs": null
+    },
+    "slice-shift": {
+      "costMs": 0,
+      "medianMs": 50.8,
+      "p95Ms": 65.7,
+      "gpuMs": null
+    },
+    "split-toning": {
+      "costMs": 0,
+      "medianMs": 52.9,
+      "p95Ms": 56.7,
+      "gpuMs": null
+    },
+    "ssao": {
+      "costMs": 115.6,
+      "medianMs": 173.3,
+      "p95Ms": 198.8,
+      "gpuMs": null
+    },
+    "star-streaks": {
+      "costMs": 91.8,
+      "medianMs": 149.5,
+      "p95Ms": 186.4,
+      "gpuMs": null
+    },
+    "teletext": {
+      "costMs": 48.7,
+      "medianMs": 106.4,
+      "p95Ms": 116.2,
+      "gpuMs": null
+    },
+    "tilt-shift": {
+      "costMs": 75.3,
+      "medianMs": 133,
+      "p95Ms": 179.4,
+      "gpuMs": null
+    },
+    "twirl": {
+      "costMs": 0,
+      "medianMs": 43.7,
+      "p95Ms": 50.4,
+      "gpuMs": null
+    },
+    "vhs": {
+      "costMs": 86.7,
+      "medianMs": 144.4,
+      "p95Ms": 152.8,
+      "gpuMs": null
+    },
+    "vignette": {
+      "costMs": 0,
+      "medianMs": 41.7,
+      "p95Ms": 47.1,
+      "gpuMs": null
+    },
+    "volumetric-fog": {
+      "costMs": 220.1,
+      "medianMs": 277.8,
+      "p95Ms": 315.2,
+      "gpuMs": null
+    },
+    "watercolor": {
+      "costMs": 114,
+      "medianMs": 171.7,
+      "p95Ms": 198,
+      "gpuMs": null
+    },
+    "wave-warp": {
+      "costMs": 0,
+      "medianMs": 46.5,
+      "p95Ms": 52.1,
+      "gpuMs": null
+    },
+    "white-balance": {
+      "costMs": 0,
+      "medianMs": 51.1,
+      "p95Ms": 62.3,
+      "gpuMs": null
+    }
+  }
+}

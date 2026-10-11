@@ -52,7 +52,8 @@ Apply one with `bufferView({ preset: 'name' })` or `effect.applyPreset('name')`;
 - **Geometry buffers:** depend on its settings; with the defaults it reads depth.
 - **Masks:** reads its `mask` itself rather than fading by it (see the description); any [mask kind](/guide/masks) works.
 - **Motion:** Static: nothing animates.
-- **Size:** 6.4 KB gzip budget for `@mk7s/xtree/effects/buffer-view`, including the shared effect runtime.
+- **Cost:** 0.0 ms added to a 960×540 frame on CI container (SwiftShader software renderer) (2026-10-11). A software renderer: use it to compare effects, not to predict GPU times.
+- **Size:** 7.3 KB gzip budget for `@mk7s/xtree/effects/buffer-view`, including the shared effect runtime.
 
 ### Debugging
 

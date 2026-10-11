@@ -40,6 +40,7 @@ export const directionalBlur = defineEffect({
       description: 'Samples per pixel; more are smoother and cost more.',
     }),
   },
+  quality: { low: { samples: 10 }, medium: { samples: 16 } },
   presets: {
     pan: { length: 60, samples: 32 },
     vertical: { angle: 90, length: 40 },

@@ -57,7 +57,7 @@ Apply one with `dissolve({ preset: 'name' })` or `effect.applyPreset('name')`; p
 - **Family:** Materials · tracked as story X12.2 in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).
 - **Kind:** material effect. `patchMaterial(material, effect)` splices it into MeshBasic, Lambert, Phong, Standard, Physical, Toon and Matcap materials, so lighting, fog and shadows keep working; `unpatchMaterial` removes it. See [material effects](/guide/materials).
 - **Motion:** Static: nothing animates.
-- **Size:** 7.2 KB gzip budget for `@mk7s/xtree/effects/dissolve`, including the shared effect runtime.
+- **Size:** 8.1 KB gzip budget for `@mk7s/xtree/effects/dissolve`, including the shared effect runtime.
 
 ## Credits
 

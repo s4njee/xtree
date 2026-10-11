@@ -248,7 +248,7 @@
     "familyTitle": "Lens & camera",
     "summary": "Blurs what is nearer or farther than the focus distance, as a wide-aperture lens does.",
     "kind": "post",
-    "cost": "pass",
+    "cost": "multipass",
     "buffers": ["depth"],
     "motion": "static",
     "presets": 4,
@@ -260,7 +260,8 @@
       "aperture",
       "maxBlur",
       "shape",
-      "quality",
+      "density",
+      "resolution",
       "showFocus"
     ]
   },
@@ -606,7 +607,7 @@
     "buffers": [],
     "motion": "static",
     "presets": 4,
-    "params": ["quality", "blockScale", "subsample", "amount"]
+    "params": ["jpegQuality", "blockScale", "subsample", "amount"]
   },
   {
     "id": "pixel-sort",

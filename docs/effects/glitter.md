@@ -62,6 +62,7 @@ Apply one with `glitter({ preset: 'name' })` or `effect.applyPreset('name')`; pr
 - **Geometry buffers:** reads normals, which the composer renders only while an effect needs them.
 - **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Freezes: when motion is off (reduced motion, high contrast or `composer.motion = false`) the effect holds its current frame.
+- **Cost:** 8.3 ms added to a 960×540 frame on CI container (SwiftShader software renderer) (2026-10-11). A software renderer: use it to compare effects, not to predict GPU times.
 - **Size:** 6.5 KB gzip budget for `@mk7s/xtree/effects/glitter`, including the shared effect runtime.
 
 ## Credits

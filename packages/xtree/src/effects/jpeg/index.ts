@@ -22,7 +22,7 @@ export const jpeg = defineEffect({
   },
   sampling: 'input',
   params: {
-    quality: float({
+    jpegQuality: float({
       default: 15,
       min: 1,
       max: 100,
@@ -52,10 +52,10 @@ export const jpeg = defineEffect({
     }),
   },
   presets: {
-    lowQuality: { quality: 6 },
-    deepFried: { quality: 2, blockScale: 2 },
-    web: { quality: 40 },
-    macroblocks: { quality: 10, blockScale: 4 },
+    lowQuality: { jpegQuality: 6 },
+    deepFried: { jpegQuality: 2, blockScale: 2 },
+    web: { jpegQuality: 40 },
+    macroblocks: { jpegQuality: 10, blockScale: 4 },
   },
   textures: ['blocks'],
   fragment,
@@ -84,7 +84,7 @@ export const jpeg = defineEffect({
         a.setScale(scale);
         b.setScale(scale);
         // libjpeg's quality scaling of the quantization tables.
-        const q = Math.min(100, Math.max(1, effect.quality));
+        const q = Math.min(100, Math.max(1, effect.jpegQuality));
         const s = q < 50 ? 5000 / q : 200 - 2 * q;
         columns.uniforms.scale!.value = s / 100;
         rows.uniforms.source!.value = input;

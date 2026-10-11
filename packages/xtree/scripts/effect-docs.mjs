@@ -28,6 +28,16 @@ function camel(id) {
 }
 const escape = (text) => String(text).replace(/\|/g, '\\|');
 
+// Benchmark results (X17.1/X17.2), from `pnpm bench --out bench/results/<machine>.json`.
+const benchFolder = `${repoRoot}bench/results/`;
+const benches = existsSync(benchFolder)
+  ? readdirSync(benchFolder)
+      .filter((file) => file.endsWith('.json'))
+      .sort()
+      .map((file) => JSON.parse(readFileSync(`${benchFolder}${file}`, 'utf8')))
+  : [];
+const software = (bench) => /swiftshader|llvmpipe|software/i.test(bench.gpu);
+
 function formatValue(param, value) {
   switch (param.kind) {
     case 'gradient':
@@ -275,6 +285,26 @@ function page(factory) {
     transition
       ? '- **Motion:** driven by `progress` from your timeline. HoloCSS skips transitions when motion is off; standalone, set `progress = 1` instead of animating.'
       : `- **Motion:** ${motionText}`,
+    ...benches
+      .filter((bench) => bench.results?.[name])
+      .map(
+        (bench) =>
+          `- **Cost:** ${bench.results[name].costMs.toFixed(1)} ms added to a ${bench.width}×${bench.height} frame on ${bench.label} (${bench.date}).${software(bench) ? ' A software renderer: use it to compare effects, not to predict GPU times.' : ''}`,
+      ),
+    ...(definition.quality
+      ? [
+          `- **Quality tiers:** ${Object.entries(definition.quality)
+            .map(
+              ([tier, values]) =>
+                `${tier}: ${Object.entries(values)
+                  .map(([key, value]) => `\`${key}: ${JSON.stringify(value)}\``)
+                  .join(', ')}`,
+            )
+            .join(
+              '; ',
+            )}; high keeps the effect's own values. Set \`quality\`, or leave it \`auto\` for an [adaptive composer](/guide/performance).`,
+        ]
+      : []),
     `- **Size:** ${(budgets[`./effects/${name}`] / 1024).toFixed(1)} KB gzip budget for \`@mk7s/xtree/effects/${name}\`, including the shared effect runtime.`,
     '',
   );

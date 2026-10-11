@@ -128,6 +128,7 @@ export const volumetricFog = defineEffect({
     }),
     seed: seed(),
   },
+  quality: { low: { steps: 10, resolution: 0.25 }, medium: { steps: 16 } },
   presets: {
     groundMist: { density: 0.4, falloff: 2, height: -0.5, noise: 0.7 },
     haze: { density: 0.05, falloff: 0, noise: 0.2 },

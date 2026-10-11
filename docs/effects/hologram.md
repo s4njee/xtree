@@ -64,7 +64,7 @@ Apply one with `hologram({ preset: 'name' })` or `effect.applyPreset('name')`; p
 - **Kind:** material effect. `patchMaterial(material, effect)` splices it into MeshBasic, Lambert, Phong, Standard, Physical, Toon and Matcap materials, so lighting, fog and shadows keep working; `unpatchMaterial` removes it. See [material effects](/guide/materials).
 - **Material settings:** while patched in, the material is set to transparent, additive blending, no depth writes, both faces drawn; they are restored when it is removed.
 - **Motion:** Settles: when motion is off it switches to still values (`flicker: 0`, `glitch: 0`, `scanlineSpeed: 0`) without changing your settings.
-- **Size:** 7.4 KB gzip budget for `@mk7s/xtree/effects/hologram`, including the shared effect runtime.
+- **Size:** 8.4 KB gzip budget for `@mk7s/xtree/effects/hologram`, including the shared effect runtime.
 
 ## Credits
 

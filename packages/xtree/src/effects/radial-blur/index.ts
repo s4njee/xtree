@@ -47,6 +47,7 @@ export const radialBlur = defineEffect({
       description: 'Samples per pixel; more are smoother and cost more.',
     }),
   },
+  quality: { low: { samples: 10 }, medium: { samples: 16 } },
   presets: {
     burst: { strength: 0.35, samples: 32 },
     subtle: { strength: 0.06, samples: 12 },

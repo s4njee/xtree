@@ -40,6 +40,11 @@ export const effectFamilies = {
 /** The family an effect belongs to in the catalogue. */
 export type EffectFamily = keyof typeof effectFamilies;
 
+/** A quality tier. */
+export type QualityLevel = 'low' | 'medium' | 'high';
+/** An effect's quality setting: a tier, or `auto` for an adaptive composer to choose. */
+export type Quality = QualityLevel | 'auto';
+
 /** GLSL types an effect's `state` uniforms can have. */
 export type StateType = 'float' | 'int' | 'bool' | 'vec2' | 'vec3' | 'vec4';
 
@@ -176,6 +181,14 @@ export interface EffectDefinition<S extends ParamSchema> {
   readonly params: S;
   /** Named parameter sets; each is applied over the defaults. */
   readonly presets?: Readonly<Record<string, Partial<ParamValues<S>>>>;
+  /**
+   * Cheaper settings for lower quality tiers (X17.3): the values of the
+   * parameters that drive cost, such as sample counts or resolution. The
+   * `high` tier is always the effect's own values.
+   */
+  readonly quality?: Readonly<
+    Partial<Record<'low' | 'medium', Partial<ParamValues<S>>>>
+  >;
   readonly sampling?: Sampling;
   readonly motion?: MotionBehavior<S>;
   /**
@@ -260,6 +273,8 @@ const reserved = new Set([
   'set',
   'reset',
   'applyPreset',
+  'quality',
+  'adaptQuality',
   'changed',
   'toJSON',
   'setMotion',
@@ -296,6 +311,9 @@ export class Effect<S extends ParamSchema = ParamSchema> {
   #enabled = true;
   #version = 0;
   #motion = true;
+  #quality: Quality = 'auto';
+  #tier: QualityLevel = 'high';
+  #ownValues: Record<string, unknown> | null = null;
   #disposed = false;
   #disposers: (() => void)[] = [];
   #samples = new Map<string, TextureLike & { dispose(): void }>();
@@ -547,6 +565,47 @@ export class Effect<S extends ParamSchema = ParamSchema> {
       ...(!this.#enabled ? { enabled: false } : {}),
       ...(this.#mask && 'depth' in this.#mask ? { mask: this.#mask } : {}),
     };
+  }
+
+  /**
+   * Render quality (X17.3): `low` and `medium` apply the effect's cheaper
+   * settings for its cost parameters, `high` its own values, and `auto` (the
+   * default) lets an adaptive composer choose. Effects without quality tiers
+   * ignore it.
+   */
+  get quality(): Quality {
+    return this.#quality;
+  }
+  set quality(value: Quality) {
+    if (!['auto', 'low', 'medium', 'high'].includes(value))
+      throw new TypeError(`${this.name}: unknown quality ${String(value)}`);
+    this.#quality = value;
+    this.#applyTier(value === 'auto' ? 'high' : value);
+  }
+
+  /** Applies a tier chosen by an adaptive composer, when `quality` is `auto`. */
+  adaptQuality(level: QualityLevel): void {
+    if (this.#quality === 'auto') this.#applyTier(level);
+  }
+
+  #applyTier(level: QualityLevel): void {
+    const tiers = this.definition.quality as
+      Partial<Record<QualityLevel, Record<string, unknown>>> | undefined;
+    if (!tiers || level === this.#tier) return;
+    this.#tier = level;
+    if (level === 'high') {
+      // Back to the values the effect had before a lower tier replaced them.
+      if (this.#ownValues) this.set(this.#ownValues as never);
+      this.#ownValues = null;
+      return;
+    }
+    const names = new Set(
+      Object.values(tiers).flatMap((tier) => Object.keys(tier ?? {})),
+    );
+    this.#ownValues ??= Object.fromEntries(
+      [...names].map((name) => [name, this.#values[name]]),
+    );
+    this.set({ ...this.#ownValues, ...tiers[level] } as never);
   }
 
   /**

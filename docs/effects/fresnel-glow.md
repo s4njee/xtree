@@ -58,7 +58,7 @@ Apply one with `fresnelGlow({ preset: 'name' })` or `effect.applyPreset('name')`
 - **Family:** Materials · tracked as story X12.3 in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).
 - **Kind:** material effect. `patchMaterial(material, effect)` splices it into MeshBasic, Lambert, Phong, Standard, Physical, Toon and Matcap materials, so lighting, fog and shadows keep working; `unpatchMaterial` removes it. See [material effects](/guide/materials).
 - **Motion:** Settles: when motion is off it switches to still values (`pulse: 0`) without changing your settings.
-- **Size:** 5.3 KB gzip budget for `@mk7s/xtree/effects/fresnel-glow`, including the shared effect runtime.
+- **Size:** 6.1 KB gzip budget for `@mk7s/xtree/effects/fresnel-glow`, including the shared effect runtime.
 
 ## Credits
 

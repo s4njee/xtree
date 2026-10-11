@@ -53,3 +53,8 @@ export {
 export type { PassGeometry, PassInputs } from './pass.js';
 export { createDebugOverlay, type DebugOverlay } from './debug.js';
 export { GpuTimer } from './timing.js';
+export {
+  FrameGovernor,
+  type GovernorOptions,
+  type GovernorState,
+} from './governor.js';

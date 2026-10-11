@@ -77,6 +77,7 @@ export default defineConfig({
             { text: 'Material effects', link: '/guide/materials' },
             { text: 'Transitions', link: '/guide/transitions' },
             { text: 'HoloCSS themes and motion', link: '/guide/holocss' },
+            { text: 'Performance', link: '/guide/performance' },
           ],
         },
       ],

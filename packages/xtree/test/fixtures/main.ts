@@ -1547,6 +1547,201 @@ const xt = {
       host.remove();
     }
   },
+  /**
+   * Times a stack of post effects over a fixed camera path (X17.2): the
+   * studio orbits while the knot turns. Frame times include a 1-pixel
+   * readback, so they cover the GPU work; GPU pass times come from timer
+   * queries where the browser has them.
+   */
+  async bench(spec: {
+    effects: EffectSpec[];
+    frames?: number;
+    warmup?: number;
+    width?: number;
+    height?: number;
+  }) {
+    const w = spec.width ?? 1280;
+    const h = spec.height ?? 720;
+    const frames = spec.frames ?? 40;
+    configure({});
+    renderer.setSize(w, h, false);
+    studio.resize(w / h);
+    const composer = new EffectComposer(renderer);
+    composer.setScene(studio.scene, studio.camera);
+    const effects = createEffects(spec.effects);
+    composer.setItems(effects);
+    composer.play();
+    const gl = renderer.getContext() as WebGL2RenderingContext;
+    const timed = Boolean(gl.getExtension('EXT_disjoint_timer_query_webgl2'));
+    composer.timing = timed;
+    const debug = gl.getExtension('WEBGL_debug_renderer_info');
+    const gpu = debug
+      ? String(gl.getParameter(debug.UNMASKED_RENDERER_WEBGL))
+      : String(gl.getParameter(gl.RENDERER));
+    const pixel = new Uint8Array(4);
+    const camera = studio.camera;
+    const home = camera.position.clone();
+    const frame = (i: number) => {
+      const a = (i / frames) * Math.PI * 0.5 - Math.PI * 0.25;
+      const r = Math.hypot(home.x, home.z);
+      camera.position.set(Math.sin(a) * r, home.y, Math.cos(a) * r);
+      camera.lookAt(0, 0.7, 0);
+      studio.update(i / 30);
+      const start = performance.now();
+      composer.render(1 / 30);
+      gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+      return performance.now() - start;
+    };
+    try {
+      await composer.compileAsync();
+      for (let i = 0; i < (spec.warmup ?? 5); i++) frame(i);
+      const times: number[] = [];
+      const gpuTimes: number[] = [];
+      for (let i = 0; i < frames; i++) {
+        times.push(frame(i));
+        // Timer results arrive a frame or two late; sum what is there.
+        const timings = composer.timings;
+        if (timings) {
+          const total = Object.values(timings).reduce((a, b) => a + b, 0);
+          if (total > 0) gpuTimes.push(total);
+        }
+      }
+      const sorted = [...times].sort((a, b) => a - b);
+      const at = (q: number) =>
+        sorted[Math.min(sorted.length - 1, Math.floor(q * sorted.length))]!;
+      const gpuSorted = [...gpuTimes].sort((a, b) => a - b);
+      return {
+        gpu,
+        width: w,
+        height: h,
+        frames,
+        medianMs: at(0.5),
+        p95Ms: at(0.95),
+        gpuMedianMs: gpuSorted.length
+          ? gpuSorted[Math.floor(gpuSorted.length / 2)]!
+          : null,
+      };
+    } finally {
+      composer.dispose();
+      camera.position.copy(home);
+      camera.lookAt(0, 0.7, 0);
+      studio.update(0);
+      renderer.setSize(width, height, false);
+      studio.resize(width / height);
+    }
+  },
+  /** compileAsync before the first frame: that frame then compiles nothing new (X17.5). */
+  async compileWarmup() {
+    configure({});
+    const { fresnelGlow } =
+      await import('../../src/effects/fresnel-glow/index.js');
+    // A material no earlier render compiled, patched with a material effect.
+    const mesh = new Mesh(
+      new SphereGeometry(0.3, 16, 8),
+      new MeshPhongMaterial({ color: '#88aaff', shininess: 37 }),
+    );
+    mesh.position.set(0, 2.4, 0);
+    const glow = fresnelGlow({ power: 4.5 });
+    patchMaterial(mesh.material, glow);
+    studio.scene.add(mesh);
+    const composer = new EffectComposer(renderer);
+    composer.setScene(studio.scene, studio.camera);
+    composer.setItems(
+      createEffects([
+        { id: 'vignette', params: { darkness: 0.61 } },
+        { id: 'ssao', params: { samples: 12 } },
+        { id: 'bloom', params: { levels: 5 } },
+        { id: 'lens-flare' },
+      ]),
+    );
+    try {
+      const start = renderer.info.programs?.length ?? 0;
+      await composer.compileAsync();
+      const compiled = renderer.info.programs?.length ?? 0;
+      composer.render(0);
+      const afterFirst = renderer.info.programs?.length ?? 0;
+      return { start, compiled, afterFirst };
+    } finally {
+      composer.dispose();
+      studio.scene.remove(mesh);
+      unpatchMaterial(mesh.material);
+      glow.dispose();
+      mesh.geometry.dispose();
+      mesh.material.dispose();
+    }
+  },
+  /** The adaptive composer under an impossible frame-time target, then switched off (X17.3). */
+  async adaptiveProbe() {
+    configure({});
+    const frame = () => new Promise((r) => requestAnimationFrame(r));
+    const composer = new EffectComposer(renderer);
+    composer.setScene(studio.scene, studio.camera);
+    const [blur] = createEffects([{ id: 'bokeh-blur' }]);
+    composer.setItems([blur!]);
+    const samples = () => (blur as unknown as { samples: number }).samples;
+    const before = samples();
+    composer.setAdaptive({ targetMs: 0.5, minScale: 0.5 });
+    // Each render is measured from the previous one, a frame apart as in an animation loop.
+    for (let i = 0; i < 80; i++) {
+      composer.render(0);
+      await frame();
+    }
+    const state = composer.adaptive;
+    const scale = composer.resolutionScale;
+    const lowered = samples();
+    // An effect with a fixed quality keeps it.
+    (blur as unknown as { quality: string }).quality = 'high';
+    for (let i = 0; i < 5; i++) {
+      composer.render(0);
+      await frame();
+    }
+    const pinned = samples();
+    (blur as unknown as { quality: string }).quality = 'auto';
+    composer.setAdaptive(null);
+    const restored = { scale: composer.resolutionScale, samples: samples() };
+    composer.dispose();
+    return { before, state, scale, lowered, pinned, restored };
+  },
+  /** Full against reduced resolution for an effect: frame cost and image difference (X17.4). */
+  async halfResolution(spec: {
+    id: string;
+    full: Record<string, unknown>;
+    half: Record<string, unknown>;
+  }) {
+    const bench = (params: Record<string, unknown> | null) =>
+      xt.bench({
+        effects: params ? [{ id: spec.id, params }] : [],
+        frames: 12,
+        warmup: 3,
+        width: 960,
+        height: 540,
+      });
+    const base = await bench(null);
+    const full = await bench(spec.full);
+    const half = await bench(spec.half);
+    const a = xt.renderFloat({
+      toneMapping: 'aces',
+      effects: [{ id: spec.id, params: spec.full }],
+    }).pixels;
+    const b = xt.renderFloat({
+      toneMapping: 'aces',
+      effects: [{ id: spec.id, params: spec.half }],
+    }).pixels;
+    const errors: number[] = [];
+    for (let i = 0; i < a.length; i += 4)
+      for (let c = 0; c < 3; c++) {
+        const x = Math.min(1, Math.max(0, a[i + c]!));
+        const y = Math.min(1, Math.max(0, b[i + c]!));
+        errors.push(Math.abs(x - y));
+      }
+    errors.sort((p, q) => p - q);
+    return {
+      fullCost: full.medianMs - base.medianMs,
+      halfCost: half.medianMs - base.medianMs,
+      meanError: errors.reduce((sum, e) => sum + e, 0) / errors.length,
+      p99Error: errors[Math.floor(errors.length * 0.99)]!,
+    };
+  },
   async interaction() {
     const { trackPointer, trackScroll, trackAudio } =
       await import('../../src/core/index.js');

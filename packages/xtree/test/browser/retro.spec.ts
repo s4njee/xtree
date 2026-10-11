@@ -99,7 +99,10 @@ test('JPEG quality sets how much the image changes', async ({ page }) => {
   const error = async (quality: number) =>
     diff(
       plain,
-      await render(page, { id: 'jpeg', params: { quality, subsample: false } }),
+      await render(page, {
+        id: 'jpeg',
+        params: { jpegQuality: quality, subsample: false },
+      }),
       1,
     ).deltaE999;
   const high = await error(98);

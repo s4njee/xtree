@@ -46,6 +46,7 @@ export const bokehBlur = defineEffect({
       description: 'Samples per pixel; more give smoother shapes.',
     }),
   },
+  quality: { low: { samples: 16 }, medium: { samples: 32 } },
   presets: {
     dreamy: { radius: 14, highlights: 2 },
     hexagon: { shape: 'hexagon', radius: 12, highlights: 2.5 },

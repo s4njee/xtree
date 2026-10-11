@@ -72,6 +72,10 @@ export const pixelSort = defineEffect({
       description: 'Mix between the original and the sorted image.',
     }),
   },
+  quality: {
+    low: { iterations: 24, resolution: 0.25 },
+    medium: { iterations: 40 },
+  },
   presets: {
     waterfall: { direction: 'vertical', iterations: 160, low: 0.05 },
     rainbow: { sortBy: 'hue', direction: 'horizontal', iterations: 96 },

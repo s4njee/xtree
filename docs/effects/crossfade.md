@@ -69,7 +69,7 @@ Apply one with `crossfade({ preset: 'name' })` or `effect.applyPreset('name')`; 
 - **Family:** Transitions · tracked as story X13.2 in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).
 - **Kind:** transition. `createTransition(renderer, effect, { from, to })` runs it on two textures; `toHoloEffect(effect)` turns it into a HoloCSS `ThreeEffect` (parameters are baked in when called), with the `hcss-depth` CSS fallback. See [transitions](/guide/transitions).
 - **Motion:** driven by `progress` from your timeline. HoloCSS skips transitions when motion is off; standalone, set `progress = 1` instead of animating.
-- **Size:** 7.4 KB gzip budget for `@mk7s/xtree/effects/crossfade`, including the shared effect runtime.
+- **Size:** 8.5 KB gzip budget for `@mk7s/xtree/effects/crossfade`, including the shared effect runtime.
 
 ## Credits
 

@@ -56,7 +56,8 @@ Apply one with `chromaticAberration({ preset: 'name' })` or `effect.applyPreset(
 - **Passes:** samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass.
 - **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Static: nothing animates.
-- **Size:** 5.3 KB gzip budget for `@mk7s/xtree/effects/chromatic-aberration`, including the shared effect runtime.
+- **Cost:** 0.0 ms added to a 960×540 frame on CI container (SwiftShader software renderer) (2026-10-11). A software renderer: use it to compare effects, not to predict GPU times.
+- **Size:** 6.1 KB gzip budget for `@mk7s/xtree/effects/chromatic-aberration`, including the shared effect runtime.
 
 ## Credits
 

@@ -96,6 +96,7 @@ export const godRays = defineEffect({
     }),
     color: color({ default: '#fff1d6', description: 'Color of the light.' }),
   },
+  quality: { low: { samples: 20 }, medium: { samples: 32 } },
   presets: {
     sunbeams: { intensity: 1.5, decay: 0.98, weight: 0.015 },
     tight: { density: 0.5, decay: 0.95 },

@@ -8,7 +8,7 @@ import {
   Vector2,
   WebGLRenderTarget,
 } from 'three';
-import type { Camera, Texture, WebGLRenderer } from 'three';
+import type { Camera, Material, Texture, WebGLRenderer } from 'three';
 import type {
   Effect,
   FrameInfo,
@@ -61,6 +61,9 @@ export interface PassGeometry {
   readonly velocity?: Texture | null;
   readonly camera?: Camera | null;
 }
+
+/** Materials each effect's setup created, for precompiling. */
+const setupMaterials = new WeakMap<Effect, Material[]>();
 
 const threeKit: ThreeKit = {
   WebGLRenderTarget,
@@ -284,20 +287,53 @@ export class EffectPass {
     return this.#material;
   }
 
+  /**
+   * Creates the pass's shader and its effects' resources without drawing,
+   * and returns every material they render with, for precompiling (see
+   * `EffectComposer.compileAsync`).
+   */
+  prepareResources(): Material[] {
+    const materials: Material[] = [this.#ensureMaterial()];
+    for (const effect of this.effects) {
+      this.#setup(effect);
+      materials.push(...(setupMaterials.get(effect) ?? []));
+    }
+    return materials;
+  }
+
   #prepare(
     effect: Effect,
     renderer: WebGLRenderer,
     input: Texture,
     frame: FrameInfo,
   ): void {
+    this.#setup(effect);
+    effect.resources?.prepare(renderer, input, frame);
+  }
+
+  #setup(effect: Effect): void {
     const { setup } = effect.definition;
     if (!setup) return;
     if (!effect.resources) {
       // Owned by the effect: it keeps its resources if a later plan moves it to another pass.
       const fullscreen = new Fullscreen();
       effect.onDispose(() => fullscreen.dispose());
+      // Materials the setup creates are remembered, so they can be precompiled.
+      const created: Material[] = [];
+      setupMaterials.set(effect, created);
+      class TrackedMaterial extends RawShaderMaterial {
+        constructor(
+          parameters?: ConstructorParameters<typeof RawShaderMaterial>[0],
+        ) {
+          super(parameters);
+          created.push(this);
+        }
+      }
       const context: SetupContext<ParamSchema> = {
-        three: threeKit,
+        three: {
+          ...threeKit,
+          RawShaderMaterial: TrackedMaterial,
+        } as ThreeKit,
         effect: effect as SetupContext<ParamSchema>['effect'],
         draw: (r, material, target) => fullscreen.draw(r, material, target),
         include: (source, ...chunks) =>
@@ -309,6 +345,5 @@ export class EffectPass {
       effect.resources = setup(context);
       effect.resources.setSize(this.#width, this.#height);
     }
-    effect.resources.prepare(renderer, input, frame);
   }
 }

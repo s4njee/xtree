@@ -1,5 +1,4 @@
-/** Quality tiers an effect can render at. */
-export type QualityLevel = 'low' | 'medium' | 'high';
+import type { QualityLevel } from '../effect/define.js';
 
 /** Options for the composer's frame-time governor. */
 export interface GovernorOptions {

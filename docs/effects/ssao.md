@@ -60,6 +60,8 @@ Apply one with `ssao({ preset: 'name' })` or `effect.applyPreset('name')`; prese
 - **Geometry buffers:** reads depth and normals, which the composer renders only while an effect needs them.
 - **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Static: nothing animates.
+- **Cost:** 115.6 ms added to a 960×540 frame on CI container (SwiftShader software renderer) (2026-10-11). A software renderer: use it to compare effects, not to predict GPU times.
+- **Quality tiers:** low: `samples: 6`, `resolution: 0.25`; medium: `samples: 10`; high keeps the effect's own values. Set `quality`, or leave it `auto` for an [adaptive composer](/guide/performance).
 - **Size:** 8.1 KB gzip budget for `@mk7s/xtree/effects/ssao`, including the shared effect runtime.
 
 ## Credits

@@ -24,21 +24,22 @@ composer.add(depthOfField({ preset: 'portrait' }));
 renderer.setAnimationLoop(() => composer.render());
 ```
 
-Every parameter is also a property: `effect.focusMode = 'distance'`. Uniform changes take effect on the next frame without recompiling.
+Every parameter is also a property: `effect.focusMode = 'distance'`. Uniform changes take effect on the next frame without recompiling; parameters marked _structural_ recompile the pass that contains the effect.
 
 ## Parameters
 
-| Parameter       | Type                        | Default      | Range     | Description                                                         |
-| --------------- | --------------------------- | ------------ | --------- | ------------------------------------------------------------------- |
-| `focusMode`     | 'distance' \| 'point'       | `'distance'` |           | Focus at a fixed distance, or on whatever is under the focus point. |
-| `focusDistance` | number                      | `7`          | 0.1 – 100 | Distance mode: distance in focus, in scene units.                   |
-| `focusPoint`    | [x, y]                      | `[0.5, 0.5]` | 0 – 1     | Point mode: screen position to focus on, in UV coordinates.         |
-| `focusRange`    | number                      | `1.5`        | 0 – 50    | Depth around the focus distance that stays sharp.                   |
-| `aperture`      | number                      | `2`          | 0 – 10    | Lens opening: larger values blur sooner away from focus.            |
-| `maxBlur`       | number                      | `12`         | 1 – 32 px | Largest blur radius.                                                |
-| `shape`         | 'circle' \| 'hexagon'       | `'circle'`   |           | Bokeh shape.                                                        |
-| `quality`       | 'low' \| 'medium' \| 'high' | `'medium'`   |           | Sample density. Cost grows with the square of the blur radius.      |
-| `showFocus`     | boolean                     | `false`      |           | Tint what is in focus green, near blur red and far blur blue.       |
+| Parameter                   | Type                        | Default      | Range     | Description                                                                                                                                                                      |
+| --------------------------- | --------------------------- | ------------ | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `focusMode`                 | 'distance' \| 'point'       | `'distance'` |           | Focus at a fixed distance, or on whatever is under the focus point.                                                                                                              |
+| `focusDistance`             | number                      | `7`          | 0.1 – 100 | Distance mode: distance in focus, in scene units.                                                                                                                                |
+| `focusPoint`                | [x, y]                      | `[0.5, 0.5]` | 0 – 1     | Point mode: screen position to focus on, in UV coordinates.                                                                                                                      |
+| `focusRange`                | number                      | `1.5`        | 0 – 50    | Depth around the focus distance that stays sharp.                                                                                                                                |
+| `aperture`                  | number                      | `2`          | 0 – 10    | Lens opening: larger values blur sooner away from focus.                                                                                                                         |
+| `maxBlur`                   | number                      | `12`         | 1 – 32 px | Largest blur radius.                                                                                                                                                             |
+| `shape`                     | 'circle' \| 'hexagon'       | `'circle'`   |           | Bokeh shape.                                                                                                                                                                     |
+| `density`                   | 'low' \| 'medium' \| 'high' | `'medium'`   |           | Sample density. Cost grows with the square of the blur radius.                                                                                                                   |
+| `resolution` _(structural)_ | 'full' \| 'half'            | `'full'`     |           | Gather the blur at full or half resolution. Half is about four times cheaper; in-focus pixels stay sharp at full resolution, and the blur is upsampled with depth-aware weights. |
+| `showFocus`                 | boolean                     | `false`      |           | Tint what is in focus green, near blur red and far blur blue.                                                                                                                    |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 
@@ -49,18 +50,20 @@ Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#mo
 | `portrait` | `focusDistance: 7`, `focusRange: 0.8`, `aperture: 4`, `maxBlur: 16`   |
 | `macro`    | `focusDistance: 5.2`, `focusRange: 0.3`, `aperture: 8`, `maxBlur: 20` |
 | `hexBokeh` | `shape: 'hexagon'`, `aperture: 3`, `maxBlur: 18`                      |
-| `subtle`   | `aperture: 1`, `maxBlur: 6`, `quality: 'low'`                         |
+| `subtle`   | `aperture: 1`, `maxBlur: 6`, `density: 'low'`                         |
 
 Apply one with `depthOfField({ preset: 'name' })` or `effect.applyPreset('name')`; presets start from the defaults.
 
 ## Details
 
 - **Family:** Lens & camera · tracked as story X4.4 in the [plan](https://github.com/s4njee/xtree/blob/main/plan.md).
-- **Passes:** samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass.
+- **Passes:** samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass. It also renders its own intermediate passes before the merged pass.
 - **Geometry buffers:** reads depth, which the composer renders only while an effect needs them.
 - **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Static: nothing animates.
-- **Size:** 6.8 KB gzip budget for `@mk7s/xtree/effects/depth-of-field`, including the shared effect runtime.
+- **Cost:** 542.3 ms added to a 960×540 frame on CI container (SwiftShader software renderer) (2026-10-11). A software renderer: use it to compare effects, not to predict GPU times.
+- **Quality tiers:** low: `density: "low"`, `resolution: "half"`; medium: `density: "low"`; high keeps the effect's own values. Set `quality`, or leave it `auto` for an [adaptive composer](/guide/performance).
+- **Size:** 9.3 KB gzip budget for `@mk7s/xtree/effects/depth-of-field`, including the shared effect runtime.
 
 ### Cost
 

@@ -31,7 +31,8 @@
     "effects:docs": "pnpm --filter @mk7s/xtree effects:docs",
     "test:docs": "playwright test --config playwright.docs.config.ts",
     "exports": "pnpm --filter @mk7s/xtree exports",
-    "api:check": "pnpm --filter @mk7s/xtree api:docs --emit none"
+    "api:check": "pnpm --filter @mk7s/xtree api:docs --emit none",
+    "bench": "node scripts/bench.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "3.0.3",

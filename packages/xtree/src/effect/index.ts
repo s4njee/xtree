@@ -20,6 +20,8 @@ export {
   type FrameInfo,
   type Masking,
   type MotionBehavior,
+  type Quality,
+  type QualityLevel,
   type Sampling,
   type SetupContext,
   type StateType,

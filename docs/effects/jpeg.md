@@ -24,27 +24,27 @@ composer.add(jpeg({ preset: 'lowQuality' }));
 renderer.setAnimationLoop(() => composer.render());
 ```
 
-Every parameter is also a property: `effect.quality = 15`. Uniform changes take effect on the next frame without recompiling.
+Every parameter is also a property: `effect.jpegQuality = 15`. Uniform changes take effect on the next frame without recompiling.
 
 ## Parameters
 
-| Parameter    | Type    | Default | Range    | Description                                                         |
-| ------------ | ------- | ------- | -------- | ------------------------------------------------------------------- |
-| `quality`    | number  | `15`    | 1 – 100  | JPEG quality: 100 is nearly lossless, below 10 is a mess of blocks. |
-| `blockScale` | number  | `1`     | 1 – 6 px | Screen pixels per JPEG pixel, for bigger blocks.                    |
-| `subsample`  | boolean | `true`  |          | Store color at quarter resolution (4:2:0), as most JPEGs do.        |
-| `amount`     | number  | `1`     | 0 – 1    | Mix between the original and the compressed image.                  |
+| Parameter     | Type    | Default | Range    | Description                                                         |
+| ------------- | ------- | ------- | -------- | ------------------------------------------------------------------- |
+| `jpegQuality` | number  | `15`    | 1 – 100  | JPEG quality: 100 is nearly lossless, below 10 is a mess of blocks. |
+| `blockScale`  | number  | `1`     | 1 – 6 px | Screen pixels per JPEG pixel, for bigger blocks.                    |
+| `subsample`   | boolean | `true`  |          | Store color at quarter resolution (4:2:0), as most JPEGs do.        |
+| `amount`      | number  | `1`     | 0 – 1    | Mix between the original and the compressed image.                  |
 
 Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#modes)), `opacity` (0–1) and `enabled`.
 
 ## Presets
 
-| Preset        | Settings                       |
-| ------------- | ------------------------------ |
-| `lowQuality`  | `quality: 6`                   |
-| `deepFried`   | `quality: 2`, `blockScale: 2`  |
-| `web`         | `quality: 40`                  |
-| `macroblocks` | `quality: 10`, `blockScale: 4` |
+| Preset        | Settings                           |
+| ------------- | ---------------------------------- |
+| `lowQuality`  | `jpegQuality: 6`                   |
+| `deepFried`   | `jpegQuality: 2`, `blockScale: 2`  |
+| `web`         | `jpegQuality: 40`                  |
+| `macroblocks` | `jpegQuality: 10`, `blockScale: 4` |
 
 Apply one with `jpeg({ preset: 'name' })` or `effect.applyPreset('name')`; presets start from the defaults.
 
@@ -54,6 +54,7 @@ Apply one with `jpeg({ preset: 'name' })` or `effect.applyPreset('name')`; prese
 - **Passes:** samples the pass input at other positions, so it starts a new merged pass; following pixel effects join that pass. It also renders its own intermediate passes before the merged pass.
 - **Masks:** set `effect.mask` to a texture, depth range or selection to limit where it applies; see [masks](/guide/masks).
 - **Motion:** Static: nothing animates.
+- **Cost:** 501.5 ms added to a 960×540 frame on CI container (SwiftShader software renderer) (2026-10-11). A software renderer: use it to compare effects, not to predict GPU times.
 - **Size:** 7.7 KB gzip budget for `@mk7s/xtree/effects/jpeg`, including the shared effect runtime.
 
 ## Credits

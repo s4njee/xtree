@@ -41,6 +41,7 @@ export const motionBlur = defineEffect({
         'Longest blur as a fraction of the frame, so very fast motion stays readable.',
     }),
   },
+  quality: { low: { samples: 5 }, medium: { samples: 8 } },
   presets: {
     film: { intensity: 0.5 },
     fast: { intensity: 2, samples: 24, maxBlur: 0.1 },

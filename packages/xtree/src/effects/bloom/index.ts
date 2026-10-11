@@ -59,6 +59,7 @@ export const bloom = defineEffect({
       description: 'Color multiplied into the glow.',
     }),
   },
+  quality: { low: { levels: 4 }, medium: { levels: 5 } },
   presets: {
     subtle: { intensity: 0.5, threshold: 1.2 },
     dreamy: { intensity: 1.4, threshold: 0.6, knee: 0.8, radius: 0.85 },
