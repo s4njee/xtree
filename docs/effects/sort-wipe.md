@@ -51,11 +51,11 @@ Every effect also has `blend` (any of the 26 [blend modes](/reference/shaders#mo
 
 ## Presets
 
-| Preset     | Settings                     |
-| ---------- | ---------------------------- |
-| `rain`     | `angle: -90`, `band: 0.5`    |
-| `sideways` | `angle: 0`, `band: 0.25`     |
-| `bright`   | `reverse: true`, `band: 0.5` |
+| Preset     | Settings                  |
+| ---------- | ------------------------- |
+| `rain`     | `angle: -90`, `band: 0.5` |
+| `sideways` | `angle: 0`, `band: 0.25`  |
+| `bright`   | `reverse: true`           |
 
 Apply one with `sortWipe({ preset: 'name' })` or `effect.applyPreset('name')`; presets start from the defaults.
 

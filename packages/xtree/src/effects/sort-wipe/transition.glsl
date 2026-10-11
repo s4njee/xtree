@@ -1,4 +1,4 @@
-// Pixel-sort wipe: a front crosses the frame, and across the band behind it each line of the next image appears sorted by brightness, as if a pixel sort were running along the direction of travel, before settling into the image itself.
+// Pixel-sort wipe: a front crosses the frame; across the band behind it each line of the next image appears sorted by brightness along the direction of travel, before settling into the image itself.
 
 float $luma(vec3 c) {
   return dot(clamp(c, 0.0, 1.0), vec3(0.2126, 0.7152, 0.0722));
@@ -18,20 +18,20 @@ vec4 $transition(vec2 uv, float progress) {
   if (x >= front) return xt_from(uv);
   // Depth into the band: 0 at the front, 1 where the image has settled.
   float depth = (front - x) / $band;
-  // This pixel's line through the band, sampled from the front backward.
+  // The whole line through this pixel, sampled once along the direction of travel. The sorted image is fixed, not tied to the moving front, so pixels change smoothly rather than re-sorting every frame (which would flicker).
   vec2 perX = dir / aspect * 2.0 * reach;
-  vec2 frontUv = uv + perX * (front - x);
+  vec2 lineStart = uv - perX * x;
   vec4 colors[32];
   float keys[32];
   for (int i = 0; i < 32; i++) {
     if (i >= $samples) break;
     float t = (float(i) + 0.5) / float($samples);
-    colors[i] = xt_to(frontUv - perX * $band * t);
+    colors[i] = xt_to(lineStart + perX * t);
     float key = $luma(colors[i].rgb);
     keys[i] = $reverse ? -key : key;
   }
-  // The pixel at depth d shows the sample whose brightness rank matches d (ties broken by position).
-  int k = int(clamp(floor(depth * float($samples)), 0.0, float($samples - 1)));
+  // The pixel at position x along the line shows the sample whose brightness rank matches x (ties broken by position).
+  int k = int(clamp(floor(x * float($samples)), 0.0, float($samples - 1)));
   vec4 sorted = colors[0];
   for (int i = 0; i < 32; i++) {
     if (i >= $samples) break;
@@ -42,7 +42,7 @@ vec4 $transition(vec2 uv, float progress) {
     }
     if (rank == k) sorted = colors[i];
   }
-  // Ease in from the old image at the front and out into the new one at the back.
-  vec4 color = mix(xt_from(uv), sorted, smoothstep(0.0, 0.12, depth));
-  return mix(color, xt_to(uv), smoothstep(0.75, 1.0, depth));
+  // From the old image into the sorted one at the front, then into the new image at the back.
+  vec4 color = mix(xt_from(uv), sorted, smoothstep(0.0, 0.4, depth));
+  return mix(color, xt_to(uv), smoothstep(0.6, 1.0, depth));
 }

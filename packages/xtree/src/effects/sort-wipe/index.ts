@@ -1,7 +1,7 @@
 import { bool, defineTransition, float, int } from '../../effect/index.js';
 import fragment from './transition.glsl';
 
-/** A wipe whose leading edge smears bright pixels into sorted streaks. */
+/** A wipe whose trailing band shows the next image sorted by brightness. */
 export const sortWipe = defineTransition({
   name: 'sort-wipe',
   meta: {
@@ -44,7 +44,7 @@ export const sortWipe = defineTransition({
   presets: {
     rain: { angle: -90, band: 0.5 },
     sideways: { angle: 0, band: 0.25 },
-    bright: { reverse: true, band: 0.5 },
+    bright: { reverse: true },
   },
   fragment,
 });
