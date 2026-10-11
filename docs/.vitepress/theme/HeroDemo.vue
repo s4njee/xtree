@@ -60,7 +60,20 @@ async function start(element: HTMLElement) {
   const canvas = renderer.domElement;
   canvas.setAttribute('aria-hidden', 'true');
   const studio = scenes.createStudio(16 / 10);
-  const composer = new core.EffectComposer(renderer, { maxDpr: 1.5 });
+  // A decorative hero: a modest resolution keeps bloom cheap.
+  const composer = new core.EffectComposer(renderer, {
+    maxDpr: 1.5,
+    maxPixels: 600_000,
+  });
+  // On a software renderer (no GPU acceleration) every frame blocks the main
+  // thread, so the hero shows one live still instead of animating.
+  const gl = renderer.getContext();
+  const info = gl.getExtension('WEBGL_debug_renderer_info');
+  const software = /swiftshader|llvmpipe|softpipe|software/i.test(
+    String(
+      gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER) ?? '',
+    ),
+  );
   composer.setScene(studio.scene, studio.camera);
   const effects = [
     foil.holographicFoil({ preset: 'card', intensity: 0.55 }),
@@ -74,12 +87,15 @@ async function start(element: HTMLElement) {
   let last = performance.now();
   let started = false;
   let allowed = true;
+  // Frames that took too long; after a few the hero stops animating.
+  let slow = 0;
+  let animate = !software;
   const unbindMotion = holo.bindMotion(
     {
       setMotion(value: boolean) {
         allowed = value;
         composer.motion = value;
-        if (value && started) loop();
+        if (value && started && animate) loop();
       },
     },
     element,
@@ -88,6 +104,7 @@ async function start(element: HTMLElement) {
   const draw = (now: number) => {
     const delta = Math.min(0.1, (now - last) / 1000);
     last = now;
+    const start = performance.now();
     if (allowed) time += delta * 0.35;
     studio.update(time);
     studio.camera.position.set(
@@ -97,11 +114,17 @@ async function start(element: HTMLElement) {
     );
     studio.camera.lookAt(0, 0.8, 0);
     composer.render(allowed ? delta : 0);
+    if (performance.now() - start > 40 && ++slow >= 3) animate = false;
   };
+  // About 30 frames a second is plenty for a slow turn.
+  let lastDrawn = 0;
   const frame = (now: number) => {
     raf = 0;
-    draw(now);
-    if (allowed && !document.hidden) loop();
+    if (now - lastDrawn >= 30) {
+      lastDrawn = now;
+      draw(now);
+    }
+    if (allowed && animate && onScreen && !document.hidden) loop();
   };
   function loop() {
     if (!raf) {
@@ -119,16 +142,23 @@ async function start(element: HTMLElement) {
   };
   const observer = new ResizeObserver(resize);
   observer.observe(element);
-  const onVisibility = () => !document.hidden && allowed && loop();
+  let onScreen = true;
+  const visibility = new IntersectionObserver((entries) => {
+    onScreen = Boolean(entries[0]?.isIntersecting);
+    if (onScreen && allowed && animate) loop();
+  });
+  visibility.observe(element);
+  const onVisibility = () => !document.hidden && allowed && animate && loop();
   document.addEventListener('visibilitychange', onVisibility);
   element.append(canvas);
   resize();
   live.value = true;
   started = true;
-  if (allowed) loop();
+  if (allowed && animate) loop();
   teardown = () => {
     cancelAnimationFrame(raf);
     observer.disconnect();
+    visibility.disconnect();
     document.removeEventListener('visibilitychange', onVisibility);
     unbindTheme();
     unbindMotion();
