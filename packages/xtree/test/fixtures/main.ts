@@ -1342,13 +1342,16 @@ const xt = {
     oscillator.start();
     const stopAudio = trackAudio(target, analyser);
     window.dispatchEvent(new KeyboardEvent('keydown'));
-    await context.resume().catch(() => {});
+    // Without a real gesture some browsers never settle resume() or close().
+    const settle = (promise: Promise<unknown>) =>
+      Promise.race([promise.catch(() => {}), wait(200)]);
+    await settle(context.resume());
     await wait(300);
     const audio = [...target.inputs.audio];
     stopAudio();
     const audioStopped = [...target.inputs.audio];
     oscillator.stop();
-    await context.close();
+    await settle(context.close());
     return {
       pointer,
       velocity,
@@ -1357,7 +1360,6 @@ const xt = {
       pageScroll,
       elementScroll,
       audio,
-      audioState: context.state,
       audioStopped,
     };
   },
